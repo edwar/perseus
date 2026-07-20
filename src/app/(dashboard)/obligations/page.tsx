@@ -25,10 +25,10 @@ export default function ObligationsPage() {
   const [editId, setEditId] = useState<string | null>(null)
   const [deleteId, setDeleteId] = useState<string | null>(null)
 
-  const [currentMonth, setCurrentMonth] = useState(() => {
-    const d = new Date()
-    return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}`
-  })
+  const now = new Date()
+  const thisMonth = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}`
+  const [currentMonth, setCurrentMonth] = useState(thisMonth)
+  const isCurrentMonth = currentMonth === thisMonth
 
   useEffect(() => {
     setHeaderAction(<Button size="sm" onClick={() => { setEditId(null); setShowForm(true) }}><Plus className="h-4 w-4" /> Crear</Button>)
@@ -78,7 +78,7 @@ export default function ObligationsPage() {
             <p className="text-sm font-semibold capitalize">{monthName(currentMonth)}</p>
             {total > 0 && <p className="text-xs text-muted-foreground">{paid} de {total} pagadas</p>}
           </div>
-          <Button variant="outline" size="sm" onClick={() => {
+          <Button variant="outline" size="sm" disabled={isCurrentMonth} onClick={() => {
             const d = new Date(currentMonth + "-01")
             d.setMonth(d.getMonth() + 1)
             setCurrentMonth(`${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}`)
@@ -105,35 +105,35 @@ export default function ObligationsPage() {
       {obligations.length === 0 && !showForm ? (
         <Empty icon={Check} title="No hay obligaciones" description="Agrega tus pagos mensuales recurrentes para hacer seguimiento" action={<Button size="sm" onClick={() => setShowForm(true)}><Plus className="h-3 w-3" /> Crear obligación</Button>} />
       ) : (
-      <div className="space-y-2">
-        {obligations.map((obl) => {
-          const isPaid = paidIds.includes(obl.id)
-          return (
-            <Card key={obl.id} className={isPaid ? "opacity-60" : ""}>
-              <CardContent className="flex items-center gap-3 py-3 px-4">
-                <button
-                  onClick={() => togglePaid(obl.id, currentMonth)}
-                  className={cn(
-                    "flex h-7 w-7 shrink-0 items-center justify-center rounded-full border-2 transition-colors",
-                    isPaid ? "border-emerald-500 bg-emerald-500 text-white" : "border-muted-foreground/30 hover:border-primary"
-                  )}
-                >
-                  {isPaid && <Check className="h-3.5 w-3.5" />}
-                </button>
-                <div className="flex-1 min-w-0">
-                  <p className={cn("text-sm font-medium truncate", isPaid && "line-through")}>{obl.name}</p>
-                </div>
-                <Button variant="ghost" size="icon-xs" onClick={() => { setEditId(obl.id); setShowForm(true) }}>
-                  <Pencil className="h-3 w-3" />
-                </Button>
-                <Button variant="ghost" size="icon-xs" onClick={() => setDeleteId(obl.id)} className="text-red-500">
-                  <Trash2 className="h-3 w-3" />
-                </Button>
-              </CardContent>
-            </Card>
-          )
-        })}
-      </div>
+        <div className="space-y-2">
+          {obligations.map((obl) => {
+            const isPaid = paidIds.includes(obl.id)
+            return (
+              <Card key={obl.id} className={isPaid ? "opacity-60" : ""}>
+                <CardContent className="flex items-center gap-3 py-3 px-4">
+                  <button
+                    onClick={() => togglePaid(obl.id, currentMonth)}
+                    className={cn(
+                      "flex h-7 w-7 shrink-0 items-center justify-center rounded-full border-2 transition-colors",
+                      isPaid ? "border-emerald-500 bg-emerald-500 text-white" : "border-muted-foreground/30 hover:border-primary"
+                    )}
+                  >
+                    {isPaid && <Check className="h-3.5 w-3.5" />}
+                  </button>
+                  <div className="flex-1 min-w-0">
+                    <p className={cn("text-sm font-medium truncate", isPaid && "line-through")}>{obl.name}</p>
+                  </div>
+                  <Button variant="ghost" size="icon-xs" onClick={() => { setEditId(obl.id); setShowForm(true) }}>
+                    <Pencil className="h-3 w-3" />
+                  </Button>
+                  <Button variant="ghost" size="icon-xs" onClick={() => setDeleteId(obl.id)} className="text-red-500">
+                    <Trash2 className="h-3 w-3" />
+                  </Button>
+                </CardContent>
+              </Card>
+            )
+          })}
+        </div>
       )}
 
       <ConfirmDialog open={!!deleteId} title="Eliminar obligación" message={`¿Estás seguro?`} onConfirm={() => { if (deleteId) deleteObligation(deleteId); setDeleteId(null) }} onCancel={() => setDeleteId(null)} />
