@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { Search, Plus, X, ArrowLeft, ArrowDown, ArrowUp, ScanLine, PenLine, Repeat, Calendar, Receipt, Pencil, Trash2 } from "lucide-react"
 import { Scanner } from "@/components/scanner"
 import type { ReceiptData } from "@/lib/ia"
@@ -40,10 +40,35 @@ export default function TransactionsPage() {
   const [showNewForm, setShowNewForm] = useState(false)
   const [editTx, setEditTx] = useState<string | null>(null)
   const [deleteTx, setDeleteTx] = useState<string | null>(null)
+  const [ready, setReady] = useState(false)
+  useEffect(() => { const t = setTimeout(() => setReady(true), 100); return () => clearTimeout(t) }, [])
 
   const filtered = transactions
     .filter((t) => tab === "all" ? true : tab === "recurring" ? t.recurring : !t.recurring)
     .filter((t) => t.description.toLowerCase().includes(search.toLowerCase()))
+
+  if (!ready) {
+    return (
+      <div className="space-y-6">
+        <div className="flex items-center justify-between"><h1 className="text-2xl font-bold">Transacciones</h1><div className="h-9 w-36 animate-pulse rounded-lg bg-muted" /></div>
+        <div className="grid gap-2 sm:grid-cols-[1fr_180px]"><div className="h-10 animate-pulse rounded-xl bg-muted" /><div className="h-10 animate-pulse rounded-xl bg-muted" /></div>
+        <Card><div className="divide-y">
+          {[1,2,3,4,5].map((i) => (
+            <div key={i} className="flex items-center justify-between px-6 py-3">
+              <div className="flex items-center gap-3 flex-1">
+                <div className="h-7 w-7 animate-pulse rounded-full bg-muted" />
+                <div className="flex-1 space-y-1.5">
+                  <div className="h-3 w-48 animate-pulse rounded bg-muted" />
+                  <div className="h-2.5 w-32 animate-pulse rounded bg-muted" />
+                </div>
+              </div>
+              <div className="h-4 w-20 animate-pulse rounded bg-muted" />
+            </div>
+          ))}
+        </div></Card>
+      </div>
+    )
+  }
 
   if (showNewForm) {
     return <NewTransactionForm onClose={() => setShowNewForm(false)} />
