@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useMemo } from "react"
+import { useEffect, useState, useMemo } from "react"
 import { Plus, Pencil, Trash2, X, PiggyBank } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { CurrencyInput } from "@/components/ui/currency-input"
@@ -39,6 +39,25 @@ export default function BudgetsPage() {
   }
 
   const editBudget = budgets.find((b) => b.id === editing)
+  const [ready, setReady] = useState(false)
+  useEffect(() => { const t = setTimeout(() => setReady(true), 100); return () => clearTimeout(t) }, [])
+
+  if (!ready) {
+    return (
+      <div className="space-y-6">
+        <div className="flex items-center justify-between"><h1 className="text-2xl font-bold">Presupuestos</h1><div className="h-9 w-36 animate-pulse rounded-lg bg-muted" /></div>
+        <div className="grid gap-4 sm:grid-cols-2">
+          {[1,2,3,4].map((i) => (
+            <Card key={i}><CardContent className="p-5">
+              <div className="flex items-center gap-2"><div className="h-3 w-3 animate-pulse rounded-full bg-muted" /><div className="h-4 w-28 animate-pulse rounded bg-muted flex-1" /><div className="h-4 w-32 animate-pulse rounded bg-muted" /></div>
+              <div className="mt-3 h-2 animate-pulse rounded-full bg-muted" />
+              <div className="mt-1 h-3 w-16 animate-pulse rounded bg-muted" />
+            </CardContent></Card>
+          ))}
+        </div>
+      </div>
+    )
+  }
 
   return (
     <div className="space-y-6">
