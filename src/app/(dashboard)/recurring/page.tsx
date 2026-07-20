@@ -63,7 +63,13 @@ export default function RecurringPage() {
 
   return (
     <div className="space-y-6">
-      <h1 className="text-2xl font-bold max-md:hidden">Recurrentes</h1>
+      <div className="items-center justify-between mt-10 flex md:hidden">
+        <h1 className="text-2xl font-bold">Recurrentes</h1>
+        <Button onClick={() => { setEditingId(null); setShowForm(true) }}>
+          <Plus className="h-4 w-4" />
+          Crear
+        </Button>
+      </div>
 
       {showForm && (
         <RecurringForm

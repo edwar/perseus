@@ -76,7 +76,13 @@ export default function DebtsPage() {
 
   return (
     <div className="space-y-6">
-      <h1 className="text-2xl font-bold max-md:hidden">Deudas</h1>
+      <div className="flex items-center justify-between mt-10 md:hidden">
+        <h1 className="text-2xl font-bold">Deudas</h1>
+        <Button className="gap-2" onClick={() => setShowAddDebt(true)}>
+          <Plus className="h-4 w-4" />
+          Crear
+        </Button>
+      </div>
 
       {showAddDebt && (
         <AddDebtForm onSave={(d) => handleSave(d)} onClose={() => setShowAddDebt(false)} />

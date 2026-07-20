@@ -56,7 +56,7 @@ export default function TransactionsPage() {
         <div className="flex items-center justify-between"><h1 className="text-2xl font-bold">Transacciones</h1><div className="h-9 w-36 animate-pulse rounded-lg bg-muted" /></div>
         <div className="grid gap-2 sm:grid-cols-[1fr_180px]"><div className="h-10 animate-pulse rounded-xl bg-muted" /><div className="h-10 animate-pulse rounded-xl bg-muted" /></div>
         <Card><div className="divide-y">
-          {[1,2,3,4,5].map((i) => (
+          {[1, 2, 3, 4, 5].map((i) => (
             <div key={i} className="flex items-center justify-between px-6 py-3">
               <div className="flex items-center gap-3 flex-1">
                 <div className="h-7 w-7 animate-pulse rounded-full bg-muted" />
@@ -79,7 +79,13 @@ export default function TransactionsPage() {
 
   return (
     <div className="space-y-6">
-      <h1 className="text-2xl font-bold max-md:hidden">Transacciones</h1>
+      <div className="items-center justify-between mt-10 flex md:hidden">
+        <h1 className="text-2xl font-bold">Transacciones</h1>
+        <Button onClick={() => setShowNewForm(true)}>
+          <Plus className="h-4 w-4" />
+          Crear
+        </Button>
+      </div>
 
       {/* Filtros */}
       <div className="grid gap-2 sm:grid-cols-[1fr_180px]">
@@ -109,53 +115,53 @@ export default function TransactionsPage() {
         {filtered.length === 0 ? (
           <Empty icon={Receipt} title="No hay transacciones" description={search ? "Intenta con otra búsqueda" : "Registra tu primera transacción para empezar"} action={!search ? <Button size="sm" onClick={() => setShowNewForm(true)}><Plus className="h-3 w-3" /> Crear</Button> : undefined} />
         ) : (
-        <div className="divide-y">
-          {filtered.map((tx) => (
-            <div key={tx.id}>
-              {editTx === tx.id ? (
-                <InlineEditForm
-                  tx={tx}
-                  onSave={(d) => { updateTransaction(tx.id, d); setEditTx(null) }}
-                  onCancel={() => setEditTx(null)}
-                />
-              ) : (
-              <div className="flex items-center justify-between px-6 py-3">
-                <div className="flex items-center gap-3">
-                  {tx.recurring && (
-                    <div className="flex h-7 w-7 items-center justify-center rounded-full bg-amber-100">
-                      <Repeat className="h-3.5 w-3.5 text-amber-600" />
-                    </div>
-                  )}
-                  <div>
-                    <p className="text-sm font-medium">{tx.description}</p>
-                    <p className="flex items-center gap-2 text-xs text-muted-foreground">
-                      {(tx.category || (tx.type === "INCOME" ? "Ingreso" : "Gasto"))} · {tx.date}
-                      {tx.recurring && tx.nextDate && (
-                        <Badge variant="outline" className="flex items-center gap-0.5 border-amber-200 text-amber-600">
-                          <Calendar className="h-3 w-3" />
-                          Próximo: {tx.nextDate}
-                        </Badge>
+          <div className="divide-y">
+            {filtered.map((tx) => (
+              <div key={tx.id}>
+                {editTx === tx.id ? (
+                  <InlineEditForm
+                    tx={tx}
+                    onSave={(d) => { updateTransaction(tx.id, d); setEditTx(null) }}
+                    onCancel={() => setEditTx(null)}
+                  />
+                ) : (
+                  <div className="flex items-center justify-between px-6 py-3">
+                    <div className="flex items-center gap-3">
+                      {tx.recurring && (
+                        <div className="flex h-7 w-7 items-center justify-center rounded-full bg-amber-100">
+                          <Repeat className="h-3.5 w-3.5 text-amber-600" />
+                        </div>
                       )}
-                    </p>
+                      <div>
+                        <p className="text-sm font-medium">{tx.description}</p>
+                        <p className="flex items-center gap-2 text-xs text-muted-foreground">
+                          {(tx.category || (tx.type === "INCOME" ? "Ingreso" : "Gasto"))} · {tx.date}
+                          {tx.recurring && tx.nextDate && (
+                            <Badge variant="outline" className="flex items-center gap-0.5 border-amber-200 text-amber-600">
+                              <Calendar className="h-3 w-3" />
+                              Próximo: {tx.nextDate}
+                            </Badge>
+                          )}
+                        </p>
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <span className={`text-sm font-semibold ${tx.type === "INCOME" ? "text-emerald-600" : "text-red-600"}`}>
+                        {tx.type === "INCOME" ? "+" : "-"}$
+                        {tx.amount.toLocaleString("es-CO")}
+                      </span>
+                      <Button variant="ghost" size="icon-xs" onClick={() => setEditTx(tx.id)}>
+                        <Pencil className="h-3 w-3" />
+                      </Button>
+                      <Button variant="ghost" size="icon-xs" onClick={() => setDeleteTx(tx.id)} className="text-red-500 hover:text-red-700">
+                        <Trash2 className="h-3 w-3" />
+                      </Button>
+                    </div>
                   </div>
-                </div>
-                <div className="flex items-center gap-2">
-                  <span className={`text-sm font-semibold ${tx.type === "INCOME" ? "text-emerald-600" : "text-red-600"}`}>
-                    {tx.type === "INCOME" ? "+" : "-"}$
-                    {tx.amount.toLocaleString("es-CO")}
-                  </span>
-                  <Button variant="ghost" size="icon-xs" onClick={() => setEditTx(tx.id)}>
-                    <Pencil className="h-3 w-3" />
-                  </Button>
-                  <Button variant="ghost" size="icon-xs" onClick={() => setDeleteTx(tx.id)} className="text-red-500 hover:text-red-700">
-                    <Trash2 className="h-3 w-3" />
-                  </Button>
-                </div>
+                )}
               </div>
-              )}
-            </div>
-          ))}
-        </div>
+            ))}
+          </div>
         )}
       </Card>
 
@@ -234,7 +240,7 @@ function NewTransactionForm({ onClose }: { onClose: () => void }) {
   }
 
   return (
-    <Card className="overflow-hidden">
+    <Card className="overflow-hidden mt-10 md:mt-0">
       <div className="flex items-center gap-3 border-b px-6 py-4">
         {step !== "type" && (
           <Button variant="ghost" size="icon" onClick={() => setStep("type")}>
@@ -527,7 +533,7 @@ function NewTransactionForm({ onClose }: { onClose: () => void }) {
                       </SelectTrigger>
                       <SelectContent>
                         {budgets.length === 0 ? (
-                      <div className="px-3 py-6 text-center text-xs text-muted-foreground space-y-2"><p>No hay presupuestos</p><Button size="sm" onClick={() => window.location.href = "/budgets"}>Ir a Presupuestos</Button></div>
+                          <div className="px-3 py-6 text-center text-xs text-muted-foreground space-y-2"><p>No hay presupuestos</p><Button size="sm" onClick={() => window.location.href = "/budgets"}>Ir a Presupuestos</Button></div>
                         ) : budgets.map((b) => (
                           <SelectItem key={b.id} value={b.category}>{b.category}</SelectItem>
                         ))}
