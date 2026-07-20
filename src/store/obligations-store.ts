@@ -4,9 +4,6 @@ import { persist } from "zustand/middleware"
 export interface Obligation {
   id: string
   name: string
-  amount: number
-  category: string
-  dueDay: number
 }
 
 export interface MonthlyCheck {

@@ -6,12 +6,9 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Card, CardContent } from "@/components/ui/card"
-import { CurrencyInput } from "@/components/ui/currency-input"
 import { ConfirmDialog } from "@/components/ui/confirm-dialog"
 import { Empty } from "@/components/ui/empty"
 import { useObligationsStore } from "@/store/obligations-store"
-import { useBudgetStore } from "@/store/budget-store"
-import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@/components/ui/select"
 import { useHeaderStore } from "@/store/header-store"
 
 export default function ObligationsPage() {
@@ -107,9 +104,6 @@ export default function ObligationsPage() {
                 </button>
                 <div className="flex-1 min-w-0">
                   <p className={cn("text-sm font-medium truncate", isPaid && "line-through")}>{obl.name}</p>
-                  <p className="text-xs text-muted-foreground">
-                    ${obl.amount.toLocaleString("es-CO")} · Día {obl.dueDay} · {obl.category}
-                  </p>
                 </div>
                 <Button variant="ghost" size="icon-xs" onClick={() => { setEditId(obl.id); setShowForm(true) }}>
                   <Pencil className="h-3 w-3" />
@@ -132,15 +126,11 @@ export default function ObligationsPage() {
 import { cn } from "@/lib/utils"
 
 function ObligationForm({ initial, onSave, onClose }: {
-  initial?: { name: string; amount: number; category: string; dueDay: number }
-  onSave: (d: { name: string; amount: number; category: string; dueDay: number }) => void
+  initial?: { name: string }
+  onSave: (d: { name: string }) => void
   onClose: () => void
 }) {
-  const budgets = useBudgetStore((s) => s.budgets)
   const [name, setName] = useState(initial?.name ?? "")
-  const [amount, setAmount] = useState(initial ? String(initial.amount) : "")
-  const [category, setCategory] = useState(initial?.category ?? "")
-  const [dueDay, setDueDay] = useState(initial ? String(initial.dueDay) : "")
 
   return (
     <Card>
@@ -153,32 +143,7 @@ function ObligationForm({ initial, onSave, onClose }: {
           <Label className="text-xs font-medium">Nombre</Label>
           <Input value={name} onChange={(e) => setName(e.target.value)} placeholder="Ej: Arriendo" />
         </div>
-        <div className="grid grid-cols-2 gap-3">
-          <div className="space-y-1">
-            <Label className="text-xs font-medium">Monto</Label>
-            <CurrencyInput value={amount} onChange={setAmount} placeholder="0" />
-          </div>
-          <div className="space-y-1">
-            <Label className="text-xs font-medium">Día de pago</Label>
-            <Input type="number" min={1} max={31} value={dueDay} onChange={(e) => setDueDay(e.target.value)} placeholder="15" />
-          </div>
-        </div>
-        <div className="space-y-1">
-          <Label className="text-xs font-medium">Categoría</Label>
-          <Select value={category} onValueChange={(v) => v && setCategory(v)}>
-            <SelectTrigger className="w-full">
-              <SelectValue placeholder="Seleccionar" />
-            </SelectTrigger>
-            <SelectContent>
-              {budgets.length === 0 ? (
-                <div className="px-3 py-6 text-center text-xs text-muted-foreground">No hay presupuestos</div>
-              ) : budgets.map((b) => (
-                <SelectItem key={b.id} value={b.category}>{b.category}</SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-        </div>
-        <Button className="w-full" disabled={!name || !amount || !dueDay} onClick={() => onSave({ name, amount: Number(amount) || 0, category, dueDay: Number(dueDay) || 1 })}>
+        <Button className="w-full" disabled={!name} onClick={() => onSave({ name })}>
           {initial ? "Guardar cambios" : "Crear obligación"}
         </Button>
       </CardContent>
