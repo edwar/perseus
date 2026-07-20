@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { Plus, Repeat, ArrowUp, ArrowDown, Pencil, Trash2, X } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
@@ -27,6 +27,36 @@ export default function RecurringPage() {
   const [showForm, setShowForm] = useState(false)
   const [editingId, setEditingId] = useState<string | null>(null)
   const [deleteConfirm, setDeleteConfirm] = useState<string | null>(null)
+  const [ready, setReady] = useState(false)
+  useEffect(() => { const t = setTimeout(() => setReady(true), 100); return () => clearTimeout(t) }, [])
+
+  if (!ready) {
+    return (
+      <div className="space-y-6">
+        <div className="flex items-center justify-between"><h1 className="text-2xl font-bold">Recurrentes</h1><div className="h-9 w-36 animate-pulse rounded-lg bg-muted" /></div>
+        <div className="grid gap-4 sm:grid-cols-2">
+          {[1,2].map((i) => (
+            <Card key={i}><CardContent className="p-5">
+              <div className="flex items-start justify-between">
+                <div className="flex items-center gap-3">
+                  <div className="h-10 w-10 animate-pulse rounded-full bg-muted" />
+                  <div className="space-y-1.5">
+                    <div className="h-4 w-32 animate-pulse rounded bg-muted" />
+                    <div className="h-3 w-20 animate-pulse rounded bg-muted" />
+                  </div>
+                </div>
+                <div className="h-5 w-24 animate-pulse rounded bg-muted" />
+              </div>
+              <div className="mt-3 flex justify-between">
+                <div className="h-3 w-28 animate-pulse rounded bg-muted" />
+                <div className="flex gap-1"><div className="h-8 w-8 animate-pulse rounded bg-muted" /><div className="h-8 w-8 animate-pulse rounded bg-muted" /></div>
+              </div>
+            </CardContent></Card>
+          ))}
+        </div>
+      </div>
+    )
+  }
 
   return (
     <div className="space-y-6">
