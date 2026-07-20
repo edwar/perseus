@@ -13,6 +13,7 @@ const titles: Record<string, string> = {
   "/debts": "Deudas",
   "/savings": "Ahorros",
   "/budgets": "Presupuestos",
+  "/obligations": "Obligaciones",
 }
 
 export function Header() {

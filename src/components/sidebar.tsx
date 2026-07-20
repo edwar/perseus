@@ -14,6 +14,7 @@ import {
   LogOut,
   Menu,
   X,
+  CheckSquare,
 } from "lucide-react"
 
 const navItems = [
@@ -23,6 +24,7 @@ const navItems = [
   { href: "/debts", label: "Deudas", icon: CreditCard },
   { href: "/savings", label: "Ahorros", icon: PiggyBank },
   { href: "/budgets", label: "Presupuestos", icon: BarChart3 },
+  { href: "/obligations", label: "Obligaciones", icon: CheckSquare },
 ]
 
 export function Sidebar() {
