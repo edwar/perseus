@@ -77,7 +77,7 @@ export default function DebtsPage() {
         <h1 className="text-2xl font-bold">Deudas</h1>
         <Button className="gap-2" onClick={() => setShowAddDebt(true)}>
           <Plus className="h-4 w-4" />
-          Añadir deuda
+          Crear
         </Button>
       </div>
 
@@ -94,7 +94,7 @@ export default function DebtsPage() {
       )}
 
       {debts.length === 0 && !showAddDebt ? (
-        <Empty icon={TrendingDown} title="No hay deudas" description="Registra tu primera deuda para hacer seguimiento" action={<Button size="sm" onClick={() => setShowAddDebt(true)}><Plus className="h-3 w-3" /> Añadir deuda</Button>} />
+        <Empty icon={TrendingDown} title="No hay deudas" description="Registra tu primera deuda para hacer seguimiento" action={<Button size="sm" onClick={() => setShowAddDebt(true)}><Plus className="h-3 w-3" /> Crear</Button>} />
       ) : (
       <div className="grid gap-4 sm:grid-cols-2">
         {debts.map((debt) => {

@@ -65,7 +65,7 @@ export default function BudgetsPage() {
         <h1 className="text-2xl font-bold">Presupuestos</h1>
         <Button className="gap-2" onClick={() => { setEditing(null); setShowForm(true) }}>
           <Plus className="h-4 w-4" />
-          Nuevo presupuesto
+          Crear
         </Button>
       </div>
 
@@ -78,7 +78,7 @@ export default function BudgetsPage() {
       )}
 
       {budgets.length === 0 ? (
-        <Empty icon={PiggyBank} title="No hay presupuestos" description="Crea tu primer presupuesto para controlar tus gastos" action={<Button size="sm" onClick={() => { setEditing(null); setShowForm(true) }}><Plus className="h-3 w-3" /> Nuevo presupuesto</Button>} />
+        <Empty icon={PiggyBank} title="No hay presupuestos" description="Crea tu primer presupuesto para controlar tus gastos" action={<Button size="sm" onClick={() => { setEditing(null); setShowForm(true) }}><Plus className="h-3 w-3" /> Crear</Button>} />
       ) : (
       <div className="grid gap-4 sm:grid-cols-2">
         {budgets.map((budget) => {

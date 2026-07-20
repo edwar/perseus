@@ -64,7 +64,7 @@ export default function RecurringPage() {
         <h1 className="text-2xl font-bold">Recurrentes</h1>
         <Button onClick={() => { setEditingId(null); setShowForm(true) }}>
           <Plus className="h-4 w-4" />
-          Nuevo recurrente
+          Crear
         </Button>
       </div>
 
@@ -85,7 +85,7 @@ export default function RecurringPage() {
       )}
 
       {items.length === 0 && !showForm ? (
-        <Empty icon={Repeat} title="No hay recurrentes" description="Agrega ingresos o gastos recurrentes para automatizar tu registro" action={<Button size="sm" onClick={() => { setEditingId(null); setShowForm(true) }}><Plus className="h-3 w-3" /> Nuevo recurrente</Button>} />
+        <Empty icon={Repeat} title="No hay recurrentes" description="Agrega ingresos o gastos recurrentes para automatizar tu registro" action={<Button size="sm" onClick={() => { setEditingId(null); setShowForm(true) }}><Plus className="h-3 w-3" /> Crear</Button>} />
       ) : (
       <div className="grid gap-4 sm:grid-cols-2">
         {items.map((item) => (

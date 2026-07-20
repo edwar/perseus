@@ -80,7 +80,7 @@ export default function TransactionsPage() {
         <h1 className="text-2xl font-bold">Transacciones</h1>
         <Button onClick={() => setShowNewForm(true)}>
           <Plus className="h-4 w-4" />
-          Nueva
+          Crear
         </Button>
       </div>
 
@@ -110,7 +110,7 @@ export default function TransactionsPage() {
 
       <Card>
         {filtered.length === 0 ? (
-          <Empty icon={Receipt} title="No hay transacciones" description={search ? "Intenta con otra búsqueda" : "Registra tu primera transacción para empezar"} action={!search ? <Button size="sm" onClick={() => setShowNewForm(true)}><Plus className="h-3 w-3" /> Nueva transacción</Button> : undefined} />
+          <Empty icon={Receipt} title="No hay transacciones" description={search ? "Intenta con otra búsqueda" : "Registra tu primera transacción para empezar"} action={!search ? <Button size="sm" onClick={() => setShowNewForm(true)}><Plus className="h-3 w-3" /> Crear</Button> : undefined} />
         ) : (
         <div className="divide-y">
           {filtered.map((tx) => (

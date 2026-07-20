@@ -69,7 +69,7 @@ export default function SavingsPage() {
             <div className="flex items-center justify-between">
               <h2 className="text-xl font-bold">Metas de Ahorro</h2>
               <Button className="gap-2" onClick={() => setShowNewGoal(true)}>
-                <Plus className="h-4 w-4" /> Nueva meta
+                <Plus className="h-4 w-4" /> Crear
               </Button>
             </div>
 
@@ -84,7 +84,7 @@ export default function SavingsPage() {
             })()}
 
             {goals.length === 0 && !showNewGoal ? (
-              <Empty icon={Target} title="No hay metas de ahorro" description="Crea tu primera meta para empezar a ahorrar" action={<Button size="sm" onClick={() => setShowNewGoal(true)}><Plus className="h-3 w-3" /> Nueva meta</Button>} />
+              <Empty icon={Target} title="No hay metas de ahorro" description="Crea tu primera meta para empezar a ahorrar" action={<Button size="sm" onClick={() => setShowNewGoal(true)}><Plus className="h-3 w-3" /> Crear</Button>} />
             ) : (
               <div className="grid gap-4 sm:grid-cols-2">
                 {goals.map((goal) => {
@@ -137,7 +137,7 @@ export default function SavingsPage() {
             <div className="flex items-center justify-between">
               <h2 className="text-xl font-bold">Inversiones</h2>
               <Button className="gap-2" onClick={() => setShowNewInvestment(true)}>
-                <Plus className="h-4 w-4" /> Nueva inversión
+                <Plus className="h-4 w-4" /> Crear
               </Button>
             </div>
 
@@ -152,7 +152,7 @@ export default function SavingsPage() {
             })()}
 
             {investments.length === 0 && !showNewInvestment ? (
-              <Empty icon={Landmark} title="No hay inversiones" description="Abre tu primera inversión para empezar" action={<Button size="sm" onClick={() => setShowNewInvestment(true)}><Plus className="h-3 w-3" /> Nueva inversión</Button>} />
+              <Empty icon={Landmark} title="No hay inversiones" description="Abre tu primera inversión para empezar" action={<Button size="sm" onClick={() => setShowNewInvestment(true)}><Plus className="h-3 w-3" /> Crear</Button>} />
             ) : (
               <div className="grid gap-4 sm:grid-cols-2">
                 {investments.map((inv) => {
