@@ -87,7 +87,7 @@ export default function BudgetsPage() {
           const isOverBudget = percentage >= 100
           return (
             <Card key={budget.id}>
-              <CardContent className="p-5">
+<CardContent className="p-4">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2">
                     <div className="h-3 w-3 rounded-full" style={{ backgroundColor: budget.color }} />
