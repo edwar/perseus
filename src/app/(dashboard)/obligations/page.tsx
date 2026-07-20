@@ -73,9 +73,7 @@ export default function ObligationsPage() {
             const d = new Date(currentMonth + "-01")
             d.setMonth(d.getMonth() - 1)
             setCurrentMonth(`${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}`)
-          }}
-
-><ChevronLeft className="h-5 w-5" /></Button>
+          }}><ChevronLeft className="h-5 w-5" /></Button>
           <div className="text-center flex-1">
             <p className="text-sm font-semibold capitalize">{monthName(currentMonth)}</p>
             {total > 0 && <p className="text-xs text-muted-foreground">{paid} de {total} pagadas</p>}
@@ -84,9 +82,7 @@ export default function ObligationsPage() {
             const d = new Date(currentMonth + "-01")
             d.setMonth(d.getMonth() + 1)
             setCurrentMonth(`${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}`)
-          }}
-
-><ChevronRight className="h-5 w-5" /></Button>
+          }}><ChevronRight className="h-5 w-5" /></Button>
         </CardContent>
         {total > 0 && (
           <div className="h-2 bg-muted mx-5 mb-4 rounded-full overflow-hidden">
