@@ -25,11 +25,6 @@ export default function ObligationsPage() {
   const [editId, setEditId] = useState<string | null>(null)
   const [deleteId, setDeleteId] = useState<string | null>(null)
 
-  const now = new Date()
-  const thisMonth = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}`
-  const [currentMonth, setCurrentMonth] = useState(thisMonth)
-  const isCurrentMonth = currentMonth === thisMonth
-
   useEffect(() => {
     setHeaderAction(<Button size="sm" onClick={() => { setEditId(null); setShowForm(true) }}><Plus className="h-4 w-4" /> Crear</Button>)
     return () => setHeaderAction(null)
@@ -39,6 +34,13 @@ export default function ObligationsPage() {
     const d = new Date(m + "-01")
     return d.toLocaleDateString("es", { month: "long", year: "numeric" })
   }
+
+  const today = new Date()
+  const currentYear = today.getFullYear()
+  const currentMonthNum = today.getMonth() + 1
+  const thisMonthStr = `${currentYear}-${String(currentMonthNum).padStart(2, "0")}`
+  const [currentMonth, setCurrentMonth] = useState(thisMonthStr)
+  const isCurrentMonth = currentMonth === thisMonthStr
 
   const currentCheck = checks.find((c) => c.month === currentMonth)
   const paidIds = currentCheck?.paid ?? []
@@ -70,18 +72,18 @@ export default function ObligationsPage() {
       <Card>
         <CardContent className="flex items-center justify-between py-3 px-4">
           <Button variant="outline" size="sm" onClick={() => {
-            const d = new Date(currentMonth + "-01")
-            d.setMonth(d.getMonth() - 1)
-            setCurrentMonth(`${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}`)
+            const [y, m] = currentMonth.split("-").map(Number)
+            const next = m === 1 ? `${y - 1}-12` : `${y}-${String(m - 1).padStart(2, "0")}`
+            setCurrentMonth(next)
           }}><ChevronLeft className="h-5 w-5" /></Button>
           <div className="text-center flex-1">
             <p className="text-sm font-semibold capitalize">{monthName(currentMonth)}</p>
             {total > 0 && <p className="text-xs text-muted-foreground">{paid} de {total} pagadas</p>}
           </div>
           <Button variant="outline" size="sm" disabled={isCurrentMonth} onClick={() => {
-            const d = new Date(currentMonth + "-01")
-            d.setMonth(d.getMonth() + 1)
-            setCurrentMonth(`${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}`)
+            const [y, m] = currentMonth.split("-").map(Number)
+            const next = m === 12 ? `${y + 1}-01` : `${y}-${String(m + 1).padStart(2, "0")}`
+            setCurrentMonth(next)
           }}><ChevronRight className="h-5 w-5" /></Button>
         </CardContent>
         {total > 0 && (
