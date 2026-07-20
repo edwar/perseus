@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { Plus, Target, X, HandCoins, Landmark, Pencil, Trash2 } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
@@ -30,6 +30,24 @@ export default function SavingsPage() {
   const [editInvestment, setEditInvestment] = useState<string | null>(null)
   const [deleteGoal, setDeleteGoal] = useState<string | null>(null)
   const [deleteInvestment, setDeleteInvestment] = useState<string | null>(null)
+  const [ready, setReady] = useState(false)
+  useEffect(() => { const t = setTimeout(() => setReady(true), 100); return () => clearTimeout(t) }, [])
+
+  if (!ready) {
+    return (
+      <div className="space-y-6">
+        <div className="flex gap-1 rounded-xl bg-muted p-1"><div className="flex-1 h-9 animate-pulse rounded-lg bg-muted-foreground/10" /><div className="flex-1 h-9 animate-pulse rounded-lg bg-muted-foreground/10" /></div>
+        <div className="grid gap-4 sm:grid-cols-2">
+          {[1,2].map((i) => (
+            <Card key={i}><CardContent className="p-5">
+              <div className="flex items-center gap-3"><div className="h-10 w-10 animate-pulse rounded-full bg-muted" /><div className="flex-1 space-y-1.5"><div className="h-4 w-32 animate-pulse rounded bg-muted" /><div className="h-3 w-24 animate-pulse rounded bg-muted" /></div></div>
+              <div className="mt-4 space-y-2"><div className="flex justify-between"><div className="h-3 w-16 animate-pulse rounded bg-muted" /><div className="h-3 w-24 animate-pulse rounded bg-muted" /></div><div className="h-2 animate-pulse rounded-full bg-muted" /></div>
+            </CardContent></Card>
+          ))}
+        </div>
+      </div>
+    )
+  }
 
   const freqLabels: Record<string, string> = {
     DAILY: "Diario", WEEKLY: "Semanal", BIWEEKLY: "Quincenal",
