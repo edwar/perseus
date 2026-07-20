@@ -10,6 +10,7 @@ import { CurrencyInput } from "@/components/ui/currency-input"
 import { Input } from "@/components/ui/input"
 import { useTransactionStore } from "@/store/transaction-store"
 import { ConfirmDialog } from "@/components/ui/confirm-dialog"
+import { PieChart, Pie, Cell, ResponsiveContainer, BarChart, Bar, XAxis, YAxis, Tooltip } from "recharts"
 
 interface DashboardClientProps {
   totalBalance: number
@@ -24,6 +25,8 @@ interface DashboardClientProps {
     category: string | null
     categoryColor: string | null
   }>
+  spendingByCategory: Array<{ name: string; value: number }>
+  monthlyChart: Array<{ month: string; income: number; expenses: number }>
 }
 
 export function DashboardClient({
@@ -54,6 +57,10 @@ export function DashboardClient({
               </CardContent>
             </Card>
           ))}
+        </div>
+        <div className="grid gap-4 sm:grid-cols-2">
+          <Card><div className="border-b px-6 py-4"><div className="h-4 w-36 animate-pulse rounded bg-muted" /></div><div className="p-5"><div className="h-52 animate-pulse rounded-lg bg-muted" /></div></Card>
+          <Card><div className="border-b px-6 py-4"><div className="h-4 w-36 animate-pulse rounded bg-muted" /></div><div className="p-5"><div className="h-52 animate-pulse rounded-lg bg-muted" /></div></Card>
         </div>
         <Card>
           <div className="border-b px-6 py-4"><div className="h-4 w-40 animate-pulse rounded bg-muted" /></div>
@@ -113,6 +120,52 @@ export function DashboardClient({
           </CardContent>
         </Card>
       </div>
+
+      {spendingByCategory.length > 0 && (
+      <div className="grid gap-4 sm:grid-cols-2">
+        <Card>
+          <div className="border-b px-6 py-4"><p className="font-semibold">Gastos por categoría</p></div>
+          <CardContent className="p-5">
+            <ResponsiveContainer width="100%" height={220}>
+              <PieChart>
+                <Pie data={spendingByCategory} dataKey="value" nameKey="name" cx="50%" cy="50%" outerRadius={80} innerRadius={50}>
+                  {spendingByCategory.map((_, i) => (
+                    <Cell key={i} fill={["#1D4ED8","#3b82f6","#60a5fa","#93c5fd","#bfdbfe","#dbeafe","#2563eb","#6366f1"][i % 8]} />
+                  ))}
+                </Pie>
+                <Tooltip formatter={(v: number) => `$${v.toLocaleString("es-CO")}`} />
+              </PieChart>
+            </ResponsiveContainer>
+            <div className="mt-2 space-y-1">
+              {spendingByCategory.slice(0, 5).map((cat, i) => (
+                <div key={cat.name} className="flex items-center justify-between text-xs">
+                  <div className="flex items-center gap-2">
+                    <div className="h-2.5 w-2.5 rounded-full" style={{ backgroundColor: ["#1D4ED8","#3b82f6","#60a5fa","#93c5fd","#bfdbfe","#dbeafe","#2563eb","#6366f1"][i % 8] }} />
+                    <span className="text-muted-foreground">{cat.name}</span>
+                  </div>
+                  <span className="font-medium">${cat.value.toLocaleString("es-CO")}</span>
+                </div>
+              ))}
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <div className="border-b px-6 py-4"><p className="font-semibold">Ingresos vs Gastos</p></div>
+          <CardContent className="p-5">
+            <ResponsiveContainer width="100%" height={220}>
+              <BarChart data={monthlyChart}>
+                <XAxis dataKey="month" tick={{ fontSize: 11 }} tickFormatter={(v: string) => v.slice(5)} />
+                <YAxis tick={{ fontSize: 11 }} tickFormatter={(v: number) => `$${(v / 1000).toFixed(0)}k`} />
+                <Tooltip formatter={(v: number) => `$${v.toLocaleString("es-CO")}`} />
+                <Bar dataKey="income" name="Ingresos" fill="#1D4ED8" radius={[4, 4, 0, 0]} />
+                <Bar dataKey="expenses" name="Gastos" fill="#ef4444" radius={[4, 4, 0, 0]} />
+              </BarChart>
+            </ResponsiveContainer>
+          </CardContent>
+        </Card>
+      </div>
+      )}
 
       <Card>
         <div className="border-b px-6 py-4">
