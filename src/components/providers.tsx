@@ -8,8 +8,9 @@ import { useBudgetStore } from "@/store/budget-store"
 import { useDebtStore } from "@/store/debt-store"
 import { useRecurringStore } from "@/store/recurring-store"
 import { useSavingsStore } from "@/store/savings-store"
+import { useObligationsStore } from "@/store/obligations-store"
 
-const stores = [useTransactionStore, useBudgetStore, useDebtStore, useRecurringStore, useSavingsStore]
+const stores = [useTransactionStore, useBudgetStore, useDebtStore, useRecurringStore, useSavingsStore, useObligationsStore]
 
 export function Providers({ children }: { children: ReactNode }) {
   useEffect(() => {

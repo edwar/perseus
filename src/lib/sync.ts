@@ -1,6 +1,6 @@
 "use client"
 
-const STORE_KEYS = ["perseus-transactions", "perseus-budgets", "perseus-debts", "perseus-recurring", "perseus-savings"]
+const STORE_KEYS = ["perseus-transactions", "perseus-budgets", "perseus-debts", "perseus-recurring", "perseus-savings", "perseus-obligations"]
 
 export async function syncToCloud() {
   const payload: Record<string, unknown> = {}
