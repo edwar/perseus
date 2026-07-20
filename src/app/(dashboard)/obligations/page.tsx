@@ -19,7 +19,6 @@ export default function ObligationsPage() {
   const updateObligation = useObligationsStore((s) => s.updateObligation)
   const deleteObligation = useObligationsStore((s) => s.deleteObligation)
   const setHeaderAction = useHeaderStore((s) => s.setAction)
-  const budgets = useBudgetStore((s) => s.budgets)
   const [showForm, setShowForm] = useState(false)
   const [editId, setEditId] = useState<string | null>(null)
   const [deleteId, setDeleteId] = useState<string | null>(null)
