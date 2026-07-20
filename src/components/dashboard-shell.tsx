@@ -2,7 +2,6 @@
 
 import { useUIStore } from "@/store/ui-store"
 import { cn } from "@/lib/utils"
-import { Header } from "./header"
 
 export function DashboardShell({ children }: { children: React.ReactNode }) {
   const { sidebarOpen } = useUIStore()
@@ -11,11 +10,11 @@ export function DashboardShell({ children }: { children: React.ReactNode }) {
     <div
       className={cn(
         "flex flex-1 flex-col transition-all duration-300",
-        sidebarOpen ? "ml-64" : "ml-16"
+        "md:ml-0",
+        sidebarOpen ? "md:ml-64" : "md:ml-16"
       )}
     >
-      <Header />
-      <main className="flex-1 p-6">{children}</main>
+      <main className="flex-1 p-4 pt-14 md:pt-6 md:p-6">{children}</main>
     </div>
   )
 }

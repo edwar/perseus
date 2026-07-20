@@ -12,6 +12,8 @@ import {
   PiggyBank,
   BarChart3,
   LogOut,
+  Menu,
+  X,
 } from "lucide-react"
 
 const navItems = [
@@ -26,19 +28,15 @@ const navItems = [
 export function Sidebar() {
   const pathname = usePathname()
   const router = useRouter()
-  const { sidebarOpen } = useUIStore()
-  return (
-    <aside
-      className={cn(
-        "fixed left-0 top-0 z-40 flex h-screen flex-col border-r bg-sidebar-background transition-all duration-300",
-        sidebarOpen ? "w-64" : "w-16"
-      )}
-    >
+  const sidebarOpen = useUIStore((s) => s.sidebarOpen)
+  const toggleSidebar = useUIStore((s) => s.toggleSidebar)
+  const setSidebarOpen = useUIStore((s) => s.setSidebarOpen)
+
+  const content = (
+    <>
       <div className="flex h-14 items-center gap-2 border-b px-4">
         <img src="/logo.svg" alt="Perseus" className="h-7 w-7 shrink-0" />
-        {sidebarOpen && (
-          <span className="text-lg font-semibold text-sidebar-foreground">Perseus</span>
-        )}
+        {sidebarOpen && <span className="text-lg font-semibold text-sidebar-foreground">Perseus</span>}
       </div>
       <nav className="flex-1 space-y-1 p-2">
         {navItems.map((item) => {
@@ -48,6 +46,7 @@ export function Sidebar() {
             <Link
               key={item.href}
               href={item.href}
+              onClick={() => setSidebarOpen(false)}
               className={cn(
                 "flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors",
                 isActive
@@ -73,6 +72,34 @@ export function Sidebar() {
           {sidebarOpen && <span>Cerrar sesión</span>}
         </button>
       </div>
-    </aside>
+    </>
+  )
+
+  return (
+    <>
+      {/* Mobile hamburger */}
+      <button
+        onClick={toggleSidebar}
+        className="fixed left-3 top-3 z-50 flex h-9 w-9 items-center justify-center rounded-lg bg-background shadow-md md:hidden"
+      >
+        {sidebarOpen ? <X className="h-4 w-4" /> : <Menu className="h-4 w-4" />}
+      </button>
+
+      {/* Mobile overlay */}
+      {sidebarOpen && (
+        <div className="fixed inset-0 z-30 bg-black/40 md:hidden" onClick={() => setSidebarOpen(false)} />
+      )}
+
+      {/* Sidebar: mobile=overlay, desktop=fixed */}
+      <aside
+        className={cn(
+          "fixed left-0 top-0 z-40 flex h-screen flex-col border-r bg-sidebar-background transition-all duration-300",
+          "md:static md:z-auto",
+          sidebarOpen ? "w-64 translate-x-0" : "-translate-x-full md:translate-x-0 md:w-16"
+        )}
+      >
+        {content}
+      </aside>
+    </>
   )
 }
