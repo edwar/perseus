@@ -1,11 +1,11 @@
 "use client"
 
-import { useEffect, useState } from "react"
+import { useState } from "react"
 import Link from "next/link"
 import { usePathname, useRouter } from "next/navigation"
 import { cn } from "@/lib/utils"
 import { useUIStore } from "@/store/ui-store"
-import { syncFromCloud, syncToCloud } from "@/lib/sync"
+import { syncToCloud } from "@/lib/sync"
 import {
   LayoutDashboard,
   ArrowLeftRight,
@@ -32,10 +32,6 @@ export function Sidebar() {
   const router = useRouter()
   const { sidebarOpen } = useUIStore()
   const [syncing, setSyncing] = useState(false)
-
-  useEffect(() => {
-    syncFromCloud()
-  }, [])
 
   async function handleSync() {
     setSyncing(true)

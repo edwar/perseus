@@ -19,17 +19,26 @@ export async function syncToCloud() {
   } catch { /* silent */ }
 }
 
+let syncedOnce = false
+
 export async function syncFromCloud() {
+  if (syncedOnce) return
+  syncedOnce = true
   try {
     const res = await fetch("/api/sync")
     if (!res.ok) return
     const data = await res.json()
+    let changed = false
     for (const key of STORE_KEYS) {
       if (data[key]) {
-        localStorage.setItem(key, JSON.stringify(data[key]))
+        const existing = localStorage.getItem(key)
+        if (existing !== JSON.stringify(data[key])) {
+          localStorage.setItem(key, JSON.stringify(data[key]))
+          changed = true
+        }
       }
     }
-    window.location.reload()
+    if (changed) window.location.reload()
   } catch { /* silent */ }
 }
 
