@@ -19,6 +19,8 @@ export default function ObligationsPage() {
   const updateObligation = useObligationsStore((s) => s.updateObligation)
   const deleteObligation = useObligationsStore((s) => s.deleteObligation)
   const setHeaderAction = useHeaderStore((s) => s.setAction)
+  const [ready, setReady] = useState(false)
+  useEffect(() => { const t = setTimeout(() => setReady(true), 100); return () => clearTimeout(t) }, [])
   const [showForm, setShowForm] = useState(false)
   const [editId, setEditId] = useState<string | null>(null)
   const [deleteId, setDeleteId] = useState<string | null>(null)
@@ -42,6 +44,23 @@ export default function ObligationsPage() {
   const paidIds = currentCheck?.paid ?? []
   const total = obligations.length
   const paid = obligations.filter((o) => paidIds.includes(o.id)).length
+
+  if (!ready) {
+    return (
+      <div className="space-y-6">
+        <h1 className="text-2xl font-bold max-md:hidden">Obligaciones</h1>
+        <Card><CardContent className="flex items-center justify-between py-3"><div className="h-8 w-8 animate-pulse rounded bg-muted" /><div className="space-y-1"><div className="h-4 w-32 animate-pulse rounded bg-muted" /><div className="h-3 w-20 animate-pulse rounded bg-muted mx-auto" /></div><div className="h-8 w-8 animate-pulse rounded bg-muted" /></CardContent></Card>
+        {[1, 2, 3].map((i) => (
+          <Card key={i}><CardContent className="flex items-center gap-3 py-3 px-4">
+            <div className="h-7 w-7 animate-pulse rounded-full bg-muted" />
+            <div className="flex-1 h-4 w-40 animate-pulse rounded bg-muted" />
+            <div className="h-8 w-8 animate-pulse rounded bg-muted" />
+            <div className="h-8 w-8 animate-pulse rounded bg-muted" />
+          </CardContent></Card>
+        ))}
+      </div>
+    )
+  }
 
   return (
     <div className="space-y-6">
