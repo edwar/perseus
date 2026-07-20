@@ -31,7 +31,8 @@ export default function ObligationsPage() {
   }, [])
 
   const monthName = (m: string) => {
-    const d = new Date(m + "-01")
+    const [y, month] = m.split("-").map(Number)
+    const d = new Date(y, month - 1, 1)
     return d.toLocaleDateString("es", { month: "long", year: "numeric" })
   }
 
