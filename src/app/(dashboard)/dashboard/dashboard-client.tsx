@@ -11,6 +11,7 @@ import { CurrencyInput } from "@/components/ui/currency-input"
 import { Input } from "@/components/ui/input"
 import { useTransactionStore } from "@/store/transaction-store"
 import { ConfirmDialog } from "@/components/ui/confirm-dialog"
+import dashboardSummaryBones from "@/bones/dashboard-summary.bones.json"
 
 interface DashboardClientProps {
   totalBalance: number
@@ -38,12 +39,12 @@ export function DashboardClient({
   const [editTx, setEditTx] = useState<string | null>(null)
   const [deleteTx, setDeleteTx] = useState<string | null>(null)
   const [loading, setLoading] = useState(true)
-  useEffect(() => { const t = setTimeout(() => setLoading(false), 400); return () => clearTimeout(t) }, [])
+  useEffect(() => { console.log("[skeleton] loading=true"); const t = setTimeout(() => { console.log("[skeleton] loading=false"); setLoading(false) }, 1500); return () => clearTimeout(t) }, [])
   return (
     <div className="space-y-6">
       <h1 className="text-2xl font-bold">Dashboard</h1>
 
-      <Skeleton name="dashboard-summary" loading={loading}>
+      <Skeleton name="dashboard-summary" loading={loading} initialBones={dashboardSummaryBones as any} animate="pulse" transition={500}>
       <div className="grid gap-4 sm:grid-cols-3">
         <Card>
           <CardContent className="flex items-center gap-3 py-5">
