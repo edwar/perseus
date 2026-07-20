@@ -67,7 +67,7 @@ export default function ObligationsPage() {
 
   return (
     <div className="space-y-6">
-      <h1 className="text-2xl font-bold max-md:hidden">Obligaciones</h1>
+      <h1 className="text-2xl font-bold md:hidden">Obligaciones</h1>
 
       {/* Month navigation */}
       <Card>
