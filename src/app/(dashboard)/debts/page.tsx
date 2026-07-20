@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { TrendingDown, Plus, CreditCard, X, Pencil, Trash2, PenLine, ScanLine, ArrowLeft } from "lucide-react"
 import { Scanner } from "@/components/scanner"
 import type { DebtInvoiceData } from "@/lib/ia"
@@ -25,6 +25,39 @@ export default function DebtsPage() {
   const [showAddDebt, setShowAddDebt] = useState(false)
   const [editDebtId, setEditDebtId] = useState<string | null>(null)
   const [deleteConfirm, setDeleteConfirm] = useState<string | null>(null)
+  const [ready, setReady] = useState(false)
+  useEffect(() => { const t = setTimeout(() => setReady(true), 100); return () => clearTimeout(t) }, [])
+
+  if (!ready) {
+    return (
+      <div className="space-y-6">
+        <div className="flex items-center justify-between"><h1 className="text-2xl font-bold">Deudas</h1><div className="h-9 w-32 animate-pulse rounded-lg bg-muted" /></div>
+        <div className="grid gap-4 sm:grid-cols-2">
+          {[1,2].map((i) => (
+            <Card key={i}><CardContent className="p-5">
+              <div className="flex items-start justify-between">
+                <div className="space-y-1.5 flex-1">
+                  <div className="h-4 w-40 animate-pulse rounded bg-muted" />
+                  <div className="h-3 w-24 animate-pulse rounded bg-muted" />
+                </div>
+                <div className="h-5 w-16 animate-pulse rounded bg-muted" />
+              </div>
+              <div className="mt-4 space-y-2">
+                <div className="flex justify-between"><div className="h-3 w-16 animate-pulse rounded bg-muted" /><div className="h-3 w-24 animate-pulse rounded bg-muted" /></div>
+                <div className="flex justify-between"><div className="h-3 w-20 animate-pulse rounded bg-muted" /><div className="h-3 w-20 animate-pulse rounded bg-muted" /></div>
+                <div className="h-2 animate-pulse rounded-full bg-muted" />
+              </div>
+              <div className="mt-4 flex gap-2">
+                <div className="flex-1 h-9 animate-pulse rounded-lg bg-muted" />
+                <div className="h-9 w-9 animate-pulse rounded-lg bg-muted" />
+                <div className="h-9 w-9 animate-pulse rounded-lg bg-muted" />
+              </div>
+            </CardContent></Card>
+          ))}
+        </div>
+      </div>
+    )
+  }
 
   function handleSave(data: { name: string; creditor: string; category: string; total: number; remaining: number; rate: number; monthly: number; installments: number; paid: number }, id?: string) {
     if (id) {
