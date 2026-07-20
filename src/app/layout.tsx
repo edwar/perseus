@@ -9,6 +9,10 @@ const fontMono = JetBrains_Mono({ variable: "--font-mono", subsets: ["latin"] })
 export const metadata: Metadata = {
   title: "Perseus - Finanzas Personales",
   description: "Controla tus gastos, ingresos y ahorros en un solo lugar",
+  icons: {
+    icon: "/logo.svg",
+    apple: "/logo.svg",
+  },
 }
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {

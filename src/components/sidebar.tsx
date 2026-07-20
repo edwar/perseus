@@ -11,7 +11,6 @@ import {
   CreditCard,
   PiggyBank,
   BarChart3,
-  Wallet,
   LogOut,
 } from "lucide-react"
 
@@ -37,7 +36,7 @@ export function Sidebar() {
       )}
     >
       <div className="flex h-14 items-center gap-2 border-b px-4">
-        <Wallet className="h-6 w-6 shrink-0 text-sidebar-primary" />
+        <img src="/logo.svg" alt="Perseus" className="h-7 w-7 shrink-0" />
         {sidebarOpen && (
           <span className="text-lg font-semibold text-sidebar-foreground">Perseus</span>
         )}
