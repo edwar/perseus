@@ -1,7 +1,6 @@
 "use client"
 
 import { useEffect, useState } from "react"
-import { Skeleton } from "boneyard-js/react"
 import { cn, formatCurrency } from "@/lib/utils"
 import { ArrowUpRight, ArrowDownRight, ArrowLeftRight, Pencil, Trash2, Wallet } from "lucide-react"
 import { Card, CardContent } from "@/components/ui/card"
@@ -11,7 +10,6 @@ import { CurrencyInput } from "@/components/ui/currency-input"
 import { Input } from "@/components/ui/input"
 import { useTransactionStore } from "@/store/transaction-store"
 import { ConfirmDialog } from "@/components/ui/confirm-dialog"
-import dashboardSummaryBones from "@/bones/dashboard-summary.bones.json"
 
 interface DashboardClientProps {
   totalBalance: number
@@ -38,13 +36,47 @@ export function DashboardClient({
   const deleteTransaction = useTransactionStore((s) => s.deleteTransaction)
   const [editTx, setEditTx] = useState<string | null>(null)
   const [deleteTx, setDeleteTx] = useState<string | null>(null)
-  const [loading, setLoading] = useState(true)
-  useEffect(() => { console.log("[skeleton] loading=true"); const t = setTimeout(() => { console.log("[skeleton] loading=false"); setLoading(false) }, 1500); return () => clearTimeout(t) }, [])
+  const [ready, setReady] = useState(false)
+  useEffect(() => { const t = setTimeout(() => setReady(true), 100); return () => clearTimeout(t) }, [])
+  if (!ready) {
+    return (
+      <div className="space-y-6">
+        <h1 className="text-2xl font-bold">Dashboard</h1>
+        <div className="grid gap-4 sm:grid-cols-3">
+          {[1,2,3].map((i) => (
+            <Card key={i}>
+              <CardContent className="flex items-center gap-3 py-5">
+                <div className="h-10 w-10 animate-pulse rounded-full bg-muted" />
+                <div className="flex-1 space-y-2">
+                  <div className="h-3 w-20 animate-pulse rounded bg-muted" />
+                  <div className="h-5 w-32 animate-pulse rounded bg-muted" />
+                </div>
+              </CardContent>
+            </Card>
+          ))}
+        </div>
+        <Card>
+          <div className="border-b px-6 py-4"><div className="h-4 w-40 animate-pulse rounded bg-muted" /></div>
+          <div className="divide-y">
+            {[1,2,3].map((i) => (
+              <div key={i} className="flex items-center gap-3 px-6 py-3">
+                <div className="h-9 w-9 animate-pulse rounded-full bg-muted" />
+                <div className="flex-1 space-y-1.5">
+                  <div className="h-3 w-40 animate-pulse rounded bg-muted" />
+                  <div className="h-2.5 w-24 animate-pulse rounded bg-muted" />
+                </div>
+                <div className="h-4 w-20 animate-pulse rounded bg-muted" />
+              </div>
+            ))}
+          </div>
+        </Card>
+      </div>
+    )
+  }
   return (
     <div className="space-y-6">
       <h1 className="text-2xl font-bold">Dashboard</h1>
 
-      <Skeleton name="dashboard-summary" loading={loading} initialBones={dashboardSummaryBones as any} animate="pulse" transition={500}>
       <div className="grid gap-4 sm:grid-cols-3">
         <Card>
           <CardContent className="flex items-center gap-3 py-5">
@@ -81,7 +113,6 @@ export function DashboardClient({
           </CardContent>
         </Card>
       </div>
-      </Skeleton>
 
       <Card>
         <div className="border-b px-6 py-4">
