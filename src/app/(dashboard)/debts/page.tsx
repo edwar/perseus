@@ -33,8 +33,8 @@ export default function DebtsPage() {
       <div className="space-y-6">
         <div className="flex items-center justify-between"><h1 className="text-2xl font-bold">Deudas</h1><div className="h-9 w-32 animate-pulse rounded-lg bg-muted" /></div>
         <div className="grid gap-4 sm:grid-cols-2">
-          {[1,2].map((i) => (
-            <Card key={i}><CardContent className="p-5">
+          {[1, 2].map((i) => (
+            <Card key={i}><CardContent>
               <div className="flex items-start justify-between">
                 <div className="space-y-1.5 flex-1">
                   <div className="h-4 w-40 animate-pulse rounded bg-muted" />
@@ -96,79 +96,79 @@ export default function DebtsPage() {
       {debts.length === 0 && !showAddDebt ? (
         <Empty icon={TrendingDown} title="No hay deudas" description="Registra tu primera deuda para hacer seguimiento" action={<Button size="sm" onClick={() => setShowAddDebt(true)}><Plus className="h-3 w-3" /> Crear</Button>} />
       ) : (
-      <div className="grid gap-4 sm:grid-cols-2">
-        {debts.map((debt) => {
-          const progress = debt.total > 0 ? ((debt.total - debt.remaining) / debt.total) * 100 : 0
-          return (
-            <Card key={debt.id}>
-              <CardContent className="p-5">
-                <div className="flex items-start justify-between">
-                  <div>
-                    <h3 className="font-semibold">{debt.name}</h3>
-                    <p className="text-xs text-muted-foreground">{debt.creditor}{debt.category && <span> · {debt.category}</span>}</p>
-                  </div>
-                  <div className="flex items-center gap-1 text-red-600">
-                    <TrendingDown className="h-4 w-4" />
-                    <span className="text-sm font-semibold">{debt.rate}%</span>
-                  </div>
-                </div>
-
-                <div className="mt-4 space-y-2">
-                  <div className="flex justify-between text-sm">
-                    <span className="text-muted-foreground">Restante</span>
-                    <span className="font-semibold">${debt.remaining.toLocaleString("es-CO")}</span>
-                  </div>
-                  <div className="flex justify-between text-sm">
-                    <span className="text-muted-foreground">Cuota mensual</span>
-                    <span>${debt.monthly.toLocaleString("es-CO")}</span>
-                  </div>
-                  {debt.minimum && (
-                    <div className="flex justify-between text-sm">
-                      <span className="text-muted-foreground">Pago mínimo</span>
-                      <span className="text-amber-600">${debt.minimum.toLocaleString("es-CO")}</span>
+        <div className="grid gap-4 sm:grid-cols-2">
+          {debts.map((debt) => {
+            const progress = debt.total > 0 ? ((debt.total - debt.remaining) / debt.total) * 100 : 0
+            return (
+              <Card key={debt.id}>
+                <CardContent>
+                  <div className="flex items-start justify-between">
+                    <div>
+                      <h3 className="font-semibold">{debt.name}</h3>
+                      <p className="text-xs text-muted-foreground">{debt.creditor}{debt.category && <span> · {debt.category}</span>}</p>
                     </div>
-                  )}
-                  {debt.installments && (
-                    <div className="flex justify-between text-sm">
-                      <span className="text-muted-foreground">Cuotas</span>
-                      <span>{debt.paid} / {debt.installments}</span>
+                    <div className="flex items-center gap-1 text-red-600">
+                      <TrendingDown className="h-4 w-4" />
+                      <span className="text-sm font-semibold">{debt.rate}%</span>
                     </div>
-                  )}
-                  <div className="h-2 rounded-full bg-muted">
-                    <div className="h-2 rounded-full bg-primary" style={{ width: `${Math.min(progress, 100)}%` }} />
                   </div>
-                  <p className="text-xs text-muted-foreground">{Math.round(progress)}% pagado</p>
-                </div>
 
-                <div className="mt-4 flex gap-2">
-                  <Button
-                    onClick={() => setShowPaymentForm(debt.id)}
-                    size="sm"
-                    className="flex-1 gap-1"
-                  >
-                    <CreditCard className="h-3 w-3" />
-                    Registrar pago
-                  </Button>
-                  <Button variant="outline" size="sm" onClick={() => setEditDebtId(debt.id)} className="gap-1">
-                    <Pencil className="h-3 w-3" />
-                  </Button>
-                  <Button variant="ghost" size="sm" onClick={() => setDeleteConfirm(debt.id)} className="gap-1 text-red-500 hover:text-red-700">
-                    <Trash2 className="h-3 w-3" />
-                  </Button>
-                </div>
+                  <div className="mt-4 space-y-2">
+                    <div className="flex justify-between text-sm">
+                      <span className="text-muted-foreground">Restante</span>
+                      <span className="font-semibold">${debt.remaining.toLocaleString("es-CO")}</span>
+                    </div>
+                    <div className="flex justify-between text-sm">
+                      <span className="text-muted-foreground">Cuota mensual</span>
+                      <span>${debt.monthly.toLocaleString("es-CO")}</span>
+                    </div>
+                    {debt.minimum && (
+                      <div className="flex justify-between text-sm">
+                        <span className="text-muted-foreground">Pago mínimo</span>
+                        <span className="text-amber-600">${debt.minimum.toLocaleString("es-CO")}</span>
+                      </div>
+                    )}
+                    {debt.installments && (
+                      <div className="flex justify-between text-sm">
+                        <span className="text-muted-foreground">Cuotas</span>
+                        <span>{debt.paid} / {debt.installments}</span>
+                      </div>
+                    )}
+                    <div className="h-2 rounded-full bg-muted">
+                      <div className="h-2 rounded-full bg-primary" style={{ width: `${Math.min(progress, 100)}%` }} />
+                    </div>
+                    <p className="text-xs text-muted-foreground">{Math.round(progress)}% pagado</p>
+                  </div>
 
-                {showPaymentForm === debt.id && (
-                  <PaymentForm
-                    debtName={debt.name}
-                    minimum={debt.minimum}
-                    onClose={() => setShowPaymentForm(null)}
-                  />
-                )}
-              </CardContent>
-            </Card>
-          )
-        })}
-      </div>
+                  <div className="mt-4 flex gap-2">
+                    <Button
+                      onClick={() => setShowPaymentForm(debt.id)}
+                      size="sm"
+                      className="flex-1 gap-1"
+                    >
+                      <CreditCard className="h-3 w-3" />
+                      Registrar pago
+                    </Button>
+                    <Button variant="outline" size="sm" onClick={() => setEditDebtId(debt.id)} className="gap-1">
+                      <Pencil className="h-3 w-3" />
+                    </Button>
+                    <Button variant="ghost" size="sm" onClick={() => setDeleteConfirm(debt.id)} className="gap-1 text-red-500 hover:text-red-700">
+                      <Trash2 className="h-3 w-3" />
+                    </Button>
+                  </div>
+
+                  {showPaymentForm === debt.id && (
+                    <PaymentForm
+                      debtName={debt.name}
+                      minimum={debt.minimum}
+                      onClose={() => setShowPaymentForm(null)}
+                    />
+                  )}
+                </CardContent>
+              </Card>
+            )
+          })}
+        </div>
       )}
 
       <ConfirmDialog
@@ -217,7 +217,7 @@ function AddDebtForm({ initial, onSave, onClose }: {
 
   return (
     <Card>
-      <CardContent className="p-5">
+      <CardContent>
         <div className="mb-4 flex items-center justify-between">
           <h2 className="font-semibold">{initial ? "Editar" : "Nueva"} deuda</h2>
           <Button variant="ghost" size="icon" onClick={onClose}>

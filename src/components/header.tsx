@@ -8,7 +8,7 @@ export function Header() {
   const { toggleSidebar } = useUIStore()
 
   return (
-    <header className="sticky top-0 z-30 flex h-14 items-center gap-4 border-b bg-background px-4">
+    <header className="sticky top-0 z-30 flex h-14 items-center gap-4 border-b bg-background px-4 max-md:hidden">
       <Button variant="ghost" size="icon" onClick={toggleSidebar}>
         <Menu className="h-5 w-5" />
       </Button>

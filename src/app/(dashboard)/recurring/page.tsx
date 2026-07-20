@@ -35,8 +35,8 @@ export default function RecurringPage() {
       <div className="space-y-6">
         <div className="flex items-center justify-between"><h1 className="text-2xl font-bold">Recurrentes</h1><div className="h-9 w-36 animate-pulse rounded-lg bg-muted" /></div>
         <div className="grid gap-4 sm:grid-cols-2">
-          {[1,2].map((i) => (
-            <Card key={i}><CardContent className="p-5">
+          {[1, 2].map((i) => (
+            <Card key={i}><CardContent>
               <div className="flex items-start justify-between">
                 <div className="flex items-center gap-3">
                   <div className="h-10 w-10 animate-pulse rounded-full bg-muted" />
@@ -87,55 +87,55 @@ export default function RecurringPage() {
       {items.length === 0 && !showForm ? (
         <Empty icon={Repeat} title="No hay recurrentes" description="Agrega ingresos o gastos recurrentes para automatizar tu registro" action={<Button size="sm" onClick={() => { setEditingId(null); setShowForm(true) }}><Plus className="h-3 w-3" /> Crear</Button>} />
       ) : (
-      <div className="grid gap-4 sm:grid-cols-2">
-        {items.map((item) => (
-          <Card key={item.id} size="sm">
-            <CardContent>
-              <div className="flex items-start justify-between">
-                <div className="flex items-center gap-3">
-                  <div className={cn(
-                    "flex h-10 w-10 items-center justify-center rounded-full",
-                    item.type === "INCOME" ? "bg-emerald-100" : "bg-red-100"
+        <div className="grid gap-4 sm:grid-cols-2">
+          {items.map((item) => (
+            <Card key={item.id} size="sm">
+              <CardContent>
+                <div className="flex items-start justify-between">
+                  <div className="flex items-center gap-3">
+                    <div className={cn(
+                      "flex h-10 w-10 items-center justify-center rounded-full",
+                      item.type === "INCOME" ? "bg-emerald-100" : "bg-red-100"
+                    )}>
+                      {item.type === "INCOME"
+                        ? <ArrowDown className={cn("h-5 w-5 text-emerald-600")} />
+                        : <ArrowUp className={cn("h-5 w-5 text-red-600")} />
+                      }
+                    </div>
+                    <div>
+                      <h3 className="font-semibold">{item.name}</h3>
+                      <p className="text-xs text-muted-foreground">{item.category}</p>
+                    </div>
+                  </div>
+                  <span className={cn(
+                    "text-lg font-bold",
+                    item.type === "INCOME" ? "text-emerald-600" : "text-red-600"
                   )}>
-                    {item.type === "INCOME"
-                      ? <ArrowDown className={cn("h-5 w-5 text-emerald-600")} />
-                      : <ArrowUp className={cn("h-5 w-5 text-red-600")} />
-                    }
-                  </div>
-                  <div>
-                    <h3 className="font-semibold">{item.name}</h3>
-                    <p className="text-xs text-muted-foreground">{item.category}</p>
-                  </div>
-                </div>
-                <span className={cn(
-                  "text-lg font-bold",
-                  item.type === "INCOME" ? "text-emerald-600" : "text-red-600"
-                )}>
-                  {item.type === "INCOME" ? "+" : "-"}$
-                  {item.amount.toLocaleString("es-CO")}
-                </span>
-              </div>
-              <div className="mt-3 flex items-center justify-between">
-                <div className="flex items-center gap-3 text-xs text-muted-foreground">
-                  <span className="flex items-center gap-1">
-                    <Repeat className="h-3 w-3" />
-                    {freqLabels[item.frequency] ?? item.frequency}
+                    {item.type === "INCOME" ? "+" : "-"}$
+                    {item.amount.toLocaleString("es-CO")}
                   </span>
-                  <span>Día {item.dayOfMonth}</span>
                 </div>
-                <div className="flex gap-1">
-                  <Button variant="ghost" size="icon" onClick={() => { setEditingId(item.id); setShowForm(true) }}>
-                    <Pencil className="h-3.5 w-3.5" />
-                  </Button>
-                  <Button variant="ghost" size="icon" onClick={() => setDeleteConfirm(item.id)}>
-                    <Trash2 className="h-3.5 w-3.5" />
-                  </Button>
+                <div className="mt-3 flex items-center justify-between">
+                  <div className="flex items-center gap-3 text-xs text-muted-foreground">
+                    <span className="flex items-center gap-1">
+                      <Repeat className="h-3 w-3" />
+                      {freqLabels[item.frequency] ?? item.frequency}
+                    </span>
+                    <span>Día {item.dayOfMonth}</span>
+                  </div>
+                  <div className="flex gap-1">
+                    <Button variant="ghost" size="icon" onClick={() => { setEditingId(item.id); setShowForm(true) }}>
+                      <Pencil className="h-3.5 w-3.5" />
+                    </Button>
+                    <Button variant="ghost" size="icon" onClick={() => setDeleteConfirm(item.id)}>
+                      <Trash2 className="h-3.5 w-3.5" />
+                    </Button>
+                  </div>
                 </div>
-              </div>
-            </CardContent>
-          </Card>
-        ))}
-      </div>
+              </CardContent>
+            </Card>
+          ))}
+        </div>
       )}
 
       <ConfirmDialog

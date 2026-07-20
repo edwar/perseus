@@ -40,7 +40,7 @@ export default function SavingsPage() {
         <div className="flex items-center justify-between"><h2 className="text-xl font-bold"><div className="h-6 w-40 animate-pulse rounded bg-muted" /></h2><div className="h-9 w-28 animate-pulse rounded-lg bg-muted" /></div>
         <div className="grid gap-4 sm:grid-cols-2">
           {[1, 2].map((i) => (
-            <Card key={i}><CardContent className="p-5">
+            <Card key={i}><CardContent>
               <div className="flex items-center gap-3"><div className="h-10 w-10 animate-pulse rounded-full bg-muted" /><div className="flex-1 space-y-1.5"><div className="h-4 w-32 animate-pulse rounded bg-muted" /><div className="h-3 w-24 animate-pulse rounded bg-muted" /></div></div>
               <div className="mt-4 space-y-2"><div className="flex justify-between"><div className="h-3 w-16 animate-pulse rounded bg-muted" /><div className="h-3 w-24 animate-pulse rounded bg-muted" /></div><div className="h-2 animate-pulse rounded-full bg-muted" /></div>
             </CardContent></Card>
@@ -229,7 +229,7 @@ function NewGoalForm({ initial, onSave, onClose }: {
 
   return (
     <Card>
-      <CardContent className="p-5">
+      <CardContent>
         <div className="mb-4 flex items-center justify-between">
           <h3 className="font-semibold">{initial ? "Editar" : "Nueva"} meta</h3>
           <Button variant="ghost" size="icon" onClick={onClose}><X className="h-4 w-4" /></Button>
@@ -280,7 +280,7 @@ function NewInvestmentForm({ initial, onClose, onSave }: {
 
   return (
     <Card>
-      <CardContent className="p-5">
+      <CardContent>
         <div className="mb-4 flex items-center justify-between">
           <h3 className="font-semibold">{initial ? "Editar" : "Nueva"} inversión</h3>
           <Button variant="ghost" size="icon" onClick={onClose}><X className="h-4 w-4" /></Button>

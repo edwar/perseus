@@ -47,8 +47,8 @@ export default function BudgetsPage() {
       <div className="space-y-6">
         <div className="flex items-center justify-between"><h1 className="text-2xl font-bold">Presupuestos</h1><div className="h-9 w-36 animate-pulse rounded-lg bg-muted" /></div>
         <div className="grid gap-4 sm:grid-cols-2">
-          {[1,2,3,4].map((i) => (
-            <Card key={i}><CardContent className="p-5">
+          {[1, 2, 3, 4].map((i) => (
+            <Card key={i}><CardContent>
               <div className="flex items-center gap-2"><div className="h-3 w-3 animate-pulse rounded-full bg-muted" /><div className="h-4 w-28 animate-pulse rounded bg-muted flex-1" /><div className="h-4 w-32 animate-pulse rounded bg-muted" /></div>
               <div className="mt-3 h-2 animate-pulse rounded-full bg-muted" />
               <div className="mt-1 h-3 w-16 animate-pulse rounded bg-muted" />
@@ -80,44 +80,44 @@ export default function BudgetsPage() {
       {budgets.length === 0 ? (
         <Empty icon={PiggyBank} title="No hay presupuestos" description="Crea tu primer presupuesto para controlar tus gastos" action={<Button size="sm" onClick={() => { setEditing(null); setShowForm(true) }}><Plus className="h-3 w-3" /> Crear</Button>} />
       ) : (
-      <div className="grid gap-4 sm:grid-cols-2">
-        {budgets.map((budget) => {
-          const spent = spentByCategory[budget.category] ?? 0
-          const percentage = (spent / budget.amount) * 100
-          const isOverBudget = percentage >= 100
-          return (
-            <Card key={budget.id}>
-<CardContent className="p-4">
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-2">
-                    <div className="h-3 w-3 rounded-full" style={{ backgroundColor: budget.color }} />
-                    <h3 className="font-semibold">{budget.category}</h3>
+        <div className="grid gap-4 sm:grid-cols-2">
+          {budgets.map((budget) => {
+            const spent = spentByCategory[budget.category] ?? 0
+            const percentage = (spent / budget.amount) * 100
+            const isOverBudget = percentage >= 100
+            return (
+              <Card key={budget.id}>
+                <CardContent>
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-2">
+                      <div className="h-3 w-3 rounded-full" style={{ backgroundColor: budget.color }} />
+                      <h3 className="font-semibold">{budget.category}</h3>
+                    </div>
+                    <span className={`text-sm font-semibold ${isOverBudget ? "text-red-600" : ""}`}>
+                      ${spent.toLocaleString("es-CO")} / ${budget.amount.toLocaleString("es-CO")}
+                    </span>
                   </div>
-                  <span className={`text-sm font-semibold ${isOverBudget ? "text-red-600" : ""}`}>
-                    ${spent.toLocaleString("es-CO")} / ${budget.amount.toLocaleString("es-CO")}
-                  </span>
-                </div>
-                <div className="mt-3 h-2 rounded-full bg-muted">
-                  <div
-                    className={`h-2 rounded-full ${isOverBudget ? "bg-red-500" : "bg-primary"}`}
-                    style={{ width: `${Math.min(percentage, 100)}%` }}
-                  />
-                </div>
-                <p className="mt-1 text-xs text-muted-foreground">{Math.round(percentage)}% usado</p>
+                  <div className="mt-3 h-2 rounded-full bg-muted">
+                    <div
+                      className={`h-2 rounded-full ${isOverBudget ? "bg-red-500" : "bg-primary"}`}
+                      style={{ width: `${Math.min(percentage, 100)}%` }}
+                    />
+                  </div>
+                  <p className="mt-1 text-xs text-muted-foreground">{Math.round(percentage)}% usado</p>
 
-                <div className="mt-3 flex gap-2">
-                  <Button variant="ghost" size="sm" onClick={() => { setEditing(budget.id); setShowForm(true) }} className="flex-1 gap-1">
-                    <Pencil className="h-3 w-3" /> Editar
-                  </Button>
-                  <Button variant="ghost" size="sm" onClick={() => setDeleteConfirm(budget.id)} className="gap-1 text-red-500 hover:text-red-700">
-                    <Trash2 className="h-3 w-3" />
-                  </Button>
-                </div>
-              </CardContent>
-            </Card>
-          )
-        })}
-      </div>
+                  <div className="mt-3 flex gap-2">
+                    <Button variant="ghost" size="sm" onClick={() => { setEditing(budget.id); setShowForm(true) }} className="flex-1 gap-1">
+                      <Pencil className="h-3 w-3" /> Editar
+                    </Button>
+                    <Button variant="ghost" size="sm" onClick={() => setDeleteConfirm(budget.id)} className="gap-1 text-red-500 hover:text-red-700">
+                      <Trash2 className="h-3 w-3" />
+                    </Button>
+                  </div>
+                </CardContent>
+              </Card>
+            )
+          })}
+        </div>
       )}
 
       <ConfirmDialog
@@ -148,7 +148,7 @@ function BudgetForm({ initial, onSave, onClose }: {
 
   return (
     <Card>
-      <CardContent className="p-5">
+      <CardContent>
         <div className="mb-4 flex items-center justify-between">
           <h2 className="font-semibold">{initial ? "Editar" : "Nuevo"} presupuesto</h2>
           <Button variant="ghost" size="icon" onClick={onClose}>
