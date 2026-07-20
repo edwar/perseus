@@ -1,6 +1,7 @@
 "use client"
 
-import { useState } from "react"
+import { useEffect, useState } from "react"
+import { Skeleton } from "boneyard-js/react"
 import { cn, formatCurrency } from "@/lib/utils"
 import { ArrowUpRight, ArrowDownRight, ArrowLeftRight, Pencil, Trash2, Wallet } from "lucide-react"
 import { Card, CardContent } from "@/components/ui/card"
@@ -36,10 +37,13 @@ export function DashboardClient({
   const deleteTransaction = useTransactionStore((s) => s.deleteTransaction)
   const [editTx, setEditTx] = useState<string | null>(null)
   const [deleteTx, setDeleteTx] = useState<string | null>(null)
+  const [loading, setLoading] = useState(true)
+  useEffect(() => { const t = setTimeout(() => setLoading(false), 400); return () => clearTimeout(t) }, [])
   return (
     <div className="space-y-6">
       <h1 className="text-2xl font-bold">Dashboard</h1>
 
+      <Skeleton name="dashboard-summary" loading={loading}>
       <div className="grid gap-4 sm:grid-cols-3">
         <Card>
           <CardContent className="flex items-center gap-3 py-5">
@@ -76,6 +80,7 @@ export function DashboardClient({
           </CardContent>
         </Card>
       </div>
+      </Skeleton>
 
       <Card>
         <div className="border-b px-6 py-4">
