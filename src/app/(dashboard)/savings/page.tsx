@@ -36,7 +36,9 @@ export default function SavingsPage() {
   if (!ready) {
     return (
       <div className="space-y-6">
+        <div className="flex items-center justify-between"><h1 className="text-2xl font-bold">Ahorros</h1></div>
         <div className="flex gap-1 rounded-xl bg-muted p-1"><div className="flex-1 h-9 animate-pulse rounded-lg bg-muted-foreground/10" /><div className="flex-1 h-9 animate-pulse rounded-lg bg-muted-foreground/10" /></div>
+        <div className="flex items-center justify-between"><h2 className="text-xl font-bold"><div className="h-6 w-40 animate-pulse rounded bg-muted" /></h2><div className="h-9 w-28 animate-pulse rounded-lg bg-muted" /></div>
         <div className="grid gap-4 sm:grid-cols-2">
           {[1,2].map((i) => (
             <Card key={i}><CardContent className="p-5">
