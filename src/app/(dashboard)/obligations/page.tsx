@@ -67,7 +67,13 @@ export default function ObligationsPage() {
 
   return (
     <div className="space-y-6">
-      <h1 className="text-2xl font-bold md:hidden">Obligaciones</h1>
+      <div className="flex items-center justify-between mt-10 md:hidden">
+        <h1 className="text-2xl font-bold">Obligaciones</h1>
+        <Button className="gap-2" onClick={() => { setEditId(null); setShowForm(true) }}>
+          <Plus className="h-4 w-4" />
+          Crear
+        </Button>
+      </div>
 
       {/* Month navigation */}
       <Card>
