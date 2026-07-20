@@ -1,9 +1,11 @@
 "use client"
 
+import { useEffect, useState } from "react"
 import Link from "next/link"
 import { usePathname, useRouter } from "next/navigation"
 import { cn } from "@/lib/utils"
 import { useUIStore } from "@/store/ui-store"
+import { syncFromCloud, syncToCloud } from "@/lib/sync"
 import {
   LayoutDashboard,
   ArrowLeftRight,
@@ -12,6 +14,8 @@ import {
   PiggyBank,
   BarChart3,
   LogOut,
+  Cloud,
+  CloudOff,
 } from "lucide-react"
 
 const navItems = [
@@ -27,6 +31,17 @@ export function Sidebar() {
   const pathname = usePathname()
   const router = useRouter()
   const { sidebarOpen } = useUIStore()
+  const [syncing, setSyncing] = useState(false)
+
+  useEffect(() => {
+    syncFromCloud()
+  }, [])
+
+  async function handleSync() {
+    setSyncing(true)
+    await syncToCloud()
+    setTimeout(() => setSyncing(false), 1500)
+  }
 
   return (
     <aside
@@ -62,7 +77,18 @@ export function Sidebar() {
           )
         })}
       </nav>
-      <div className="border-t p-2">
+      <div className="border-t p-2 space-y-1">
+        <button
+          onClick={handleSync}
+          disabled={syncing}
+          className={cn(
+            "flex w-full items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors text-sidebar-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground",
+            !sidebarOpen && "justify-center"
+          )}
+        >
+          {syncing ? <CloudOff className="h-5 w-5 shrink-0" /> : <Cloud className="h-5 w-5 shrink-0" />}
+          {sidebarOpen && <span>{syncing ? "Sincronizando..." : "Guardar en nube"}</span>}
+        </button>
         <button
           onClick={() => router.push("/login")}
           className={cn(
