@@ -36,9 +36,7 @@ yarn-error.log*
 # vercel
 .vercel
 
-# large ML models
-public/models/
-public/wasm/wasm/
+
 
 # typescript
 *.tsbuildinfo
