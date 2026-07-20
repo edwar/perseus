@@ -34,6 +34,8 @@ export function DashboardClient({
   monthlyIncome,
   monthlyExpenses,
   recentTransactions,
+  spendingByCategory,
+  monthlyChart,
 }: DashboardClientProps) {
   const updateTransaction = useTransactionStore((s) => s.updateTransaction)
   const deleteTransaction = useTransactionStore((s) => s.deleteTransaction)
@@ -133,7 +135,7 @@ export function DashboardClient({
                     <Cell key={i} fill={["#1D4ED8","#3b82f6","#60a5fa","#93c5fd","#bfdbfe","#dbeafe","#2563eb","#6366f1"][i % 8]} />
                   ))}
                 </Pie>
-                <Tooltip formatter={(v: number) => `$${v.toLocaleString("es-CO")}`} />
+                <Tooltip formatter={(v: unknown) => `$${(v as number).toLocaleString("es-CO")}`} />
               </PieChart>
             </ResponsiveContainer>
             <div className="mt-2 space-y-1">
@@ -156,8 +158,8 @@ export function DashboardClient({
             <ResponsiveContainer width="100%" height={220}>
               <BarChart data={monthlyChart}>
                 <XAxis dataKey="month" tick={{ fontSize: 11 }} tickFormatter={(v: string) => v.slice(5)} />
-                <YAxis tick={{ fontSize: 11 }} tickFormatter={(v: number) => `$${(v / 1000).toFixed(0)}k`} />
-                <Tooltip formatter={(v: number) => `$${v.toLocaleString("es-CO")}`} />
+                <YAxis tick={{ fontSize: 11 }} tickFormatter={(v: unknown) => `$${((v as number) / 1000).toFixed(0)}k`} />
+                <Tooltip formatter={(v: unknown) => `$${(v as number).toLocaleString("es-CO")}`} />
                 <Bar dataKey="income" name="Ingresos" fill="#1D4ED8" radius={[4, 4, 0, 0]} />
                 <Bar dataKey="expenses" name="Gastos" fill="#ef4444" radius={[4, 4, 0, 0]} />
               </BarChart>
