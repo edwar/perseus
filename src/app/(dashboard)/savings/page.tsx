@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react"
 import { Plus, Target, X, HandCoins, Landmark, Pencil, Trash2 } from "lucide-react"
+import { useHeaderStore } from "@/store/header-store"
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import { CurrencyInput } from "@/components/ui/currency-input"

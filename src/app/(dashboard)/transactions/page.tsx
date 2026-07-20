@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react"
 import { Search, Plus, X, ArrowLeft, ArrowDown, ArrowUp, ScanLine, PenLine, Repeat, Calendar, Receipt, Pencil, Trash2 } from "lucide-react"
+import { useHeaderStore } from "@/store/header-store"
 import { Scanner } from "@/components/scanner"
 import type { ReceiptData } from "@/lib/ia"
 import { cn } from "@/lib/utils"
@@ -40,8 +41,10 @@ export default function TransactionsPage() {
   const [showNewForm, setShowNewForm] = useState(false)
   const [editTx, setEditTx] = useState<string | null>(null)
   const [deleteTx, setDeleteTx] = useState<string | null>(null)
+  const setHeaderAction = useHeaderStore((s) => s.setAction)
   const [ready, setReady] = useState(false)
   useEffect(() => { const t = setTimeout(() => setReady(true), 100); return () => clearTimeout(t) }, [])
+  useEffect(() => { setHeaderAction(<Button size="sm" onClick={() => setShowNewForm(true)}><Plus className="h-4 w-4" /> Crear</Button>); return () => setHeaderAction(null) }, [])
 
   const filtered = transactions
     .filter((t) => tab === "all" ? true : tab === "recurring" ? t.recurring : !t.recurring)
@@ -76,13 +79,7 @@ export default function TransactionsPage() {
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-bold">Transacciones</h1>
-        <Button onClick={() => setShowNewForm(true)}>
-          <Plus className="h-4 w-4" />
-          Crear
-        </Button>
-      </div>
+      <h1 className="text-2xl font-bold max-md:hidden">Transacciones</h1>
 
       {/* Filtros */}
       <div className="grid gap-2 sm:grid-cols-[1fr_180px]">

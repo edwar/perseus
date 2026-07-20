@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react"
 import { TrendingDown, Plus, CreditCard, X, Pencil, Trash2, PenLine, ScanLine, ArrowLeft } from "lucide-react"
+import { useHeaderStore } from "@/store/header-store"
 import { Scanner } from "@/components/scanner"
 import type { DebtInvoiceData } from "@/lib/ia"
 import { cn } from "@/lib/utils"
@@ -25,8 +26,10 @@ export default function DebtsPage() {
   const [showAddDebt, setShowAddDebt] = useState(false)
   const [editDebtId, setEditDebtId] = useState<string | null>(null)
   const [deleteConfirm, setDeleteConfirm] = useState<string | null>(null)
+  const setHeaderAction = useHeaderStore((s) => s.setAction)
   const [ready, setReady] = useState(false)
   useEffect(() => { const t = setTimeout(() => setReady(true), 100); return () => clearTimeout(t) }, [])
+  useEffect(() => { setHeaderAction(<Button size="sm" onClick={() => setShowAddDebt(true)}><Plus className="h-4 w-4" /> Crear</Button>); return () => setHeaderAction(null) }, [])
 
   if (!ready) {
     return (
@@ -73,13 +76,7 @@ export default function DebtsPage() {
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-bold">Deudas</h1>
-        <Button className="gap-2" onClick={() => setShowAddDebt(true)}>
-          <Plus className="h-4 w-4" />
-          Crear
-        </Button>
-      </div>
+      <h1 className="text-2xl font-bold max-md:hidden">Deudas</h1>
 
       {showAddDebt && (
         <AddDebtForm onSave={(d) => handleSave(d)} onClose={() => setShowAddDebt(false)} />

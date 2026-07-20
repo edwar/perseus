@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react"
 import { Plus, Repeat, ArrowUp, ArrowDown, Pencil, Trash2, X } from "lucide-react"
+import { useHeaderStore } from "@/store/header-store"
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import { CurrencyInput } from "@/components/ui/currency-input"
@@ -27,8 +28,10 @@ export default function RecurringPage() {
   const [showForm, setShowForm] = useState(false)
   const [editingId, setEditingId] = useState<string | null>(null)
   const [deleteConfirm, setDeleteConfirm] = useState<string | null>(null)
+  const setHeaderAction = useHeaderStore((s) => s.setAction)
   const [ready, setReady] = useState(false)
   useEffect(() => { const t = setTimeout(() => setReady(true), 100); return () => clearTimeout(t) }, [])
+  useEffect(() => { setHeaderAction(<Button size="sm" onClick={() => { setEditingId(null); setShowForm(true) }}><Plus className="h-4 w-4" /> Crear</Button>); return () => setHeaderAction(null) }, [])
 
   if (!ready) {
     return (
@@ -60,13 +63,7 @@ export default function RecurringPage() {
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-bold">Recurrentes</h1>
-        <Button onClick={() => { setEditingId(null); setShowForm(true) }}>
-          <Plus className="h-4 w-4" />
-          Crear
-        </Button>
-      </div>
+      <h1 className="text-2xl font-bold max-md:hidden">Recurrentes</h1>
 
       {showForm && (
         <RecurringForm
