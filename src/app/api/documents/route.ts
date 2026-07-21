@@ -30,3 +30,21 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({ error: msg }, { status: 500 })
   }
 }
+
+export async function DELETE(req: NextRequest) {
+  try {
+    const session = await auth.api.getSession({ headers: await headers() })
+    if (!session) return NextResponse.json({ error: "No autorizado" }, { status: 401 })
+
+    const { searchParams } = new URL(req.url)
+    const publicId = searchParams.get("publicId")
+    if (!publicId) return NextResponse.json({ error: "publicId requerido" }, { status: 400 })
+
+    await cloudinary.uploader.destroy(publicId)
+
+    return NextResponse.json({ success: true })
+  } catch (err) {
+    const msg = err instanceof Error ? err.message : "Error al eliminar documento"
+    return NextResponse.json({ error: msg }, { status: 500 })
+  }
+}

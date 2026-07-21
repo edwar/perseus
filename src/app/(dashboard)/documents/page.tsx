@@ -7,7 +7,8 @@ import { Empty } from "@/components/ui/empty"
 import { Button } from "@/components/ui/button"
 import { cn } from "@/lib/utils"
 import { Card, CardContent } from "@/components/ui/card"
-import { FileText, Receipt, FolderOpen, ChevronLeft, X, ScanLine, CalendarDays } from "lucide-react"
+import { ConfirmDialog } from "@/components/ui/confirm-dialog"
+import { FileText, Receipt, FolderOpen, ChevronLeft, X, Trash2, ScanLine, CalendarDays } from "lucide-react"
 
 const months = ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"]
 
@@ -165,7 +166,24 @@ export default function DocumentsPage() {
 
 function DocumentCard({ doc }: { doc: ScannedDoc }) {
   const [open, setOpen] = useState(false)
+  const [deleteConfirm, setDeleteConfirm] = useState(false)
+  const [deleting, setDeleting] = useState(false)
+  const deleteDoc = useDocumentStore((s) => s.deleteDoc)
   const isPDF = doc.url.endsWith(".pdf")
+
+  async function handleDelete() {
+    setDeleting(true)
+    try {
+      await fetch(`/api/documents?publicId=${encodeURIComponent(doc.publicId)}`, { method: "DELETE" })
+      deleteDoc(doc.id)
+      setOpen(false)
+    } catch {
+      console.error("Error al eliminar de Cloudinary")
+    } finally {
+      setDeleting(false)
+      setDeleteConfirm(false)
+    }
+  }
 
   return (
     <>
@@ -214,6 +232,9 @@ function DocumentCard({ doc }: { doc: ScannedDoc }) {
                     </Button>
                   </a>
                 )}
+                <Button variant="ghost" size="icon" className="text-red-500 hover:text-red-700" onClick={(e) => { e.stopPropagation(); setDeleteConfirm(true) }}>
+                  <Trash2 className="h-4 w-4" />
+                </Button>
                 <Button variant="ghost" size="icon" onClick={() => setOpen(false)}>
                   <X className="h-5 w-5" />
                 </Button>
@@ -245,6 +266,15 @@ function DocumentCard({ doc }: { doc: ScannedDoc }) {
           </div>
         </div>
       )}
+
+      <ConfirmDialog
+        open={deleteConfirm}
+        title="Eliminar documento"
+        message={`¿Eliminar este ${doc.type === "receipt" ? "recibo" : "factura"}? Se borrará de la nube y del sistema.`}
+        onConfirm={handleDelete}
+        onCancel={() => setDeleteConfirm(false)}
+        loading={deleting}
+      />
     </>
   )
 }

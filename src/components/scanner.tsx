@@ -169,7 +169,7 @@ export function Scanner<T extends ScanMode>({ mode, onResult, onClear, className
               className="w-full"
             >
               {scanning ? (
-                <><Loader2 className="h-4 w-4 animate-spin" /> Analizando con LiteRT.js...</>
+                <><Loader2 className="h-4 w-4 animate-spin" /> Analizando...</>
               ) : (
                 <><ScanLine className="h-4 w-4" /> Escanear</>
               )}

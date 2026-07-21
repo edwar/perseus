@@ -3,12 +3,14 @@
 import { Button } from "@/components/ui/button"
 import { X } from "lucide-react"
 
-export function ConfirmDialog({ open, title, message, onConfirm, onCancel }: {
+export function ConfirmDialog({ open, title, message, confirmLabel = "Eliminar", onConfirm, onCancel, loading }: {
   open: boolean
   title: string
   message: string
-  onConfirm: () => void
+  confirmLabel?: string
+  onConfirm: () => void | Promise<void>
   onCancel: () => void
+  loading?: boolean
 }) {
   if (!open) return null
 
@@ -24,8 +26,10 @@ export function ConfirmDialog({ open, title, message, onConfirm, onCancel }: {
         </div>
         <p className="mb-6 text-sm text-muted-foreground">{message}</p>
         <div className="flex justify-end gap-2">
-          <Button variant="outline" onClick={onCancel}>Cancelar</Button>
-          <Button className="bg-red-600 hover:bg-red-700 text-white" onClick={() => { onConfirm(); onCancel() }}>Eliminar</Button>
+          <Button variant="outline" disabled={loading} onClick={onCancel}>Cancelar</Button>
+          <Button className="bg-red-600 hover:bg-red-700 text-white" disabled={loading} onClick={async () => { await onConfirm(); onCancel() }}>
+            {loading ? "Eliminando..." : confirmLabel}
+          </Button>
         </div>
       </div>
     </div>

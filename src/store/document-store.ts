@@ -13,6 +13,7 @@ export interface ScannedDoc {
 interface DocumentStore {
   docs: ScannedDoc[]
   addDoc: (doc: ScannedDoc) => void
+  deleteDoc: (id: string) => void
 }
 
 export const useDocumentStore = create<DocumentStore>()(
@@ -20,6 +21,7 @@ export const useDocumentStore = create<DocumentStore>()(
     (set) => ({
       docs: [],
       addDoc: (doc) => set((s) => ({ docs: [doc, ...s.docs] })),
+      deleteDoc: (id) => set((s) => ({ docs: s.docs.filter((d) => d.id !== id) })),
     }),
     { name: "perseus-documents" }
   )
