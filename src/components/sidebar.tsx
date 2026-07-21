@@ -2,6 +2,7 @@
 
 import Link from "next/link"
 import { usePathname, useRouter } from "next/navigation"
+import { createAuthClient } from "better-auth/client"
 import { cn } from "@/lib/utils"
 import { useUIStore } from "@/store/ui-store"
 import {
@@ -94,7 +95,11 @@ export function Sidebar() {
         </nav>
         <div className="border-t p-2 shrink-0">
           <button
-            onClick={() => router.push("/login")}
+            onClick={async () => {
+              const authClient = createAuthClient()
+              await authClient.signOut()
+              router.push("/login")
+            }}
             className={cn(
               "flex w-full items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors text-red-500 hover:bg-red-600 hover:text-white dark:text-red-400 dark:hover:bg-red-600 dark:hover:text-white",
               !sidebarOpen && "justify-center"
