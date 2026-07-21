@@ -23,6 +23,7 @@ interface TransactionStore {
   addTransaction: (tx: Omit<Transaction, "id">) => Promise<void>
   updateTransaction: (id: string, tx: Partial<Transaction>) => Promise<void>
   deleteTransaction: (id: string) => Promise<void>
+  reset: () => void
 }
 
 export const useTransactionStore = create<TransactionStore>()((set, get) => ({
@@ -76,4 +77,5 @@ export const useTransactionStore = create<TransactionStore>()((set, get) => ({
       body: JSON.stringify({ key: "transactions", data: get().transactions }),
     })
   },
+  reset: () => set({ transactions: [] }),
 }))

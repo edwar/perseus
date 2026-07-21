@@ -5,6 +5,7 @@ interface BalanceState {
   setBalance: (n: number) => void
   addToBalance: (n: number) => void
   hydrate: (n: number) => void
+  reset: () => void
 }
 
 export const useBalanceStore = create<BalanceState>()((set) => ({
@@ -12,4 +13,5 @@ export const useBalanceStore = create<BalanceState>()((set) => ({
   setBalance: (n) => set({ balance: n }),
   addToBalance: (n) => set((s) => ({ balance: s.balance + n })),
   hydrate: (n) => set({ balance: n }),
+  reset: () => set({ balance: 0 }),
 }))

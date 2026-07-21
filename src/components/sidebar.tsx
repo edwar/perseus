@@ -98,6 +98,21 @@ export function Sidebar() {
             onClick={async () => {
               const authClient = createAuthClient()
               await authClient.signOut()
+
+              const stores = await Promise.all([
+                import("@/store/transaction-store"),
+                import("@/store/balance-store"),
+                import("@/store/budget-store"),
+                import("@/store/debt-store"),
+                import("@/store/recurring-store"),
+                import("@/store/savings-store"),
+                import("@/store/obligations-store"),
+              ])
+              for (const s of stores) {
+                const store = Object.values(s).find((v) => typeof v === "function" && (v as any).getState)
+                if (store) (store as any).getState().reset()
+              }
+
               router.push("/")
             }}
             className={cn(

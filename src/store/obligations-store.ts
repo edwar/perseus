@@ -18,6 +18,7 @@ interface ObligationsStore {
   deleteObligation: (id: string) => void
   togglePaid: (obligationId: string, month: string) => void
   hydrate: () => Promise<void>
+  reset: () => void
 }
 
 function currentMonth() {
@@ -57,4 +58,5 @@ export const useObligationsStore = create<ObligationsStore>()((set, get) => ({
     const json = await res.json()
     set({ obligations: json.obligations?.obligations ?? [], checks: json.obligations?.checks ?? [] })
   },
+  reset: () => set({ obligations: [], checks: [] }),
 }))

@@ -20,6 +20,7 @@ interface DebtStore {
   updateDebt: (id: string, d: Partial<Debt>) => void
   deleteDebt: (id: string) => void
   hydrate: () => Promise<void>
+  reset: () => void
 }
 
 export const useDebtStore = create<DebtStore>()((set, get) => ({
@@ -41,4 +42,5 @@ export const useDebtStore = create<DebtStore>()((set, get) => ({
     const json = await res.json()
     set({ debts: json.debts ?? [] })
   },
+  reset: () => set({ debts: [] }),
 }))

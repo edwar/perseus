@@ -18,6 +18,7 @@ interface BudgetStore {
   upsertBudget: (b: Omit<Budget, "id"> & { id?: string }) => void
   deleteBudget: (id: string) => void
   hydrate: () => Promise<void>
+  reset: () => void
 }
 
 export const useBudgetStore = create<BudgetStore>()((set, get) => ({
@@ -39,4 +40,5 @@ export const useBudgetStore = create<BudgetStore>()((set, get) => ({
     const json = await res.json()
     set({ budgets: json.budgets ?? [] })
   },
+  reset: () => set({ budgets: [] }),
 }))

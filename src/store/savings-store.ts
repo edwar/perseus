@@ -28,6 +28,7 @@ interface SavingsStore {
   updateInvestment: (id: string, i: Partial<Investment>) => void
   deleteInvestment: (id: string) => void
   hydrate: () => Promise<void>
+  reset: () => void
 }
 
 export const useSavingsStore = create<SavingsStore>()((set, get) => ({
@@ -62,4 +63,5 @@ export const useSavingsStore = create<SavingsStore>()((set, get) => ({
     const json = await res.json()
     set({ goals: json.savings?.goals ?? [], investments: json.savings?.investments ?? [] })
   },
+  reset: () => set({ goals: [], investments: [] }),
 }))

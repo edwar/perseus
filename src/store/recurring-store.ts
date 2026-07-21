@@ -17,6 +17,7 @@ interface RecurringStore {
   updateItem: (id: string, d: Partial<RecurringItem>) => void
   deleteItem: (id: string) => void
   hydrate: () => Promise<void>
+  reset: () => void
 }
 
 export const useRecurringStore = create<RecurringStore>()((set, get) => ({
@@ -38,4 +39,5 @@ export const useRecurringStore = create<RecurringStore>()((set, get) => ({
     const json = await res.json()
     set({ items: json.recurring ?? [] })
   },
+  reset: () => set({ items: [] }),
 }))
