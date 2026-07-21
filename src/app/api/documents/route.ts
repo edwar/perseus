@@ -13,8 +13,8 @@ export async function GET(req: NextRequest) {
 
     const result = await cloudinary.search
       .expression(`folder:${prefix}/*`)
-      .sortBy("created_at", "desc")
-      .maxResults(500)
+      .sort_by("created_at", "desc")
+      .max_results(500)
       .execute()
 
     const resources = result.resources.map((r: { public_id: string; secure_url: string; folder: string; created_at: string }) => ({

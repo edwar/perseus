@@ -60,12 +60,12 @@ export function Scanner<T extends ScanMode>({ mode, onResult, onClear, className
       const uploadResult = await uploadToCloudinary(file, mode)
       if (uploadResult) {
         useDocumentStore.getState().addDoc({
-          id: uploadResult.publicId,
+          id: uploadResult.public_id,
           publicId: uploadResult.public_id,
           url: uploadResult.secure_url,
           type: mode,
           uploadedAt: new Date().toISOString(),
-          data: data as Record<string, unknown>,
+          data: data as unknown as Record<string, unknown>,
         })
       }
     } catch (err) {
