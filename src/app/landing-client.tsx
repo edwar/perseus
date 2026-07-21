@@ -1,6 +1,7 @@
 "use client"
 
-import { ArrowRight, BarChart3, TrendingDown, Wallet, PiggyBank, Repeat, ScanLine, CheckSquare } from "lucide-react"
+import Link from "next/link"
+import { ArrowRight, BarChart3, TrendingDown, Wallet, PiggyBank, Repeat, ScanLine, CheckSquare, ChevronRight } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 
@@ -134,6 +135,11 @@ export function LandingPage() {
             Perseus te ayuda a registrar, organizar y visualizar tus ingresos, gastos, deudas y ahorros
             en un solo lugar. Con escaneo inteligente de recibos y facturas.
           </p>
+          <div className="mt-6">
+            <Link href="/guide" className="inline-flex items-center gap-1.5 text-sm font-medium text-blue-600 hover:text-blue-700">
+              Ver guía paso a paso <ChevronRight className="h-3.5 w-3.5" />
+            </Link>
+          </div>
           <div className="mt-10 flex items-center justify-center gap-4">
             <a href="/register">
               <Button size="lg" className="gap-2 bg-linear-to-r from-blue-600 to-blue-500 px-8 text-white shadow-lg shadow-blue-500/20 transition-all hover:shadow-xl hover:shadow-blue-500/30 active:scale-[0.98]">
