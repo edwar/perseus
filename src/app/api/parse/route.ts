@@ -10,7 +10,7 @@ $15.000,00 = 15000.`
 
 const INVOICE_PROMPT = `Del texto OCR de una factura de crédito colombiana, extrae estos campos y RESPONDE SOLO CON JSON (sin markdown, sin explicaciones):
 
-{"totalInstallments": "cuotas totales, número o null", "installmentsPaid": "cuotas pagadas, número o null", "minimumPayment": "pago mínimo en número, o null", "amount": "total a pagar en número, o null", "dueDate": "vencimiento YYYY-MM-DD, o null", "creditor": "banco o entidad, o null", "interestRate": "tasa de interés en número (ej: 16.42), o null", "currentBalance": "saldo actual en número, o null"}
+{"totalCuotas": "cuotas totales, número o null", "cuotasPagadas": "cuotas pagadas, número o null", "pagoMinimo": "pago mínimo en número, o null", "montoTotal": "total a pagar en número, o null", "fechaVencimiento": "vencimiento YYYY-MM-DD, o null", "acreedor": "banco o entidad, o null", "tasaInteres": "tasa de interés en número (ej: 16.42), o null", "saldoActual": "saldo actual en número, o null"}
 
 REGLAS: $9.956.256,16 = 9956256.16. $641.768,00 = 641768. $9.749.747,77 = 9749747.77. NUNCA multipliques por 100.`
 
@@ -69,12 +69,12 @@ export async function POST(req: NextRequest) {
 
     return NextResponse.json({
       ...parsed,
-      amount: safeNumber(parsed.amount),
-      minimumPayment: safeNumber(parsed.minimumPayment),
-      totalInstallments: parsed.totalInstallments != null ? Number(parsed.totalInstallments) : null,
-      installmentsPaid: parsed.installmentsPaid != null ? Number(parsed.installmentsPaid) : null,
-      interestRate: safeNumber(parsed.interestRate),
-      currentBalance: safeNumber(parsed.currentBalance),
+      montoTotal: safeNumber(parsed.montoTotal),
+      pagoMinimo: safeNumber(parsed.pagoMinimo),
+      totalCuotas: parsed.totalCuotas != null ? Number(parsed.totalCuotas) : null,
+      cuotasPagadas: parsed.cuotasPagadas != null ? Number(parsed.cuotasPagadas) : null,
+      tasaInteres: safeNumber(parsed.tasaInteres),
+      saldoActual: safeNumber(parsed.saldoActual),
     })
   } catch {
     return NextResponse.json({ error: "Error al procesar con IA", fallback: true }, { status: 500 })

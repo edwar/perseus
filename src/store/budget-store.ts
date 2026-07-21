@@ -1,11 +1,17 @@
 import { create } from "zustand"
 import { persist } from "zustand/middleware"
 
+export interface BudgetItem {
+  name: string
+  amount: number
+}
+
 export interface Budget {
   id: string
   category: string
   amount: number
   color: string
+  items?: BudgetItem[]
 }
 
 interface BudgetStore {

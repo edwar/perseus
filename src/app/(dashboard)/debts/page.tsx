@@ -1,11 +1,10 @@
 "use client"
 
 import { useEffect, useState } from "react"
-import { TrendingDown, Plus, CreditCard, X, Pencil, Trash2, PenLine, ScanLine, ArrowLeft } from "lucide-react"
+import { TrendingDown, Plus, X, Pencil, Trash2 } from "lucide-react"
 import { useHeaderStore } from "@/store/header-store"
 import { Scanner } from "@/components/scanner"
 import type { DebtInvoiceData } from "@/lib/ia"
-import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import { CurrencyInput } from "@/components/ui/currency-input"
 import { Input } from "@/components/ui/input"
@@ -22,7 +21,6 @@ export default function DebtsPage() {
   const addDebt = useDebtStore((s) => s.addDebt)
   const updateDebt = useDebtStore((s) => s.updateDebt)
   const deleteDebt = useDebtStore((s) => s.deleteDebt)
-  const [showPaymentForm, setShowPaymentForm] = useState<string | null>(null)
   const [showAddDebt, setShowAddDebt] = useState(false)
   const [editDebtId, setEditDebtId] = useState<string | null>(null)
   const [deleteConfirm, setDeleteConfirm] = useState<string | null>(null)
@@ -34,9 +32,9 @@ export default function DebtsPage() {
   if (!ready) {
     return (
       <div className="space-y-6">
-        <div className="flex items-center justify-between"><h1 className="text-2xl font-bold">Deudas</h1><div className="h-9 w-32 animate-pulse rounded-lg bg-muted" /></div>
+        <div className="flex items-center justify-between mt-10 md:hidden"><h1 className="text-2xl font-bold">Deudas</h1><div className="h-9 w-24 animate-pulse rounded-lg bg-muted" /></div>
         <div className="grid gap-4 sm:grid-cols-2">
-          {[1, 2].map((i) => (
+          {Array.from({ length: 14 }).map((_, i) => (
             <Card key={i}><CardContent>
               <div className="flex items-start justify-between">
                 <div className="space-y-1.5 flex-1">
@@ -144,29 +142,14 @@ export default function DebtsPage() {
                   </div>
 
                   <div className="mt-4 flex gap-2">
-                    <Button
-                      onClick={() => setShowPaymentForm(debt.id)}
-                      size="sm"
-                      className="flex-1 gap-1"
-                    >
-                      <CreditCard className="h-3 w-3" />
-                      Registrar pago
-                    </Button>
-                    <Button variant="outline" size="sm" onClick={() => setEditDebtId(debt.id)} className="gap-1">
+                    <Button variant="outline" size="sm" onClick={() => setEditDebtId(debt.id)} className="flex-1 gap-1">
                       <Pencil className="h-3 w-3" />
+                      Editar
                     </Button>
                     <Button variant="ghost" size="sm" onClick={() => setDeleteConfirm(debt.id)} className="gap-1 text-red-500 hover:text-red-700">
                       <Trash2 className="h-3 w-3" />
                     </Button>
                   </div>
-
-                  {showPaymentForm === debt.id && (
-                    <PaymentForm
-                      debtName={debt.name}
-                      minimum={debt.minimum}
-                      onClose={() => setShowPaymentForm(null)}
-                    />
-                  )}
                 </CardContent>
               </Card>
             )
@@ -202,19 +185,19 @@ function AddDebtForm({ initial, onSave, onClose }: {
   const [scanned, setScanned] = useState(!!initial)
 
   function handleInvoiceResult(data: DebtInvoiceData) {
-    if (data.creditor && !name) {
-      setName(`Tarjeta ${data.creditor}`)
+    if (data.acreedor && !name) {
+      setName(`Tarjeta ${data.acreedor}`)
     }
-    if (data.totalInstallments) setInstallments(String(data.totalInstallments))
-    if (data.installmentsPaid != null) setInstallmentsPaid(data.installmentsPaid)
-    if (data.amount) setTotal(String(data.amount))
-    if (data.currentBalance != null) {
-      setRemaining(String(data.currentBalance))
-    } else if (data.amount) {
-      setRemaining(String(data.amount))
+    if (data.totalCuotas) setInstallments(String(data.totalCuotas))
+    if (data.cuotasPagadas != null) setInstallmentsPaid(data.cuotasPagadas)
+    if (data.montoTotal) setTotal(String(data.montoTotal))
+    if (data.saldoActual != null) {
+      setRemaining(String(data.saldoActual))
+    } else if (data.montoTotal) {
+      setRemaining(String(data.montoTotal))
     }
-    if (data.minimumPayment) setMonthly(String(data.minimumPayment))
-    if (data.interestRate != null) setRate(String(data.interestRate))
+    if (data.pagoMinimo) setMonthly(String(data.pagoMinimo))
+    if (data.tasaInteres != null) setRate(String(data.tasaInteres))
     setScanned(true)
   }
 
@@ -316,162 +299,3 @@ function AddDebtForm({ initial, onSave, onClose }: {
   )
 }
 
-function PaymentForm({ debtName, minimum, onClose }: {
-  debtName: string
-  minimum: number | null
-  onClose: () => void
-}) {
-  const [step, setStep] = useState<"method" | "manual" | "scan">("method")
-  const [amount, setAmount] = useState(minimum ?? 0)
-  const [isMinimum, setIsMinimum] = useState(!!minimum)
-  const [installmentNum, setInstallmentNum] = useState("")
-  const [isScanned, setIsScanned] = useState(false)
-
-  function handleReceiptResult(_data: unknown) {
-    setIsScanned(true)
-  }
-
-  function reset() {
-    setStep("method")
-    setAmount(minimum ?? 0)
-    setIsMinimum(!!minimum)
-    setInstallmentNum("")
-    setIsScanned(false)
-  }
-
-  return (
-    <div className="mt-4 rounded-lg border p-4">
-      <div className="mb-4 flex items-center gap-3">
-        {step !== "method" && (
-          <Button variant="ghost" size="icon" onClick={() => setStep("method")}>
-            <ArrowLeft className="h-4 w-4" />
-          </Button>
-        )}
-        <div className="flex items-center gap-2 text-sm text-muted-foreground">
-          <span className={cn("font-medium", step === "method" && "text-foreground")}>Método</span>
-          <span>/</span>
-          <span className={cn("font-medium", (step === "manual" || step === "scan") && "text-foreground")}>Detalles</span>
-        </div>
-        <Button variant="ghost" size="xs" onClick={() => { reset(); onClose() }} className="ml-auto">
-          Cancelar
-        </Button>
-      </div>
-
-      {step === "method" && (
-        <div>
-          <p className="mb-4 text-sm text-muted-foreground">¿Cómo quieres registrar el pago de {debtName}?</p>
-          <div className="grid grid-cols-2 gap-4">
-            <Button variant="ghost" onClick={() => setStep("manual")} className="group flex h-auto flex-col items-center gap-3 rounded-xl border-2 border-transparent bg-card p-8 shadow-sm transition-all hover:border-primary/50 hover:shadow-md">
-              <div className="flex h-16 w-16 items-center justify-center rounded-full bg-muted text-muted-foreground transition-transform group-hover:scale-110">
-                <PenLine className="h-7 w-7" />
-              </div>
-              <div className="text-center">
-                <p className="text-lg font-bold">Manual</p>
-                <p className="text-xs text-muted-foreground">Escribir los datos a mano</p>
-              </div>
-            </Button>
-            <Button variant="ghost" onClick={() => setStep("scan")} className="group flex h-auto flex-col items-center gap-3 rounded-xl border-2 border-transparent bg-card p-8 shadow-sm transition-all hover:border-primary/50 hover:shadow-md">
-              <div className="flex h-16 w-16 items-center justify-center rounded-full bg-violet-100 text-violet-600 transition-transform group-hover:scale-110">
-                <ScanLine className="h-7 w-7" />
-              </div>
-              <div className="text-center">
-                <p className="text-lg font-bold">Escanear</p>
-                <p className="text-xs text-muted-foreground">Subir screenshot del pago</p>
-              </div>
-            </Button>
-          </div>
-        </div>
-      )}
-
-      {step === "manual" && (
-        <ManualPaymentForm
-          amount={amount} setAmount={setAmount}
-          minimum={minimum} isMinimum={isMinimum} setIsMinimum={setIsMinimum}
-          installmentNum={installmentNum} setInstallmentNum={setInstallmentNum}
-          onSwitchToScan={() => setStep("scan")}
-        />
-      )}
-
-      {step === "scan" && (
-        <ScanPaymentForm
-          amount={amount} setAmount={setAmount}
-          minimum={minimum} isMinimum={isMinimum} setIsMinimum={setIsMinimum}
-          installmentNum={installmentNum} setInstallmentNum={setInstallmentNum}
-          isScanned={isScanned} onScanResult={handleReceiptResult}
-          onSwitchToManual={() => setStep("manual")}
-        />
-      )}
-    </div>
-  )
-}
-
-function ManualPaymentForm({ amount, setAmount, minimum, isMinimum, setIsMinimum, installmentNum, setInstallmentNum, onSwitchToScan }: {
-  amount: number; setAmount: (v: number) => void; minimum: number | null; isMinimum: boolean; setIsMinimum: (v: boolean) => void; installmentNum: string; setInstallmentNum: (v: string) => void; onSwitchToScan: () => void
-}) {
-  return (
-    <div className="space-y-3">
-      <div className="flex items-center gap-2">
-        <div className="flex h-8 w-8 items-center justify-center rounded-full bg-muted text-muted-foreground">
-          <PenLine className="h-4 w-4" />
-        </div>
-        <p className="text-sm font-medium">Registro manual</p>
-        <Button variant="ghost" size="xs" onClick={onSwitchToScan} className="ml-auto flex items-center gap-1 text-xs text-muted-foreground hover:text-foreground">
-          <ScanLine className="h-3 w-3" /> Escanear
-        </Button>
-      </div>
-      <div className="space-y-2">
-        <Label className="text-xs font-medium">Monto a pagar</Label>
-        <CurrencyInput value={amount} onChange={(v) => setAmount(Number(v))} />
-      </div>
-      {minimum && (
-        <label className="flex items-center gap-2 text-xs">
-          <input type="checkbox" checked={isMinimum} onChange={(e) => { setIsMinimum(e.target.checked); if (e.target.checked) setAmount(minimum) }} className="rounded border-input" />
-          Pago mínimo (${minimum.toLocaleString("es-CO")})
-        </label>
-      )}
-      <div className="space-y-2">
-        <Label className="text-xs font-medium">N° de cuota (opcional)</Label>
-        <Input type="number" value={installmentNum} onChange={(e) => setInstallmentNum(e.target.value)} placeholder="Ej: 13" />
-      </div>
-      <Button className="w-full">Guardar pago</Button>
-    </div>
-  )
-}
-
-function ScanPaymentForm({ amount, setAmount, minimum, isMinimum, setIsMinimum, installmentNum, setInstallmentNum, isScanned, onScanResult, onSwitchToManual }: {
-  amount: number; setAmount: (v: number) => void; minimum: number | null; isMinimum: boolean; setIsMinimum: (v: boolean) => void; installmentNum: string; setInstallmentNum: (v: string) => void; isScanned: boolean; onScanResult: (data: unknown) => void; onSwitchToManual: () => void
-}) {
-  return (
-    <div className="space-y-3">
-      <div className="flex items-center gap-2">
-        <div className="flex h-8 w-8 items-center justify-center rounded-full bg-violet-100 text-violet-600">
-          <ScanLine className="h-4 w-4" />
-        </div>
-        <p className="text-sm font-medium">Escanear screenshot</p>
-        <Button variant="ghost" size="xs" onClick={onSwitchToManual} className="ml-auto flex items-center gap-1 text-xs text-muted-foreground hover:text-foreground">
-          <PenLine className="h-3 w-3" /> Manual
-        </Button>
-      </div>
-      <Scanner mode="receipt" onResult={onScanResult} />
-      {isScanned && (
-        <div className="space-y-3">
-          <div className="space-y-2">
-            <Label className="text-xs font-medium">Monto a pagar</Label>
-            <CurrencyInput value={amount} onChange={(v) => setAmount(Number(v))} />
-          </div>
-          {minimum && (
-            <label className="flex items-center gap-2 text-xs">
-              <input type="checkbox" checked={isMinimum} onChange={(e) => { setIsMinimum(e.target.checked); if (e.target.checked) setAmount(minimum) }} className="rounded border-input" />
-              Pago mínimo (${minimum.toLocaleString("es-CO")})
-            </label>
-          )}
-          <div className="space-y-2">
-            <Label className="text-xs font-medium">N° de cuota (opcional)</Label>
-            <Input type="number" value={installmentNum} onChange={(e) => setInstallmentNum(e.target.value)} placeholder="Ej: 13" />
-          </div>
-          <Button className="w-full">Guardar pago</Button>
-        </div>
-      )}
-    </div>
-  )
-}

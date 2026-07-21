@@ -9,6 +9,7 @@ export interface RecurringItem {
   frequency: string
   dayOfMonth: number
   category: string
+  debtId?: string
 }
 
 interface RecurringStore {

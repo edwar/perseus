@@ -13,6 +13,7 @@ import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@
 import { ConfirmDialog } from "@/components/ui/confirm-dialog"
 import { Empty } from "@/components/ui/empty"
 import { useBudgetStore } from "@/store/budget-store"
+import { useDebtStore } from "@/store/debt-store"
 import { useRecurringStore, type RecurringItem } from "@/store/recurring-store"
 
 const freqLabels: Record<string, string> = {
@@ -36,9 +37,9 @@ export default function RecurringPage() {
   if (!ready) {
     return (
       <div className="space-y-6">
-        <div className="flex items-center justify-between"><h1 className="text-2xl font-bold">Recurrentes</h1><div className="h-9 w-36 animate-pulse rounded-lg bg-muted" /></div>
+        <div className="flex items-center justify-between mt-10 md:hidden"><h1 className="text-2xl font-bold">Recurrentes</h1><div className="h-9 w-24 animate-pulse rounded-lg bg-muted" /></div>
         <div className="grid gap-4 sm:grid-cols-2">
-          {[1, 2].map((i) => (
+          {Array.from({ length: 14 }).map((_, i) => (
             <Card key={i}><CardContent>
               <div className="flex items-start justify-between">
                 <div className="flex items-center gap-3">
@@ -78,6 +79,7 @@ export default function RecurringPage() {
             if (editingId) {
               updateItem(editingId, data)
               setEditingId(null)
+              setShowForm(false)
             } else {
               addItem(data)
               setShowForm(false)
@@ -158,12 +160,14 @@ function RecurringForm({ editItem, onSave, onCancel }: {
   onCancel: () => void
 }) {
   const budgets = useBudgetStore((s) => s.budgets)
+  const debts = useDebtStore((s) => s.debts)
   const [name, setName] = useState(editItem?.name ?? "")
   const [amount, setAmount] = useState(String(editItem?.amount ?? ""))
   const [type, setType] = useState<"INCOME" | "EXPENSE">(editItem?.type ?? "EXPENSE")
   const [frequency, setFrequency] = useState(editItem?.frequency ?? "MONTHLY")
   const [dayOfMonth, setDayOfMonth] = useState(String(editItem?.dayOfMonth ?? ""))
   const [category, setCategory] = useState(editItem?.category ?? "")
+  const [debtId, setDebtId] = useState(editItem?.debtId ?? "")
 
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
@@ -172,6 +176,7 @@ function RecurringForm({ editItem, onSave, onCancel }: {
       amount: Number(amount),
       dayOfMonth: Number(dayOfMonth),
       category,
+      debtId: debtId || undefined,
     })
   }
 
@@ -236,6 +241,31 @@ function RecurringForm({ editItem, onSave, onCancel }: {
               <Label>Monto</Label>
               <CurrencyInput value={amount} onChange={setAmount} placeholder="0" required />
             </div>
+
+            {type === "EXPENSE" && debts.length > 0 && (
+              <div className="space-y-1.5">
+                <Label>Asociar a deuda (opcional)</Label>
+                <Select value={debtId} onValueChange={(v) => v && setDebtId(v)}>
+                  <SelectTrigger className="w-full">
+                    <SelectValue>
+                      {(v: string) => {
+                        if (!v) return "Ninguna"
+                        const d = debts.find((d) => d.id === v)
+                        return d ? `${d.name} — $${d.remaining.toLocaleString("es-CO")}` : v
+                      }}
+                    </SelectValue>
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="">Ninguna</SelectItem>
+                    {debts.map((d) => (
+                      <SelectItem key={d.id} value={d.id}>
+                        {d.name} — ${d.remaining.toLocaleString("es-CO")}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+            )}
 
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-1.5">
