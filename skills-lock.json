@@ -1,0 +1,11 @@
+{
+  "version": 1,
+  "skills": {
+    "audit-speed": {
+      "source": "calm-north/seojuice-skills",
+      "sourceType": "github",
+      "skillPath": "skills/audit-speed/SKILL.md",
+      "computedHash": "34b80b1c6182d43537f4fd186b5a9cb2052bc503b893c104bbe1ee5167a7f3f1"
+    }
+  }
+}
