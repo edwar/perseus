@@ -188,6 +188,11 @@ function DocumentCard({ doc }: { doc: ScannedDoc }) {
   return (
     <>
       <Card className="relative overflow-hidden h-[200px] w-[200px] rounded-sm cursor-pointer" onClick={() => setOpen(true)}>
+        <div className="absolute top-2 right-2 z-20">
+          <Button variant="ghost" size="icon" className="text-red-500 hover:text-white bg-white hover:bg-red-500 rounded-full" onClick={(e) => { e.stopPropagation(); setDeleteConfirm(true) }}>
+            <Trash2 className="h-4 w-4" />
+          </Button>
+        </div>
         <div
           className={cn(
             "relative bg-muted",
@@ -214,7 +219,7 @@ function DocumentCard({ doc }: { doc: ScannedDoc }) {
           onClick={() => setOpen(false)}
         >
           <div
-            className="relative flex max-h-[90vh] w-[100vw] md:w-[60vw] flex-col rounded-xl bg-background shadow-2xl"
+            className="relative flex max-h-[90vh] w-screen md:w-[60vw] flex-col rounded-xl bg-background shadow-2xl"
             onClick={(e) => e.stopPropagation()}
           >
             <div className="flex items-center justify-between gap-4 p-4 pb-0">
