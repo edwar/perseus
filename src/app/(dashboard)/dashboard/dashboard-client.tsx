@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react"
 import { cn, formatCurrency } from "@/lib/utils"
-import { ArrowUpRight, ArrowDownRight, ArrowLeftRight, Pencil, Trash2, Wallet } from "lucide-react"
+import { ArrowUpRight, ArrowDownRight, ArrowLeftRight, Pencil, Trash2, Wallet, ChevronLeft, ChevronRight } from "lucide-react"
 import { Card, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Empty } from "@/components/ui/empty"
@@ -41,12 +41,17 @@ export function DashboardClient({
   const deleteTransaction = useTransactionStore((s) => s.deleteTransaction)
   const [editTx, setEditTx] = useState<string | null>(null)
   const [deleteTx, setDeleteTx] = useState<string | null>(null)
+  const [txPage, setTxPage] = useState(1)
+  const PAGE_SIZE = 5
+  const totalPages = Math.max(1, Math.ceil(recentTransactions.length / PAGE_SIZE))
+  const safePage = txPage > totalPages ? 1 : txPage
+  const paginatedTxs = recentTransactions.slice((safePage - 1) * PAGE_SIZE, safePage * PAGE_SIZE)
   const [ready, setReady] = useState(false)
   useEffect(() => { const t = setTimeout(() => setReady(true), 100); return () => clearTimeout(t) }, [])
   if (!ready) {
     return (
       <div className="space-y-6">
-        <h1 className="text-2xl font-bold">Dashboard</h1>
+        <h1 className="text-2xl font-bold mt-10 md:hidden">Dashboard</h1>
         <div className="grid gap-4 sm:grid-cols-3">
           {[1, 2, 3].map((i) => (
             <Card key={i}>
@@ -67,7 +72,7 @@ export function DashboardClient({
         <Card>
           <div className="border-b px-6 py-4"><div className="h-4 w-40 animate-pulse rounded bg-muted" /></div>
           <div className="divide-y">
-            {[1, 2, 3].map((i) => (
+            {Array.from({ length: 14 }).map((_, i) => (
               <div key={i} className="flex items-center gap-3 px-6 py-3">
                 <div className="h-9 w-9 animate-pulse rounded-full bg-muted" />
                 <div className="flex-1 space-y-1.5">
@@ -84,7 +89,7 @@ export function DashboardClient({
   }
   return (
     <div className="space-y-6">
-      <h1 className="text-2xl font-bold">Dashboard</h1>
+      <h1 className="text-2xl font-bold mt-10 md:hidden">Dashboard</h1>
 
       <div className="grid gap-4 sm:grid-cols-3">
         <Card>
@@ -174,7 +179,7 @@ export function DashboardClient({
           <p className="font-semibold">Transacciones recientes</p>
         </div>
         <div className="divide-y">
-          {recentTransactions.map((tx) => (
+          {paginatedTxs.map((tx) => (
             <div key={tx.id}>
               {editTx === tx.id ? (
                 <DashboardInlineEdit tx={tx} onSave={(d) => { updateTransaction(tx.id, d); setEditTx(null) }} onCancel={() => setEditTx(null)} />
@@ -209,6 +214,21 @@ export function DashboardClient({
             <Empty icon={ArrowLeftRight} title="No hay transacciones" description="Registra tu primera transacción para ver tu actividad aquí" action={<Button size="sm" onClick={() => window.location.href = "/transactions"}>Ir a Transacciones</Button>} />
           )}
         </div>
+        {totalPages > 1 && (
+          <div className="flex items-center justify-center gap-1 border-t px-6 py-3">
+            <Button variant="ghost" size="sm" className="h-7 w-7 p-0" disabled={safePage <= 1} onClick={() => setTxPage(safePage - 1)}>
+              <ChevronLeft className="h-3.5 w-3.5" />
+            </Button>
+            {Array.from({ length: totalPages }, (_, i) => i + 1).map((p) => (
+              <Button key={p} variant={p === safePage ? "default" : "ghost"} size="sm" className="h-7 w-7 p-0 text-xs" onClick={() => setTxPage(p)}>
+                {p}
+              </Button>
+            ))}
+            <Button variant="ghost" size="sm" className="h-7 w-7 p-0" disabled={safePage >= totalPages} onClick={() => setTxPage(safePage + 1)}>
+              <ChevronRight className="h-3.5 w-3.5" />
+            </Button>
+          </div>
+        )}
       </Card>
 
       <ConfirmDialog open={!!deleteTx} title="Eliminar transacción" message={`¿Estás seguro?`} onConfirm={() => { if (deleteTx) deleteTransaction(deleteTx); setDeleteTx(null) }} onCancel={() => setDeleteTx(null)} />

@@ -51,9 +51,21 @@ export default function ObligationsPage() {
   if (!ready) {
     return (
       <div className="space-y-6">
-        <h1 className="text-2xl font-bold max-md:hidden">Obligaciones</h1>
-        <Card><CardContent className="flex items-center justify-between py-3"><div className="h-8 w-8 animate-pulse rounded bg-muted" /><div className="space-y-1"><div className="h-4 w-32 animate-pulse rounded bg-muted" /><div className="h-3 w-20 animate-pulse rounded bg-muted mx-auto" /></div><div className="h-8 w-8 animate-pulse rounded bg-muted" /></CardContent></Card>
-        {[1, 2, 3].map((i) => (
+        <div className="flex items-center justify-between mt-10 md:hidden"><h1 className="text-2xl font-bold">Obligaciones</h1><div className="h-9 w-24 animate-pulse rounded-lg bg-muted" /></div>
+        <Card>
+          <CardContent className="flex flex-col items-center justify-between gap-2 py-3">
+            <div className="flex w-full items-center justify-between pb-4">
+              <div className="h-10 w-10 animate-pulse rounded-md bg-muted" />
+              <div className="space-y-1">
+                <div className="h-4 w-32 animate-pulse rounded bg-muted" />
+                <div className="h-3 w-20 animate-pulse rounded bg-muted mx-auto" />
+              </div>
+              <div className="h-10 w-10 animate-pulse rounded-md bg-muted" />
+            </div>
+            <div className="h-3 w-full animate-pulse rounded bg-muted mx-auto" />
+          </CardContent>
+        </Card>
+        {Array.from({ length: 14 }).map((_, i) => (
           <Card key={i}><CardContent className="flex items-center gap-3 py-3 px-4">
             <div className="h-7 w-7 animate-pulse rounded-full bg-muted" />
             <div className="flex-1 h-4 w-40 animate-pulse rounded bg-muted" />

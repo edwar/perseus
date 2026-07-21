@@ -3,6 +3,8 @@
 import { useState, useRef, useCallback } from "react"
 import { Upload, Camera, ScanLine, Check, Loader2, FileText, X, CloudOff } from "lucide-react"
 import { analyzeReceiptImage, analyzeDebtInvoice, type ReceiptData, type DebtInvoiceData } from "@/lib/ia"
+import { uploadToCloudinary } from "@/lib/cloudinary-client"
+import { useDocumentStore } from "@/store/document-store"
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import { useOcrStore, computeRemaining } from "@/store/ocr-store"
@@ -54,6 +56,18 @@ export function Scanner<T extends ScanMode>({ mode, onResult, onClear, className
         : await analyzeDebtInvoice(file)) as ScanResult<T>
       onResult(data)
       setScanned(true)
+
+      const uploadResult = await uploadToCloudinary(file, mode)
+      if (uploadResult) {
+        useDocumentStore.getState().addDoc({
+          id: uploadResult.public_id,
+          publicId: uploadResult.public_id,
+          url: uploadResult.secure_url,
+          type: mode,
+          uploadedAt: new Date().toISOString(),
+          data: data as unknown as Record<string, unknown>,
+        })
+      }
     } catch (err) {
       setError(err instanceof Error ? err.message : "Error al escanear")
     } finally {
@@ -155,7 +169,7 @@ export function Scanner<T extends ScanMode>({ mode, onResult, onClear, className
               className="w-full"
             >
               {scanning ? (
-                <><Loader2 className="h-4 w-4 animate-spin" /> Analizando con LiteRT.js...</>
+                <><Loader2 className="h-4 w-4 animate-spin" /> Analizando...</>
               ) : (
                 <><ScanLine className="h-4 w-4" /> Escanear</>
               )}

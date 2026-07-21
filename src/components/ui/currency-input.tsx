@@ -17,6 +17,8 @@ function formatCurrency(val: string): string {
   const decPart = normalized.slice(dotIndex + 1).replace(/\D/g, "").slice(0, 2)
   if (!intPart && !decPart) return ""
   const formattedInt = intPart.replace(/\B(?=(\d{3})+(?!\d))/g, ".")
+  const hasDecimalSep = normalized.includes(".")
+  if (hasDecimalSep && !decPart) return `${formattedInt},`
   return decPart ? `${formattedInt},${decPart}` : formattedInt
 }
 

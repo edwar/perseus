@@ -1,7 +1,7 @@
 "use client"
 
-import { useEffect, useState } from "react"
-import { Search, Plus, X, ArrowLeft, ArrowDown, ArrowUp, ScanLine, PenLine, Repeat, Calendar, Receipt, Pencil, Trash2 } from "lucide-react"
+import { useEffect, useState, useCallback } from "react"
+import { Search, Plus, X, ArrowLeft, ArrowDown, ArrowUp, ScanLine, PenLine, Repeat, Calendar, Receipt, Pencil, Trash2, ChevronLeft, ChevronRight } from "lucide-react"
 import { useHeaderStore } from "@/store/header-store"
 import { Scanner } from "@/components/scanner"
 import type { ReceiptData } from "@/lib/ia"
@@ -15,6 +15,7 @@ import { Card, CardContent } from "@/components/ui/card"
 import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@/components/ui/select"
 import { useTransactionStore, type Transaction } from "@/store/transaction-store"
 import { useBudgetStore } from "@/store/budget-store"
+import { useDebtStore } from "@/store/debt-store"
 import { useRecurringStore } from "@/store/recurring-store"
 import { Empty } from "@/components/ui/empty"
 import { ConfirmDialog } from "@/components/ui/confirm-dialog"
@@ -41,6 +42,8 @@ export default function TransactionsPage() {
   const [showNewForm, setShowNewForm] = useState(false)
   const [editTx, setEditTx] = useState<string | null>(null)
   const [deleteTx, setDeleteTx] = useState<string | null>(null)
+  const [page, setPage] = useState(1)
+  const PAGE_SIZE = 15
   const setHeaderAction = useHeaderStore((s) => s.setAction)
   const [ready, setReady] = useState(false)
   useEffect(() => { const t = setTimeout(() => setReady(true), 100); return () => clearTimeout(t) }, [])
@@ -49,14 +52,17 @@ export default function TransactionsPage() {
   const filtered = transactions
     .filter((t) => tab === "all" ? true : tab === "recurring" ? t.recurring : !t.recurring)
     .filter((t) => t.description.toLowerCase().includes(search.toLowerCase()))
+  const totalPages = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE))
+  const safePage = page > totalPages ? 1 : page
+  const paginated = filtered.slice((safePage - 1) * PAGE_SIZE, safePage * PAGE_SIZE)
 
   if (!ready) {
     return (
       <div className="space-y-6">
-        <div className="flex items-center justify-between"><h1 className="text-2xl font-bold">Transacciones</h1><div className="h-9 w-36 animate-pulse rounded-lg bg-muted" /></div>
+        <div className="flex items-center justify-between mt-10 md:hidden"><h1 className="text-2xl font-bold">Transacciones</h1><div className="h-9 w-24 animate-pulse rounded-lg bg-muted" /></div>
         <div className="grid gap-2 sm:grid-cols-[1fr_180px]"><div className="h-10 animate-pulse rounded-xl bg-muted" /><div className="h-10 animate-pulse rounded-xl bg-muted" /></div>
         <Card><div className="divide-y">
-          {[1, 2, 3, 4, 5].map((i) => (
+          {Array.from({ length: 14 }).map((_, i) => (
             <div key={i} className="flex items-center justify-between px-6 py-3">
               <div className="flex items-center gap-3 flex-1">
                 <div className="h-7 w-7 animate-pulse rounded-full bg-muted" />
@@ -116,7 +122,7 @@ export default function TransactionsPage() {
           <Empty icon={Receipt} title="No hay transacciones" description={search ? "Intenta con otra búsqueda" : "Registra tu primera transacción para empezar"} action={!search ? <Button size="sm" onClick={() => setShowNewForm(true)}><Plus className="h-3 w-3" /> Crear</Button> : undefined} />
         ) : (
           <div className="divide-y">
-            {filtered.map((tx) => (
+            {paginated.map((tx) => (
               <div key={tx.id}>
                 {editTx === tx.id ? (
                   <InlineEditForm
@@ -165,6 +171,28 @@ export default function TransactionsPage() {
         )}
       </Card>
 
+      {totalPages > 1 && (
+        <div className="flex items-center justify-center gap-1">
+          <Button variant="ghost" size="sm" className="h-8 w-8 p-0" disabled={safePage <= 1} onClick={() => setPage(safePage - 1)}>
+            <ChevronLeft className="h-4 w-4" />
+          </Button>
+          {Array.from({ length: totalPages }, (_, i) => i + 1).map((p) => (
+            <Button
+              key={p}
+              variant={p === safePage ? "default" : "ghost"}
+              size="sm"
+              className="h-8 w-8 p-0 text-xs"
+              onClick={() => setPage(p)}
+            >
+              {p}
+            </Button>
+          ))}
+          <Button variant="ghost" size="sm" className="h-8 w-8 p-0" disabled={safePage >= totalPages} onClick={() => setPage(safePage + 1)}>
+            <ChevronRight className="h-4 w-4" />
+          </Button>
+        </div>
+      )}
+
       <ConfirmDialog
         open={!!deleteTx}
         title="Eliminar transacción"
@@ -199,6 +227,8 @@ function NewTransactionForm({ onClose }: { onClose: () => void }) {
   const budgets = useBudgetStore((s) => s.budgets)
   const recurringItems = useRecurringStore((s) => s.items)
   const addTransaction = useTransactionStore((s) => s.addTransaction)
+  const debts = useDebtStore((s) => s.debts)
+  const updateDebt = useDebtStore((s) => s.updateDebt)
   const [step, setStep] = useState<"type" | "frequency" | "pick" | "method" | "manual" | "scan">("type")
   const [type, setType] = useState<"EXPENSE" | "INCOME">("EXPENSE")
   const [description, setDescription] = useState("")
@@ -208,15 +238,26 @@ function NewTransactionForm({ onClose }: { onClose: () => void }) {
   const [isRecurring, setIsRecurring] = useState(false)
   const [frequency, setFrequency] = useState("MONTHLY")
   const [dayOfMonth, setDayOfMonth] = useState("")
+  const [debtId, setDebtId] = useState("")
 
   function handleSave() {
+    const txAmount = Number(amount) || 0
     addTransaction({
       description: description || "Transacción",
-      amount: Number(amount) || 0,
+      amount: txAmount,
       type,
       category,
       date: new Date().toISOString().split("T")[0],
     })
+    if (debtId) {
+      const debt = debts.find((d) => d.id === debtId)
+      if (debt) {
+        updateDebt(debtId, {
+          remaining: debt.remaining - txAmount,
+          paid: debt.paid + 1,
+        })
+      }
+    }
     onClose()
   }
 
@@ -345,6 +386,7 @@ function NewTransactionForm({ onClose }: { onClose: () => void }) {
                   setCategory(item.category)
                   setFrequency(item.frequency)
                   setDayOfMonth(String(item.dayOfMonth))
+                  setDebtId(item.debtId ?? "")
                   setIsRecurring(true)
                   setStep("method")
                 }}

@@ -54,7 +54,6 @@ export default function DashboardPage() {
   const recentTransactions = useMemo(
     () => [...transactions]
       .sort((a, b) => b.date.localeCompare(a.date))
-      .slice(0, 5)
       .map((t) => ({
         id: t.id,
         amount: t.amount,

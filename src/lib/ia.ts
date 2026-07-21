@@ -39,14 +39,14 @@ export interface ReceiptData {
 }
 
 export interface DebtInvoiceData {
-  totalInstallments: number | null
-  installmentsPaid: number | null
-  minimumPayment: number | null
-  amount: number | null
-  dueDate: string | null
-  creditor: string | null
-  interestRate: number | null
-  currentBalance: number | null
+  totalCuotas: number | null
+  cuotasPagadas: number | null
+  pagoMinimo: number | null
+  montoTotal: number | null
+  fechaVencimiento: string | null
+  acreedor: string | null
+  tasaInteres: number | null
+  saldoActual: number | null
 }
 
 async function cloudVisionOCR(imageBase64: string): Promise<string | null> {
@@ -148,13 +148,13 @@ export async function analyzeDebtInvoice(file: File): Promise<DebtInvoiceData> {
   if (ai) return ai
 
   return {
-    totalInstallments: null,
-    installmentsPaid: null,
-    minimumPayment: null,
-    amount: null,
-    dueDate: null,
-    creditor: null,
-    interestRate: null,
-    currentBalance: null,
+    totalCuotas: null,
+    cuotasPagadas: null,
+    pagoMinimo: null,
+    montoTotal: null,
+    fechaVencimiento: null,
+    acreedor: null,
+    tasaInteres: null,
+    saldoActual: null,
   }
 }
