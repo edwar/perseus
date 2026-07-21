@@ -1,5 +1,6 @@
 "use client"
 
+import Image from "next/image"
 import { useMemo, useState, useEffect } from "react"
 import { useDocumentStore, type ScannedDoc } from "@/store/document-store"
 import { useHeaderStore } from "@/store/header-store"
@@ -187,7 +188,7 @@ function DocumentCard({ doc }: { doc: ScannedDoc }) {
 
   return (
     <>
-      <Card className="relative overflow-hidden h-[200px] w-[200px] rounded-sm cursor-pointer" onClick={() => setOpen(true)}>
+      <Card className="relative flex flex-col overflow-hidden h-[200px] w-[200px] rounded-sm cursor-pointer" onClick={() => setOpen(true)}>
         <div className="absolute top-2 right-2 z-20">
           <Button variant="ghost" size="icon" className="text-red-500 hover:text-white bg-white hover:bg-red-500 rounded-full" onClick={(e) => { e.stopPropagation(); setDeleteConfirm(true) }}>
             <Trash2 className="h-4 w-4" />
@@ -195,7 +196,7 @@ function DocumentCard({ doc }: { doc: ScannedDoc }) {
         </div>
         <div
           className={cn(
-            "relative bg-muted",
+            "relative flex-1 bg-muted",
             doc.type === "invoice" && "flex items-center justify-center"
           )}
         >
@@ -205,7 +206,13 @@ function DocumentCard({ doc }: { doc: ScannedDoc }) {
               <span className="text-xs">Factura</span>
             </div>
           ) : (
-            <img src={doc.url} alt="documento" className="h-full w-full object-cover" />
+            <Image
+              src={doc.url}
+              alt="documento"
+              fill
+              className="object-cover"
+              sizes="200px"
+            />
           )}
         </div>
         <div className="absolute bottom-0 w-full h-8 bg-white z-10 flex justify-center items-center">
@@ -250,7 +257,15 @@ function DocumentCard({ doc }: { doc: ScannedDoc }) {
               {isPDF ? (
                 <iframe src={doc.url} title="PDF" className="h-[70vh] w-full rounded-lg" />
               ) : doc.type === "receipt" ? (
-                <img src={doc.url} alt="documento" className="max-h-[60vh] w-full rounded-lg object-contain" />
+                <div className="relative max-h-[60vh] w-full" style={{ minHeight: 300 }}>
+                  <Image
+                    src={doc.url}
+                    alt="documento"
+                    fill
+                    className="object-contain rounded-lg"
+                    sizes="(max-width: 768px) 100vw, 60vw"
+                  />
+                </div>
               ) : (
                 <div className="flex items-center justify-center rounded-lg bg-muted py-16">
                   <FileText className="h-16 w-16 text-muted-foreground" />

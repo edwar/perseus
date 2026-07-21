@@ -1,5 +1,6 @@
 "use client"
 
+import Image from "next/image"
 import Link from "next/link"
 import { usePathname, useRouter } from "next/navigation"
 import { createAuthClient } from "better-auth/client"
@@ -68,7 +69,7 @@ export function Sidebar() {
         )}
       >
         <div className="flex h-14 items-center gap-2 border-b px-4 shrink-0">
-          <img src="/logo.svg" alt="Perseus" className="h-7 w-7 shrink-0" />
+          <Image src="/logo.svg" alt="Perseus" width={28} height={28} className="shrink-0" />
           {sidebarOpen && <span className="text-lg font-semibold text-sidebar-foreground">Perseus</span>}
         </div>
         <nav className="flex-1 space-y-1 p-2">

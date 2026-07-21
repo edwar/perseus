@@ -1,4 +1,3 @@
-import Tesseract from "tesseract.js"
 import { useOcrStore, OCR_MONTHLY_LIMIT, currentMonth } from "@/store/ocr-store"
 
 let parseNoKey = false
@@ -100,6 +99,7 @@ async function pdfToImage(file: File): Promise<File> {
 }
 
 async function tesseractOCR(file: File): Promise<string> {
+  const { default: Tesseract } = await import("tesseract.js")
   const { data } = await Tesseract.recognize(file, "spa", {
     logger: (m) => {
       if (m.status === "recognizing text") {
