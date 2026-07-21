@@ -87,8 +87,8 @@ export default function DocumentsPage() {
 
   if (docs.length === 0) {
     return (
-      <div className="space-y-6 mt-10">
-        <h1 className="text-2xl font-bold">Documentos</h1>
+      <div className="space-y-6">
+        <h1 className="text-2xl font-bold mt-10 md:hidden">Documentos</h1>
         <Empty icon={ScanLine} title="No hay documentos" description="Los documentos escaneados aparecerán aquí" />
       </div>
     )
