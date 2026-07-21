@@ -1,5 +1,4 @@
 import { create } from "zustand"
-import { persist } from "zustand/middleware"
 
 export interface Goal {
   id: string
@@ -28,20 +27,39 @@ interface SavingsStore {
   addInvestment: (i: Omit<Investment, "id">) => void
   updateInvestment: (id: string, i: Partial<Investment>) => void
   deleteInvestment: (id: string) => void
+  hydrate: () => Promise<void>
 }
 
-export const useSavingsStore = create<SavingsStore>()(
-  persist(
-    (set) => ({
-      goals: [] as Goal[],
-      investments: [] as Investment[],
-      addGoal: (g) => set((s) => ({ goals: [...s.goals, { id: String(Date.now()), ...g }] })),
-      updateGoal: (id, g) => set((s) => ({ goals: s.goals.map((x) => x.id === id ? { ...x, ...g } : x) })),
-      deleteGoal: (id) => set((s) => ({ goals: s.goals.filter((x) => x.id !== id) })),
-      addInvestment: (i) => set((s) => ({ investments: [...s.investments, { id: String(Date.now()), ...i }] })),
-      updateInvestment: (id, i) => set((s) => ({ investments: s.investments.map((x) => x.id === id ? { ...x, ...i } : x) })),
-      deleteInvestment: (id) => set((s) => ({ investments: s.investments.filter((x) => x.id !== id) })),
-    }),
-    { name: "perseus-savings" }
-  )
-)
+export const useSavingsStore = create<SavingsStore>()((set, get) => ({
+  goals: [],
+  investments: [],
+  addGoal: (g) => {
+    set({ goals: [...get().goals, { id: crypto.randomUUID(), ...g }] })
+    fetch("/api/data", { method: "PATCH", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ key: "savings", data: { goals: get().goals, investments: get().investments } }) })
+  },
+  updateGoal: (id, g) => {
+    set({ goals: get().goals.map((x) => x.id === id ? { ...x, ...g } : x) })
+    fetch("/api/data", { method: "PATCH", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ key: "savings", data: { goals: get().goals, investments: get().investments } }) })
+  },
+  deleteGoal: (id) => {
+    set({ goals: get().goals.filter((x) => x.id !== id) })
+    fetch("/api/data", { method: "PATCH", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ key: "savings", data: { goals: get().goals, investments: get().investments } }) })
+  },
+  addInvestment: (i) => {
+    set({ investments: [...get().investments, { id: crypto.randomUUID(), ...i }] })
+    fetch("/api/data", { method: "PATCH", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ key: "savings", data: { goals: get().goals, investments: get().investments } }) })
+  },
+  updateInvestment: (id, i) => {
+    set({ investments: get().investments.map((x) => x.id === id ? { ...x, ...i } : x) })
+    fetch("/api/data", { method: "PATCH", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ key: "savings", data: { goals: get().goals, investments: get().investments } }) })
+  },
+  deleteInvestment: (id) => {
+    set({ investments: get().investments.filter((x) => x.id !== id) })
+    fetch("/api/data", { method: "PATCH", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ key: "savings", data: { goals: get().goals, investments: get().investments } }) })
+  },
+  hydrate: async () => {
+    const res = await fetch("/api/data")
+    const json = await res.json()
+    set({ goals: json.savings?.goals ?? [], investments: json.savings?.investments ?? [] })
+  },
+}))

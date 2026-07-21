@@ -1,5 +1,4 @@
 import { create } from "zustand"
-import { persist } from "zustand/middleware"
 
 export interface BudgetItem {
   name: string
@@ -18,19 +17,26 @@ interface BudgetStore {
   budgets: Budget[]
   upsertBudget: (b: Omit<Budget, "id"> & { id?: string }) => void
   deleteBudget: (id: string) => void
+  hydrate: () => Promise<void>
 }
 
-export const useBudgetStore = create<BudgetStore>()(
-  persist(
-    (set) => ({
-      budgets: [],
-      upsertBudget: (b) =>
-        set((state) => {
-          if (b.id) return { budgets: state.budgets.map((x) => (x.id === b.id ? { ...x, ...b } : x)) }
-          return { budgets: [...state.budgets, { id: String(Date.now()), ...b }] }
-        }),
-      deleteBudget: (id) => set((s) => ({ budgets: s.budgets.filter((x) => x.id !== id) })),
-    }),
-    { name: "perseus-budgets" }
-  )
-)
+export const useBudgetStore = create<BudgetStore>()((set, get) => ({
+  budgets: [],
+  upsertBudget: (b) => {
+    if (b.id) {
+      set({ budgets: get().budgets.map((x) => (x.id === b.id ? { ...x, ...b } : x)) })
+    } else {
+      set({ budgets: [...get().budgets, { id: crypto.randomUUID(), ...b }] })
+    }
+    fetch("/api/data", { method: "PATCH", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ key: "budgets", data: get().budgets }) })
+  },
+  deleteBudget: (id) => {
+    set({ budgets: get().budgets.filter((x) => x.id !== id) })
+    fetch("/api/data", { method: "PATCH", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ key: "budgets", data: get().budgets }) })
+  },
+  hydrate: async () => {
+    const res = await fetch("/api/data")
+    const json = await res.json()
+    set({ budgets: json.budgets ?? [] })
+  },
+}))

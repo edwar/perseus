@@ -2,11 +2,10 @@
 
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query"
 import { useEffect, useState, type ReactNode } from "react"
-import { syncFromCloud, debouncedSync } from "@/lib/sync"
 
 export function Providers({ children }: { children: ReactNode }) {
   useEffect(() => {
-    async function init() {
+    async function hydrateAll() {
       const [txStore, balStore, bugStore, dbtStore, recStore, savStore, oblStore] =
         await Promise.all([
           import("@/store/transaction-store").then((m) => m.useTransactionStore),
@@ -18,27 +17,24 @@ export function Providers({ children }: { children: ReactNode }) {
           import("@/store/obligations-store").then((m) => m.useObligationsStore),
         ])
 
-      const transactions = txStore.getState().transactions
-      const balanceState = balStore.getState()
-      if (balanceState.balance === 0 && transactions.length > 0) {
-        const initial = transactions.reduce(
-          (s, t) => s + (t.type === "INCOME" ? t.amount : -t.amount),
-          0
-        )
-        if (initial !== 0) balanceState.setBalance(initial)
+      await Promise.all([
+        txStore.getState().hydrate(),
+        bugStore.getState().hydrate(),
+        dbtStore.getState().hydrate(),
+        recStore.getState().hydrate(),
+        savStore.getState().hydrate(),
+        oblStore.getState().hydrate(),
+      ])
+
+      const txs = txStore.getState().transactions
+      let computed = 0
+      for (const tx of txs) {
+        computed += tx.type === "INCOME" ? tx.amount : -tx.amount
       }
-
-      syncFromCloud()
-
-      const unsubs = [txStore, bugStore, dbtStore, recStore, savStore, oblStore].map((store) =>
-        store.subscribe((state, prev) => {
-          if (state !== prev) debouncedSync()
-        })
-      )
-      return () => unsubs.forEach((fn) => fn())
+      balStore.getState().hydrate(computed)
     }
 
-    init()
+    hydrateAll()
   }, [])
 
   const [queryClient] = useState(

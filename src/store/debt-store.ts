@@ -1,5 +1,4 @@
 import { create } from "zustand"
-import { persist } from "zustand/middleware"
 
 interface Debt {
   id: string
@@ -20,16 +19,26 @@ interface DebtStore {
   addDebt: (d: Omit<Debt, "id">) => void
   updateDebt: (id: string, d: Partial<Debt>) => void
   deleteDebt: (id: string) => void
+  hydrate: () => Promise<void>
 }
 
-export const useDebtStore = create<DebtStore>()(
-  persist(
-    (set) => ({
-      debts: [] as Debt[],
-      addDebt: (d) => set((s) => ({ debts: [...s.debts, { id: String(Date.now()), ...d }] })),
-      updateDebt: (id, d) => set((s) => ({ debts: s.debts.map((x) => x.id === id ? { ...x, ...d } : x) })),
-      deleteDebt: (id) => set((s) => ({ debts: s.debts.filter((x) => x.id !== id) })),
-    }),
-    { name: "perseus-debts" }
-  )
-)
+export const useDebtStore = create<DebtStore>()((set, get) => ({
+  debts: [],
+  addDebt: (d) => {
+    set({ debts: [...get().debts, { id: crypto.randomUUID(), ...d }] })
+    fetch("/api/data", { method: "PATCH", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ key: "debts", data: get().debts }) })
+  },
+  updateDebt: (id, d) => {
+    set({ debts: get().debts.map((x) => x.id === id ? { ...x, ...d } : x) })
+    fetch("/api/data", { method: "PATCH", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ key: "debts", data: get().debts }) })
+  },
+  deleteDebt: (id) => {
+    set({ debts: get().debts.filter((x) => x.id !== id) })
+    fetch("/api/data", { method: "PATCH", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ key: "debts", data: get().debts }) })
+  },
+  hydrate: async () => {
+    const res = await fetch("/api/data")
+    const json = await res.json()
+    set({ debts: json.debts ?? [] })
+  },
+}))
