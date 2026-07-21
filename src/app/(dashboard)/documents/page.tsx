@@ -188,7 +188,7 @@ function DocumentCard({ doc }: { doc: ScannedDoc }) {
 
   return (
     <>
-      <Card className="relative flex flex-col overflow-hidden h-[200px] w-[200px] rounded-sm cursor-pointer" onClick={() => setOpen(true)}>
+      <Card className="relative overflow-hidden h-[200px] w-[200px] rounded-sm cursor-pointer" onClick={() => setOpen(true)}>
         <div className="absolute top-2 right-2 z-20">
           <Button variant="ghost" size="icon" className="text-red-500 hover:text-white bg-white hover:bg-red-500 rounded-full" onClick={(e) => { e.stopPropagation(); setDeleteConfirm(true) }}>
             <Trash2 className="h-4 w-4" />
