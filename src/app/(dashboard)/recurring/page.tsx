@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect, useState } from "react"
+import { useState } from "react"
 import { Plus, Repeat, ArrowUp, ArrowDown, Pencil, Trash2, X } from "lucide-react"
 import { useHeaderStore } from "@/store/header-store"
 import { cn } from "@/lib/utils"
@@ -12,9 +12,8 @@ import { Card, CardContent } from "@/components/ui/card"
 import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@/components/ui/select"
 import { ConfirmDialog } from "@/components/ui/confirm-dialog"
 import { Empty } from "@/components/ui/empty"
-import { useBudgetStore } from "@/store/budget-store"
-import { useDebtStore } from "@/store/debt-store"
-import { useRecurringStore, type RecurringItem } from "@/store/recurring-store"
+import { useRecurring, useRecurringMutations, type RecurringItem } from "@/hooks/useData"
+import { useBudgets, useDebts } from "@/hooks/useData"
 
 const freqLabels: Record<string, string> = {
   DAILY: "Diario", WEEKLY: "Semanal", BIWEEKLY: "Quincenal",
@@ -22,45 +21,13 @@ const freqLabels: Record<string, string> = {
 }
 
 export default function RecurringPage() {
-  const items = useRecurringStore((s) => s.items)
-  const addItem = useRecurringStore((s) => s.addItem)
-  const updateItem = useRecurringStore((s) => s.updateItem)
-  const deleteItem = useRecurringStore((s) => s.deleteItem)
+  const { data: recurringData } = useRecurring()
+  const items = recurringData ?? []
+  const { add, update, remove } = useRecurringMutations()
   const [showForm, setShowForm] = useState(false)
   const [editingId, setEditingId] = useState<string | null>(null)
   const [deleteConfirm, setDeleteConfirm] = useState<string | null>(null)
   const setHeaderAction = useHeaderStore((s) => s.setAction)
-  const [ready, setReady] = useState(false)
-  useEffect(() => { const t = setTimeout(() => setReady(true), 100); return () => clearTimeout(t) }, [])
-  useEffect(() => { setHeaderAction(<Button size="sm" onClick={() => { setEditingId(null); setShowForm(true) }}><Plus className="h-4 w-4" /> Crear</Button>); return () => setHeaderAction(null) }, [])
-
-  if (!ready) {
-    return (
-      <div className="space-y-6">
-        <div className="flex items-center justify-between mt-10 md:hidden"><h1 className="text-2xl font-bold">Recurrentes</h1><div className="h-9 w-24 animate-pulse rounded-lg bg-muted" /></div>
-        <div className="grid gap-4 sm:grid-cols-2">
-          {Array.from({ length: 14 }).map((_, i) => (
-            <Card key={i}><CardContent>
-              <div className="flex items-start justify-between">
-                <div className="flex items-center gap-3">
-                  <div className="h-10 w-10 animate-pulse rounded-full bg-muted" />
-                  <div className="space-y-1.5">
-                    <div className="h-4 w-32 animate-pulse rounded bg-muted" />
-                    <div className="h-3 w-20 animate-pulse rounded bg-muted" />
-                  </div>
-                </div>
-                <div className="h-5 w-24 animate-pulse rounded bg-muted" />
-              </div>
-              <div className="mt-3 flex justify-between">
-                <div className="h-3 w-28 animate-pulse rounded bg-muted" />
-                <div className="flex gap-1"><div className="h-8 w-8 animate-pulse rounded bg-muted" /><div className="h-8 w-8 animate-pulse rounded bg-muted" /></div>
-              </div>
-            </CardContent></Card>
-          ))}
-        </div>
-      </div>
-    )
-  }
 
   return (
     <div className="space-y-6">
@@ -77,11 +44,11 @@ export default function RecurringPage() {
           editItem={editingId ? items.find((i) => i.id === editingId) ?? null : null}
           onSave={(data) => {
             if (editingId) {
-              updateItem(editingId, data)
+              update.mutate({ id: editingId, ...data })
               setEditingId(null)
               setShowForm(false)
             } else {
-              addItem(data)
+              add.mutate(data)
               setShowForm(false)
             }
           }}
@@ -147,7 +114,7 @@ export default function RecurringPage() {
         open={!!deleteConfirm}
         title="Eliminar recurrente"
         message={`¿Estás seguro de eliminar "${items.find((i) => i.id === deleteConfirm)?.name}"?`}
-        onConfirm={() => { if (deleteConfirm) deleteItem(deleteConfirm); setDeleteConfirm(null) }}
+        onConfirm={() => { if (deleteConfirm) remove.mutate(deleteConfirm); setDeleteConfirm(null) }}
         onCancel={() => setDeleteConfirm(null)}
       />
     </div>
@@ -159,8 +126,8 @@ function RecurringForm({ editItem, onSave, onCancel }: {
   onSave: (data: Omit<RecurringItem, "id">) => void
   onCancel: () => void
 }) {
-  const budgets = useBudgetStore((s) => s.budgets)
-  const debts = useDebtStore((s) => s.debts)
+  const { data: budgets } = useBudgets()
+  const { data: debts } = useDebts()
   const [name, setName] = useState(editItem?.name ?? "")
   const [amount, setAmount] = useState(String(editItem?.amount ?? ""))
   const [type, setType] = useState<"INCOME" | "EXPENSE">(editItem?.type ?? "EXPENSE")
@@ -224,7 +191,7 @@ function RecurringForm({ editItem, onSave, onCancel }: {
                     <SelectValue placeholder="Seleccionar presupuesto" />
                   </SelectTrigger>
                   <SelectContent>
-                    {budgets.length === 0 ? (
+                    {!budgets || budgets.length === 0 ? (
                       <div className="px-3 py-6 text-center text-xs text-muted-foreground space-y-2">
                         <p>No hay presupuestos</p>
                         <Button size="sm" onClick={() => window.location.href = "/budgets"}>Ir a Presupuestos</Button>
@@ -242,7 +209,7 @@ function RecurringForm({ editItem, onSave, onCancel }: {
               <CurrencyInput value={amount} onChange={setAmount} placeholder="0" required />
             </div>
 
-            {type === "EXPENSE" && debts.length > 0 && (
+            {type === "EXPENSE" && debts && debts.length > 0 && (
               <div className="space-y-1.5">
                 <Label>Asociar a deuda (opcional)</Label>
                 <Select value={debtId} onValueChange={(v) => v && setDebtId(v)}>

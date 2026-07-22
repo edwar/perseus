@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect, useState } from "react"
+import { useState } from "react"
 import { Plus, X, Pencil, Trash2, Check, ChevronLeft, ChevronRight } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -8,27 +8,19 @@ import { Label } from "@/components/ui/label"
 import { Card, CardContent } from "@/components/ui/card"
 import { ConfirmDialog } from "@/components/ui/confirm-dialog"
 import { Empty } from "@/components/ui/empty"
-import { useObligationsStore } from "@/store/obligations-store"
+import { useObligations, useObligationsMutations } from "@/hooks/useData"
 import { useHeaderStore } from "@/store/header-store"
+import { cn } from "@/lib/utils"
 
 export default function ObligationsPage() {
-  const obligations = useObligationsStore((s) => s.obligations)
-  const checks = useObligationsStore((s) => s.checks)
-  const togglePaid = useObligationsStore((s) => s.togglePaid)
-  const addObligation = useObligationsStore((s) => s.addObligation)
-  const updateObligation = useObligationsStore((s) => s.updateObligation)
-  const deleteObligation = useObligationsStore((s) => s.deleteObligation)
+  const { data: obligationsData } = useObligations()
+  const obligations = obligationsData?.obligations ?? []
+  const checks = obligationsData?.checks ?? []
+  const { add, update, remove, togglePaid } = useObligationsMutations()
   const setHeaderAction = useHeaderStore((s) => s.setAction)
-  const [ready, setReady] = useState(false)
-  useEffect(() => { const t = setTimeout(() => setReady(true), 100); return () => clearTimeout(t) }, [])
   const [showForm, setShowForm] = useState(false)
   const [editId, setEditId] = useState<string | null>(null)
   const [deleteId, setDeleteId] = useState<string | null>(null)
-
-  useEffect(() => {
-    setHeaderAction(<Button size="sm" onClick={() => { setEditId(null); setShowForm(true) }}><Plus className="h-4 w-4" /> Crear</Button>)
-    return () => setHeaderAction(null)
-  }, [])
 
   const monthName = (m: string) => {
     const [y, month] = m.split("-").map(Number)
@@ -47,35 +39,6 @@ export default function ObligationsPage() {
   const paidIds = currentCheck?.paid ?? []
   const total = obligations.length
   const paid = obligations.filter((o) => paidIds.includes(o.id)).length
-
-  if (!ready) {
-    return (
-      <div className="space-y-6">
-        <div className="flex items-center justify-between mt-10 md:hidden"><h1 className="text-2xl font-bold">Obligaciones</h1><div className="h-9 w-24 animate-pulse rounded-lg bg-muted" /></div>
-        <Card>
-          <CardContent className="flex flex-col items-center justify-between gap-2 py-3">
-            <div className="flex w-full items-center justify-between pb-4">
-              <div className="h-10 w-10 animate-pulse rounded-md bg-muted" />
-              <div className="space-y-1">
-                <div className="h-4 w-32 animate-pulse rounded bg-muted" />
-                <div className="h-3 w-20 animate-pulse rounded bg-muted mx-auto" />
-              </div>
-              <div className="h-10 w-10 animate-pulse rounded-md bg-muted" />
-            </div>
-            <div className="h-3 w-full animate-pulse rounded bg-muted mx-auto" />
-          </CardContent>
-        </Card>
-        {Array.from({ length: 14 }).map((_, i) => (
-          <Card key={i}><CardContent className="flex items-center gap-3 py-3 px-4">
-            <div className="h-7 w-7 animate-pulse rounded-full bg-muted" />
-            <div className="flex-1 h-4 w-40 animate-pulse rounded bg-muted" />
-            <div className="h-8 w-8 animate-pulse rounded bg-muted" />
-            <div className="h-8 w-8 animate-pulse rounded bg-muted" />
-          </CardContent></Card>
-        ))}
-      </div>
-    )
-  }
 
   return (
     <div className="space-y-6">
@@ -116,7 +79,7 @@ export default function ObligationsPage() {
         <ObligationForm
           initial={editId ? obligations.find((o) => o.id === editId) ?? undefined : undefined}
           onSave={(d) => {
-            if (editId) { updateObligation(editId, d); setEditId(null) } else { addObligation(d) }
+            if (editId) { update.mutate({ id: editId, ...d }); setEditId(null) } else { add.mutate(d) }
             setShowForm(false)
           }}
           onClose={() => { setShowForm(false); setEditId(null) }}
@@ -133,7 +96,7 @@ export default function ObligationsPage() {
               <Card key={obl.id} className={isPaid ? "opacity-60" : ""}>
                 <CardContent className="flex items-center gap-3 py-3 px-4">
                   <button
-                    onClick={() => togglePaid(obl.id, currentMonth)}
+                    onClick={() => togglePaid.mutate({ obligationId: obl.id, month: currentMonth })}
                     className={cn(
                       "flex h-7 w-7 shrink-0 items-center justify-center rounded-full border-2 transition-colors",
                       isPaid ? "border-emerald-500 bg-emerald-500 text-white" : "border-muted-foreground/30 hover:border-primary"
@@ -157,12 +120,10 @@ export default function ObligationsPage() {
         </div>
       )}
 
-      <ConfirmDialog open={!!deleteId} title="Eliminar obligación" message={`¿Estás seguro?`} onConfirm={() => { if (deleteId) deleteObligation(deleteId); setDeleteId(null) }} onCancel={() => setDeleteId(null)} />
+      <ConfirmDialog open={!!deleteId} title="Eliminar obligación" message={`¿Estás seguro?`} onConfirm={() => { if (deleteId) remove.mutate(deleteId); setDeleteId(null) }} onCancel={() => setDeleteId(null)} />
     </div>
   )
 }
-
-import { cn } from "@/lib/utils"
 
 function ObligationForm({ initial, onSave, onClose }: {
   initial?: { name: string }

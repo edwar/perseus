@@ -10,62 +10,27 @@ import { CurrencyInput } from "@/components/ui/currency-input"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Card, CardContent } from "@/components/ui/card"
-import { useDebtStore } from "@/store/debt-store"
 import { ConfirmDialog } from "@/components/ui/confirm-dialog"
 import { Empty } from "@/components/ui/empty"
-import { useBudgetStore } from "@/store/budget-store"
 import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@/components/ui/select"
+import { useDebts, useDebtMutations, useBudgets } from "@/hooks/useData"
 
 export default function DebtsPage() {
-  const debts = useDebtStore((s) => s.debts)
-  const addDebt = useDebtStore((s) => s.addDebt)
-  const updateDebt = useDebtStore((s) => s.updateDebt)
-  const deleteDebt = useDebtStore((s) => s.deleteDebt)
+  const { data } = useDebts()
+  const debts = data ?? []
+  const { add: addDebt, update: updateDebt, remove: removeDebt } = useDebtMutations()
   const [showAddDebt, setShowAddDebt] = useState(false)
   const [editDebtId, setEditDebtId] = useState<string | null>(null)
   const [deleteConfirm, setDeleteConfirm] = useState<string | null>(null)
   const setHeaderAction = useHeaderStore((s) => s.setAction)
-  const [ready, setReady] = useState(false)
-  useEffect(() => { const t = setTimeout(() => setReady(true), 100); return () => clearTimeout(t) }, [])
   useEffect(() => { setHeaderAction(<Button size="sm" onClick={() => setShowAddDebt(true)}><Plus className="h-4 w-4" /> Crear</Button>); return () => setHeaderAction(null) }, [])
-
-  if (!ready) {
-    return (
-      <div className="space-y-6">
-        <div className="flex items-center justify-between mt-10 md:hidden"><h1 className="text-2xl font-bold">Deudas</h1><div className="h-9 w-24 animate-pulse rounded-lg bg-muted" /></div>
-        <div className="grid gap-4 sm:grid-cols-2">
-          {Array.from({ length: 14 }).map((_, i) => (
-            <Card key={i} className="rounded-2xl border-0 shadow-md transition-shadow hover:shadow-lg"><CardContent>
-              <div className="flex items-start justify-between">
-                <div className="space-y-1.5 flex-1">
-                  <div className="h-4 w-40 animate-pulse rounded bg-muted" />
-                  <div className="h-3 w-24 animate-pulse rounded bg-muted" />
-                </div>
-                <div className="h-5 w-16 animate-pulse rounded bg-muted" />
-              </div>
-              <div className="mt-4 space-y-2">
-                <div className="flex justify-between"><div className="h-3 w-16 animate-pulse rounded bg-muted" /><div className="h-3 w-24 animate-pulse rounded bg-muted" /></div>
-                <div className="flex justify-between"><div className="h-3 w-20 animate-pulse rounded bg-muted" /><div className="h-3 w-20 animate-pulse rounded bg-muted" /></div>
-                <div className="h-2.5 animate-pulse rounded-full bg-muted" />
-              </div>
-              <div className="mt-4 flex gap-2">
-                <div className="flex-1 h-9 animate-pulse rounded-lg bg-muted" />
-                <div className="h-9 w-9 animate-pulse rounded-lg bg-muted" />
-                <div className="h-9 w-9 animate-pulse rounded-lg bg-muted" />
-              </div>
-            </CardContent></Card>
-          ))}
-        </div>
-      </div>
-    )
-  }
 
   function handleSave(data: { name: string; creditor: string; category: string; total: number; remaining: number; rate: number; monthly: number; installments: number; paid: number }, id?: string) {
     if (id) {
-      updateDebt(id, { ...data, minimum: null, installments: data.installments || null })
+      updateDebt.mutate({ id, ...data, minimum: null, installments: data.installments || null } as any)
       setEditDebtId(null)
     } else {
-      addDebt({ ...data, minimum: null, installments: data.installments || null })
+      addDebt.mutate({ ...data, minimum: null, installments: data.installments || null } as any)
       setShowAddDebt(false)
     }
   }
@@ -161,7 +126,7 @@ export default function DebtsPage() {
         open={!!deleteConfirm}
         title="Eliminar deuda"
         message={`¿Estás seguro de eliminar "${debts.find((d) => d.id === deleteConfirm)?.name}"?`}
-        onConfirm={() => { if (deleteConfirm) deleteDebt(deleteConfirm); setDeleteConfirm(null) }}
+        onConfirm={() => { if (deleteConfirm) removeDebt.mutate(deleteConfirm); setDeleteConfirm(null) }}
         onCancel={() => setDeleteConfirm(null)}
       />
     </div>
@@ -173,7 +138,8 @@ function AddDebtForm({ initial, onSave, onClose }: {
   onSave: (data: { name: string; creditor: string; category: string; total: number; remaining: number; rate: number; monthly: number; installments: number; paid: number }) => void
   onClose: () => void
 }) {
-  const budgets = useBudgetStore((s) => s.budgets)
+  const { data: budgetData } = useBudgets()
+  const budgets = budgetData ?? []
   const [name, setName] = useState(initial?.name ?? "")
   const [category, setCategory] = useState(initial?.category ?? "")
   const [total, setTotal] = useState(initial ? String(initial.total) : "")
@@ -298,4 +264,3 @@ function AddDebtForm({ initial, onSave, onClose }: {
     </Card>
   )
 }
-

@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect, useState, useCallback } from "react"
+import { useEffect, useState } from "react"
 import { Search, Plus, X, ArrowLeft, ArrowDown, ArrowUp, ScanLine, PenLine, Repeat, Calendar, Receipt, Pencil, Trash2, ChevronLeft, ChevronRight } from "lucide-react"
 import { useHeaderStore } from "@/store/header-store"
 import { Scanner } from "@/components/scanner"
@@ -13,7 +13,7 @@ import { Label } from "@/components/ui/label"
 import { Badge } from "@/components/ui/badge"
 import { Card, CardContent } from "@/components/ui/card"
 import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@/components/ui/select"
-import { useTransactionStore, type Transaction } from "@/store/transaction-store"
+import { useTransactions, useTransactionMutations, type Transaction } from "@/hooks/useData"
 import { useBudgetStore } from "@/store/budget-store"
 import { useDebtStore } from "@/store/debt-store"
 import { useRecurringStore } from "@/store/recurring-store"
@@ -34,9 +34,8 @@ const tabLabels: Record<Tab, string> = {
 }
 
 export default function TransactionsPage() {
-  const transactions = useTransactionStore((s) => s.transactions)
-  const updateTransaction = useTransactionStore((s) => s.updateTransaction)
-  const deleteTransaction = useTransactionStore((s) => s.deleteTransaction)
+  const { data: transactions = [], isLoading } = useTransactions()
+  const { add, update, remove } = useTransactionMutations()
   const [search, setSearch] = useState("")
   const [tab, setTab] = useState<Tab>("all")
   const [showNewForm, setShowNewForm] = useState(false)
@@ -45,8 +44,6 @@ export default function TransactionsPage() {
   const [page, setPage] = useState(1)
   const PAGE_SIZE = 15
   const setHeaderAction = useHeaderStore((s) => s.setAction)
-  const [ready, setReady] = useState(false)
-  useEffect(() => { const t = setTimeout(() => setReady(true), 100); return () => clearTimeout(t) }, [])
   useEffect(() => { setHeaderAction(<Button size="sm" onClick={() => setShowNewForm(true)}><Plus className="h-4 w-4" /> Crear</Button>); return () => setHeaderAction(null) }, [])
 
   const filtered = transactions
@@ -56,7 +53,7 @@ export default function TransactionsPage() {
   const safePage = page > totalPages ? 1 : page
   const paginated = filtered.slice((safePage - 1) * PAGE_SIZE, safePage * PAGE_SIZE)
 
-  if (!ready) {
+  if (isLoading) {
     return (
       <div className="space-y-6">
         <div className="flex items-center justify-between mt-10 md:hidden"><h1 className="text-2xl font-bold">Transacciones</h1><div className="h-9 w-24 animate-pulse rounded-lg bg-muted" /></div>
@@ -133,7 +130,7 @@ export default function TransactionsPage() {
                 {editTx === tx.id ? (
                   <InlineEditForm
                     tx={tx}
-                    onSave={(d) => { updateTransaction(tx.id, d); setEditTx(null) }}
+                    onSave={(d) => { update.mutate({ ...tx, ...d }); setEditTx(null) }}
                     onCancel={() => setEditTx(null)}
                   />
                 ) : (
@@ -228,7 +225,7 @@ export default function TransactionsPage() {
         open={!!deleteTx}
         title="Eliminar transacción"
         message={`¿Estás seguro de eliminar "${transactions.find((t) => t.id === deleteTx)?.description}"?`}
-        onConfirm={() => { if (deleteTx) deleteTransaction(deleteTx); setDeleteTx(null) }}
+        onConfirm={() => { if (deleteTx) remove.mutate(deleteTx); setDeleteTx(null) }}
         onCancel={() => setDeleteTx(null)}
       />
     </div>
@@ -257,7 +254,7 @@ function InlineEditForm({ tx, onSave, onCancel }: {
 function NewTransactionForm({ onClose }: { onClose: () => void }) {
   const budgets = useBudgetStore((s) => s.budgets)
   const recurringItems = useRecurringStore((s) => s.items)
-  const addTransaction = useTransactionStore((s) => s.addTransaction)
+  const { add } = useTransactionMutations()
   const debts = useDebtStore((s) => s.debts)
   const updateDebt = useDebtStore((s) => s.updateDebt)
   const [step, setStep] = useState<"type" | "frequency" | "pick" | "method" | "manual" | "scan">("type")
@@ -273,7 +270,7 @@ function NewTransactionForm({ onClose }: { onClose: () => void }) {
 
   function handleSave() {
     const txAmount = Number(amount) || 0
-    addTransaction({
+    add.mutate({
       description: description || "Transacción",
       amount: txAmount,
       type,

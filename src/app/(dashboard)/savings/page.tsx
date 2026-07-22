@@ -1,8 +1,7 @@
 "use client"
 
-import { useEffect, useState } from "react"
+import { useState } from "react"
 import { Plus, Target, X, HandCoins, Landmark, Pencil, Trash2 } from "lucide-react"
-import { useHeaderStore } from "@/store/header-store"
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import { CurrencyInput } from "@/components/ui/currency-input"
@@ -13,43 +12,20 @@ import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@
 import { ConfirmDialog } from "@/components/ui/confirm-dialog"
 import { Empty } from "@/components/ui/empty"
 import { Tabs, TabPanel } from "@/components/ui/tabs"
-import { useSavingsStore, type Goal, type Investment } from "@/store/savings-store"
+import { useSavings, useSavingsMutations, type Goal, type Investment } from "@/hooks/useData"
 
 export default function SavingsPage() {
-  const goals = useSavingsStore((s) => s.goals)
-  const investments = useSavingsStore((s) => s.investments)
-  const addGoal = useSavingsStore((s) => s.addGoal)
-  const updateGoal = useSavingsStore((s) => s.updateGoal)
-  const deleteGoalStore = useSavingsStore((s) => s.deleteGoal)
-  const addInvestment = useSavingsStore((s) => s.addInvestment)
-  const updateInvestment = useSavingsStore((s) => s.updateInvestment)
-  const deleteInvestmentStore = useSavingsStore((s) => s.deleteInvestment)
+  const { data: savingsData } = useSavings()
+  const goals = savingsData?.goals ?? []
+  const investments = savingsData?.investments ?? []
+  const { addGoal, updateGoal, deleteGoal, addInvestment, updateInvestment, deleteInvestment } = useSavingsMutations()
   const [showNewGoal, setShowNewGoal] = useState(false)
   const [contributing, setContributing] = useState<string | null>(null)
   const [showNewInvestment, setShowNewInvestment] = useState(false)
   const [editGoal, setEditGoal] = useState<string | null>(null)
   const [editInvestment, setEditInvestment] = useState<string | null>(null)
-  const [deleteGoal, setDeleteGoal] = useState<string | null>(null)
-  const [deleteInvestment, setDeleteInvestment] = useState<string | null>(null)
-  const [ready, setReady] = useState(false)
-  useEffect(() => { const t = setTimeout(() => setReady(true), 100); return () => clearTimeout(t) }, [])
-
-  if (!ready) {
-    return (
-      <div className="space-y-6">
-        <div className="flex gap-1 rounded-xl bg-muted p-1 mt-10 md:mt-0"><div className="flex-1 h-9 animate-pulse rounded-lg bg-muted-foreground/10" /><div className="flex-1 h-9 animate-pulse rounded-lg bg-muted-foreground/10" /></div>
-        <div className="flex items-center justify-between"><h2 className="text-xl font-bold"><div className="h-6 w-40 animate-pulse rounded bg-muted" /></h2><div className="h-9 w-28 animate-pulse rounded-lg bg-muted" /></div>
-        <div className="grid gap-4 sm:grid-cols-2">
-          {Array.from({ length: 14 }).map((_, i) => (
-            <Card key={i}><CardContent>
-              <div className="flex items-center gap-3"><div className="h-10 w-10 animate-pulse rounded-full bg-muted" /><div className="flex-1 space-y-1.5"><div className="h-4 w-32 animate-pulse rounded bg-muted" /><div className="h-3 w-24 animate-pulse rounded bg-muted" /></div></div>
-              <div className="mt-4 space-y-2"><div className="flex justify-between"><div className="h-3 w-16 animate-pulse rounded bg-muted" /><div className="h-3 w-24 animate-pulse rounded bg-muted" /></div><div className="h-2 animate-pulse rounded-full bg-muted" /></div>
-            </CardContent></Card>
-          ))}
-        </div>
-      </div>
-    )
-  }
+  const [deleteGoalConfirm, setDeleteGoalConfirm] = useState<string | null>(null)
+  const [deleteInvestmentConfirm, setDeleteInvestmentConfirm] = useState<string | null>(null)
 
   const freqLabels: Record<string, string> = {
     DAILY: "Diario", WEEKLY: "Semanal", BIWEEKLY: "Quincenal",
@@ -57,7 +33,10 @@ export default function SavingsPage() {
   }
 
   function handleContribute(id: string, amount: number) {
-    updateGoal(id, { current: (goals.find((g) => g.id === id)?.current ?? 0) + amount })
+    const goal = goals.find((g) => g.id === id)
+    if (goal) {
+      updateGoal.mutate({ id, name: goal.name, target: goal.target, current: goal.current + amount, deadline: goal.deadline })
+    }
     setContributing(null)
   }
 
@@ -75,13 +54,13 @@ export default function SavingsPage() {
             </div>
 
             {showNewGoal && (
-              <NewGoalForm onSave={(d) => { addGoal({ current: 0, ...d }); setShowNewGoal(false) }} onClose={() => setShowNewGoal(false)} />
+              <NewGoalForm onSave={(d) => { addGoal.mutate({ current: 0, ...d }); setShowNewGoal(false) }} onClose={() => setShowNewGoal(false)} />
             )}
 
             {editGoal && (() => {
               const g = goals.find((x) => x.id === editGoal)
               if (!g) return null
-              return <NewGoalForm initial={g} onSave={(d) => { updateGoal(editGoal, d); setEditGoal(null) }} onClose={() => setEditGoal(null)} />
+              return <NewGoalForm initial={g} onSave={(d) => { updateGoal.mutate({ id: editGoal, current: g.current, ...d }); setEditGoal(null) }} onClose={() => setEditGoal(null)} />
             })()}
 
             {goals.length === 0 && !showNewGoal ? (
@@ -118,7 +97,7 @@ export default function SavingsPage() {
                         <Button variant="outline" size="sm" onClick={() => setEditGoal(goal.id)} className="gap-1">
                           <Pencil className="h-3 w-3" />
                         </Button>
-                        <Button variant="ghost" size="sm" onClick={() => setDeleteGoal(goal.id)} className="gap-1 text-red-500 hover:text-red-700">
+                        <Button variant="ghost" size="sm" onClick={() => setDeleteGoalConfirm(goal.id)} className="gap-1 text-red-500 hover:text-red-700">
                           <Trash2 className="h-3 w-3" />
                         </Button>
                       </div>
@@ -143,13 +122,13 @@ export default function SavingsPage() {
             </div>
 
             {showNewInvestment && (
-              <NewInvestmentForm onClose={() => setShowNewInvestment(false)} onSave={(d) => { addInvestment(d); setShowNewInvestment(false) }} />
+              <NewInvestmentForm onClose={() => setShowNewInvestment(false)} onSave={(d) => { addInvestment.mutate(d); setShowNewInvestment(false) }} />
             )}
 
             {editInvestment && (() => {
               const c = investments.find((x) => x.id === editInvestment)
               if (!c) return null
-              return <NewInvestmentForm initial={c} onSave={(d) => { updateInvestment(editInvestment, d); setEditInvestment(null) }} onClose={() => setEditInvestment(null)} />
+              return <NewInvestmentForm initial={c} onSave={(d) => { updateInvestment.mutate({ id: editInvestment, ...d }); setEditInvestment(null) }} onClose={() => setEditInvestment(null)} />
             })()}
 
             {investments.length === 0 && !showNewInvestment ? (
@@ -200,7 +179,7 @@ export default function SavingsPage() {
                         <Button variant="outline" size="sm" onClick={() => setEditInvestment(inv.id)} className="flex-1 gap-1">
                           <Pencil className="h-3 w-3" /> Editar
                         </Button>
-                        <Button variant="ghost" size="sm" onClick={() => setDeleteInvestment(inv.id)} className="gap-1 text-red-500 hover:text-red-700">
+                        <Button variant="ghost" size="sm" onClick={() => setDeleteInvestmentConfirm(inv.id)} className="gap-1 text-red-500 hover:text-red-700">
                           <Trash2 className="h-3 w-3" />
                         </Button>
                       </div>
@@ -213,8 +192,8 @@ export default function SavingsPage() {
         </TabPanel>
       </Tabs>
 
-      <ConfirmDialog open={!!deleteGoal} title="Eliminar meta" message={`¿Estás seguro de eliminar "${goals.find((g) => g.id === deleteGoal)?.name}"?`} onConfirm={() => { if (deleteGoal) deleteGoalStore(deleteGoal); setDeleteGoal(null) }} onCancel={() => setDeleteGoal(null)} />
-      <ConfirmDialog open={!!deleteInvestment} title="Eliminar inversión" message={`¿Estás seguro de eliminar la inversión de "${investments.find((c) => c.id === deleteInvestment)?.entity}"?`} onConfirm={() => { if (deleteInvestment) deleteInvestmentStore(deleteInvestment); setDeleteInvestment(null) }} onCancel={() => setDeleteInvestment(null)} />
+      <ConfirmDialog open={!!deleteGoalConfirm} title="Eliminar meta" message={`¿Estás seguro de eliminar "${goals.find((g) => g.id === deleteGoalConfirm)?.name}"?`} onConfirm={() => { if (deleteGoalConfirm) deleteGoal.mutate(deleteGoalConfirm); setDeleteGoalConfirm(null) }} onCancel={() => setDeleteGoalConfirm(null)} />
+      <ConfirmDialog open={!!deleteInvestmentConfirm} title="Eliminar inversión" message={`¿Estás seguro de eliminar la inversión de "${investments.find((c) => c.id === deleteInvestmentConfirm)?.entity}"?`} onConfirm={() => { if (deleteInvestmentConfirm) deleteInvestment.mutate(deleteInvestmentConfirm); setDeleteInvestmentConfirm(null) }} onCancel={() => setDeleteInvestmentConfirm(null)} />
     </div>
   )
 }

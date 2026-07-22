@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect, useState, useMemo, useCallback } from "react"
+import { useState, useMemo, useCallback } from "react"
 import { Plus, Pencil, Trash2, X, PiggyBank } from "lucide-react"
 import { useHeaderStore } from "@/store/header-store"
 import { Button } from "@/components/ui/button"
@@ -8,20 +8,20 @@ import { CurrencyInput } from "@/components/ui/currency-input"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Card, CardContent } from "@/components/ui/card"
-import { useTransactionStore } from "@/store/transaction-store"
 import { useBalanceStore } from "@/store/balance-store"
-import { useBudgetStore, type Budget } from "@/store/budget-store"
 import { ConfirmDialog } from "@/components/ui/confirm-dialog"
 import { Empty } from "@/components/ui/empty"
+import { useBudgets, useBudgetMutations, useTransactions, type Budget } from "@/hooks/useData"
 
 const COLORS = ["#f59e0b", "#3b82f6", "#8b5cf6", "#ef4444", "#10b981", "#ec4899", "#14b8a6", "#f97316"]
 
 export default function BudgetsPage() {
-  const transactions = useTransactionStore((s) => s.transactions)
-  const budgets = useBudgetStore((s) => s.budgets)
+  const { data: transactionsData } = useTransactions()
+  const transactions = transactionsData ?? []
+  const { data: budgetsData, isLoading } = useBudgets()
+  const budgets = budgetsData ?? []
   const totalBalance = useBalanceStore((s) => s.balance)
-  const upsertBudget = useBudgetStore((s) => s.upsertBudget)
-  const deleteBudget = useBudgetStore((s) => s.deleteBudget)
+  const { add: addBudget, update: updateBudget, remove: removeBudget } = useBudgetMutations()
   const [showForm, setShowForm] = useState(false)
   const [editing, setEditing] = useState<string | null>(null)
   const [deleteConfirm, setDeleteConfirm] = useState<string | null>(null)
@@ -38,18 +38,28 @@ export default function BudgetsPage() {
   const totalBudget = useMemo(() => budgets.reduce((s, b) => s + b.amount, 0), [budgets])
 
   function handleSave(data: Omit<Budget, "id"> & { id?: string }) {
-    upsertBudget(editing ? { id: editing, ...data } : data)
+    if (editing) {
+      updateBudget.mutate({ id: editing, ...data })
+    } else {
+      addBudget.mutate(data)
+    }
     setShowForm(false)
     setEditing(null)
   }
 
   const editBudget = budgets.find((b) => b.id === editing)
   const setHeaderAction = useHeaderStore((s) => s.setAction)
-  const [ready, setReady] = useState(false)
-  useEffect(() => { const t = setTimeout(() => setReady(true), 100); return () => clearTimeout(t) }, [])
-  useEffect(() => { setHeaderAction(<Button size="sm" onClick={() => { setEditing(null); setShowForm(true) }}><Plus className="h-4 w-4" /> Crear</Button>); return () => setHeaderAction(null) }, [])
 
-  if (!ready) {
+  useState(() => {
+    setHeaderAction(
+      <Button size="sm" onClick={() => { setEditing(null); setShowForm(true) }}>
+        <Plus className="h-4 w-4" /> Crear
+      </Button>
+    )
+    return () => setHeaderAction(null)
+  })
+
+  if (isLoading) {
     return (
       <div className="space-y-6">
         <div className="flex items-center justify-between mt-10 md:hidden"><h1 className="text-2xl font-bold">Presupuestos</h1><div className="h-9 w-24 animate-pulse rounded-lg bg-muted" /></div>
@@ -169,7 +179,7 @@ export default function BudgetsPage() {
         open={!!deleteConfirm}
         title="Eliminar presupuesto"
         message={`¿Estás seguro de eliminar el presupuesto de "${budgets.find((b) => b.id === deleteConfirm)?.category}"?`}
-        onConfirm={() => { if (deleteConfirm) deleteBudget(deleteConfirm); setDeleteConfirm(null) }}
+        onConfirm={() => { if (deleteConfirm) removeBudget.mutate(deleteConfirm); setDeleteConfirm(null) }}
         onCancel={() => setDeleteConfirm(null)}
       />
     </div>
