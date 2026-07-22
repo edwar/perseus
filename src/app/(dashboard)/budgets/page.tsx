@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useMemo, useCallback } from "react"
+import { useState, useMemo, useCallback, useEffect } from "react"
 import { Plus, Pencil, Trash2, X, PiggyBank } from "lucide-react"
 import { useHeaderStore } from "@/store/header-store"
 import { Button } from "@/components/ui/button"
