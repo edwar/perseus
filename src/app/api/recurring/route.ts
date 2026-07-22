@@ -1,26 +1,85 @@
-import { createCrudRoute } from "@/lib/crud"
+import { NextRequest, NextResponse } from "next/server"
+import { prisma } from "@/lib/db"
+import { requireAuth } from "@/lib/auth"
 
-const SQL = `
-  CREATE TABLE IF NOT EXISTS app_recurring (
-    id TEXT PRIMARY KEY,
-    user_id TEXT NOT NULL,
-    name TEXT NOT NULL,
-    amount DECIMAL(15,2) NOT NULL,
-    type TEXT NOT NULL,
-    frequency TEXT NOT NULL,
-    day_of_month INTEGER NOT NULL,
-    category TEXT,
-    debt_id TEXT,
-    created_at TIMESTAMPTZ DEFAULT NOW()
-  )
-`
+export async function GET() {
+  try {
+    const session = await requireAuth()
+    const rows = await prisma.appRecurring.findMany({
+      where: { userId: session.user.id },
+      orderBy: { createdAt: "desc" },
+    })
+    return NextResponse.json(rows.map(r => ({
+      id: r.id,
+      name: r.name,
+      amount: Number(r.amount),
+      type: r.type,
+      frequency: r.frequency,
+      dayOfMonth: r.dayOfMonth,
+      category: r.category,
+      debtId: r.debtId,
+    })))
+  } catch {
+    return NextResponse.json([])
+  }
+}
 
-const crud = createCrudRoute({
-  table: "app_recurring",
-  columns: ["id", "user_id", "name", "amount", "type", "frequency", "day_of_month", "category", "debt_id", "created_at"],
-})
+export async function POST(req: NextRequest) {
+  try {
+    const session = await requireAuth()
+    const body = await req.json()
+    await prisma.appRecurring.create({
+      data: {
+        id: body.id,
+        userId: session.user.id,
+        name: body.name,
+        amount: body.amount,
+        type: body.type,
+        frequency: body.frequency,
+        dayOfMonth: body.dayOfMonth,
+        category: body.category ?? null,
+        debtId: body.debtId ?? null,
+      },
+    })
+    return NextResponse.json({ ok: true })
+  } catch (err) {
+    console.error("[POST recurring]", err)
+    return NextResponse.json({ error: "Create failed" }, { status: 500 })
+  }
+}
 
-export const GET = crud.GET(SQL)
-export const POST = crud.POST(SQL)
-export const PATCH = crud.PATCH(SQL)
-export const DELETE = crud.DELETE(SQL)
+export async function PATCH(req: NextRequest) {
+  try {
+    const session = await requireAuth()
+    const body = await req.json()
+    const { id, ...rest } = body
+    await prisma.appRecurring.updateMany({
+      where: { id, userId: session.user.id },
+      data: {
+        name: rest.name,
+        amount: rest.amount,
+        type: rest.type,
+        frequency: rest.frequency,
+        dayOfMonth: rest.dayOfMonth,
+        category: rest.category ?? null,
+        debtId: rest.debtId ?? null,
+      },
+    })
+    return NextResponse.json({ ok: true })
+  } catch {
+    return NextResponse.json({ error: "Update failed" }, { status: 500 })
+  }
+}
+
+export async function DELETE(req: NextRequest) {
+  try {
+    const session = await requireAuth()
+    const { searchParams } = new URL(req.url)
+    const id = searchParams.get("id")
+    if (!id) return NextResponse.json({ error: "id required" }, { status: 400 })
+    await prisma.appRecurring.deleteMany({ where: { id, userId: session.user.id } })
+    return NextResponse.json({ ok: true })
+  } catch {
+    return NextResponse.json({ error: "Delete failed" }, { status: 500 })
+  }
+}

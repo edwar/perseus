@@ -64,7 +64,7 @@ export const useSavingsStore = create<SavingsStore>()((set, get) => ({
     set({ investments: get().investments.filter((x) => x.id !== id) })
   },
   hydrate: async () => {
-    const data = await fetchObject<{ goals: Goal[]; investments: Investment[] }>("/api/savings")
+    const data = await fetchObject<{ goals: Goal[]; investments: Investment[] }>("/api/savings", { goals: [], investments: [] })
     set({ goals: data.goals ?? [], investments: data.investments ?? [] })
   },
   reset: () => set({ goals: [], investments: [] }),

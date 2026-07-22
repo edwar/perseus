@@ -1,29 +1,94 @@
-import { createCrudRoute } from "@/lib/crud"
+import { NextRequest, NextResponse } from "next/server"
+import { prisma } from "@/lib/db"
+import { requireAuth } from "@/lib/auth"
 
-const SQL = `
-  CREATE TABLE IF NOT EXISTS app_debts (
-    id TEXT PRIMARY KEY,
-    user_id TEXT NOT NULL,
-    name TEXT NOT NULL,
-    creditor TEXT,
-    category TEXT,
-    total DECIMAL(15,2) NOT NULL,
-    remaining DECIMAL(15,2) NOT NULL,
-    rate DECIMAL(5,2) DEFAULT 0,
-    monthly DECIMAL(15,2) DEFAULT 0,
-    minimum DECIMAL(15,2),
-    installments INTEGER,
-    paid INTEGER DEFAULT 0,
-    created_at TIMESTAMPTZ DEFAULT NOW()
-  )
-`
+export async function GET() {
+  try {
+    const session = await requireAuth()
+    const rows = await prisma.appDebt.findMany({
+      where: { userId: session.user.id },
+      orderBy: { createdAt: "desc" },
+    })
+    return NextResponse.json(rows.map(r => ({
+      id: r.id,
+      name: r.name,
+      creditor: r.creditor,
+      category: r.category,
+      total: Number(r.total),
+      remaining: Number(r.remaining),
+      rate: Number(r.rate),
+      monthly: Number(r.monthly),
+      minimum: r.minimum ? Number(r.minimum) : null,
+      installments: r.installments,
+      paid: r.paid,
+    })))
+  } catch {
+    return NextResponse.json([])
+  }
+}
 
-const crud = createCrudRoute({
-  table: "app_debts",
-  columns: ["id", "user_id", "name", "creditor", "category", "total", "remaining", "rate", "monthly", "minimum", "installments", "paid", "created_at"],
-})
+export async function POST(req: NextRequest) {
+  try {
+    const session = await requireAuth()
+    const body = await req.json()
+    await prisma.appDebt.create({
+      data: {
+        id: body.id,
+        userId: session.user.id,
+        name: body.name,
+        creditor: body.creditor ?? null,
+        category: body.category ?? null,
+        total: body.total,
+        remaining: body.remaining,
+        rate: body.rate ?? 0,
+        monthly: body.monthly ?? 0,
+        minimum: body.minimum ?? null,
+        installments: body.installments ?? null,
+        paid: body.paid ?? 0,
+      },
+    })
+    return NextResponse.json({ ok: true })
+  } catch (err) {
+    console.error("[POST debts]", err)
+    return NextResponse.json({ error: "Create failed" }, { status: 500 })
+  }
+}
 
-export const GET = crud.GET(SQL)
-export const POST = crud.POST(SQL)
-export const PATCH = crud.PATCH(SQL)
-export const DELETE = crud.DELETE(SQL)
+export async function PATCH(req: NextRequest) {
+  try {
+    const session = await requireAuth()
+    const body = await req.json()
+    const { id, ...rest } = body
+    await prisma.appDebt.updateMany({
+      where: { id, userId: session.user.id },
+      data: {
+        name: rest.name,
+        creditor: rest.creditor ?? null,
+        category: rest.category ?? null,
+        total: rest.total,
+        remaining: rest.remaining,
+        rate: rest.rate ?? 0,
+        monthly: rest.monthly ?? 0,
+        minimum: rest.minimum ?? null,
+        installments: rest.installments ?? null,
+        paid: rest.paid ?? 0,
+      },
+    })
+    return NextResponse.json({ ok: true })
+  } catch {
+    return NextResponse.json({ error: "Update failed" }, { status: 500 })
+  }
+}
+
+export async function DELETE(req: NextRequest) {
+  try {
+    const session = await requireAuth()
+    const { searchParams } = new URL(req.url)
+    const id = searchParams.get("id")
+    if (!id) return NextResponse.json({ error: "id required" }, { status: 400 })
+    await prisma.appDebt.deleteMany({ where: { id, userId: session.user.id } })
+    return NextResponse.json({ ok: true })
+  } catch {
+    return NextResponse.json({ error: "Delete failed" }, { status: 500 })
+  }
+}

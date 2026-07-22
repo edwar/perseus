@@ -59,7 +59,7 @@ export const useObligationsStore = create<ObligationsStore>()((set, get) => ({
     })
   },
   hydrate: async () => {
-    const data = await fetchObject<{ obligations: Obligation[]; checks: MonthlyCheck[] }>("/api/obligations")
+    const data = await fetchObject<{ obligations: Obligation[]; checks: MonthlyCheck[] }>("/api/obligations", { obligations: [], checks: [] })
     set({ obligations: data.obligations ?? [], checks: data.checks ?? [] })
   },
   reset: () => set({ obligations: [], checks: [] }),

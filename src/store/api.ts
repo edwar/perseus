@@ -1,35 +1,23 @@
-function mapRow(row: Record<string, unknown>): Record<string, unknown> {
-  const result: Record<string, unknown> = {}
-  for (const [key, value] of Object.entries(row)) {
-    const camelKey = key.replace(/_([a-z])/g, (_, c) => c.toUpperCase())
-    if (typeof value === "bigint") result[camelKey] = Number(value)
-    else if (value && typeof value === "object" && "toString" in value) result[camelKey] = String(value)
-    else result[camelKey] = value
-  }
-  return result
-}
-
 export async function fetchAll<T>(url: string): Promise<T[]> {
   try {
     const res = await fetch(url)
     if (!res.ok) return []
     const data = await res.json()
-    const rows = Array.isArray(data) ? data : data.items ?? []
-    return rows.map(mapRow) as T[]
+    return Array.isArray(data) ? data : []
   } catch (err) {
     console.error(`[fetch ${url}]`, err)
     return []
   }
 }
 
-export async function fetchObject<T>(url: string): Promise<T> {
+export async function fetchObject<T>(url: string, fallback: T): Promise<T> {
   try {
     const res = await fetch(url)
-    if (!res.ok) return {} as T
+    if (!res.ok) return fallback
     return await res.json()
   } catch (err) {
     console.error(`[fetch ${url}]`, err)
-    return {} as T
+    return fallback
   }
 }
 
@@ -40,7 +28,7 @@ export async function createItem(url: string, data: Record<string, unknown>): Pr
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(data),
     })
-    if (!res.ok) console.error(`[create ${url}] HTTP ${res.status}`)
+    if (!res.ok) console.error(`[create ${url}] HTTP ${res.status}:`, await res.text().catch(() => ""))
     return res.ok
   } catch (err) {
     console.error(`[create ${url}]`, err)
@@ -55,7 +43,7 @@ export async function updateItem(url: string, data: Record<string, unknown>): Pr
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(data),
     })
-    if (!res.ok) console.error(`[update ${url}] HTTP ${res.status}`)
+    if (!res.ok) console.error(`[update ${url}] HTTP ${res.status}:`, await res.text().catch(() => ""))
     return res.ok
   } catch (err) {
     console.error(`[update ${url}]`, err)
@@ -72,13 +60,4 @@ export async function deleteItem(url: string, id: string): Promise<boolean> {
     console.error(`[delete ${url}]`, err)
     return false
   }
-}
-
-export function toSnake(obj: Record<string, unknown>): Record<string, unknown> {
-  const result: Record<string, unknown> = {}
-  for (const [key, value] of Object.entries(obj)) {
-    const snakeKey = key.replace(/[A-Z]/g, (c) => `_${c.toLowerCase()}`)
-    if (value !== undefined) result[snakeKey] = value
-  }
-  return result
 }
