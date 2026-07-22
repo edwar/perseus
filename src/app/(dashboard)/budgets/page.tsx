@@ -112,7 +112,8 @@ export default function BudgetsPage() {
             const spent = spentByCategory[budget.category] ?? 0
             const percentage = (spent / budget.amount) * 100
             const isOverBudget = percentage >= 100
-            const budgetItems = budget.items?.filter((i) => i.name) ?? []
+            const rawItems = Array.isArray(budget.items) ? budget.items : []
+            const budgetItems = rawItems.filter((i: { name?: string }) => i.name)
 
             return (
               <Card key={budget.id} className="rounded-2xl border-0 shadow-md transition-all hover:shadow-lg hover:-translate-y-0.5">
