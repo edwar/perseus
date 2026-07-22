@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { Plus, Repeat, ArrowUp, ArrowDown, Pencil, Trash2, X } from "lucide-react"
 import { useHeaderStore } from "@/store/header-store"
 import { cn } from "@/lib/utils"
@@ -28,6 +28,15 @@ export default function RecurringPage() {
   const [editingId, setEditingId] = useState<string | null>(null)
   const [deleteConfirm, setDeleteConfirm] = useState<string | null>(null)
   const setHeaderAction = useHeaderStore((s) => s.setAction)
+
+  useEffect(() => {
+    setHeaderAction(
+      <Button size="sm" className="gap-1" onClick={() => { setEditingId(null); setShowForm(true) }}>
+        <Plus className="h-4 w-4" /> Crear
+      </Button>
+    )
+    return () => setHeaderAction(null)
+  }, [setHeaderAction])
 
   return (
     <div className="space-y-6">
