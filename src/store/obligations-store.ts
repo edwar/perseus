@@ -13,10 +13,10 @@ export interface MonthlyCheck {
 interface ObligationsStore {
   obligations: Obligation[]
   checks: MonthlyCheck[]
-  addObligation: (o: Omit<Obligation, "id">) => void
-  updateObligation: (id: string, o: Partial<Obligation>) => void
-  deleteObligation: (id: string) => void
-  togglePaid: (obligationId: string, month: string) => void
+  addObligation: (o: Omit<Obligation, "id">) => Promise<void>
+  updateObligation: (id: string, o: Partial<Obligation>) => Promise<void>
+  deleteObligation: (id: string) => Promise<void>
+  togglePaid: (obligationId: string, month: string) => Promise<void>
   hydrate: () => Promise<void>
   reset: () => void
 }
@@ -29,19 +29,19 @@ function currentMonth() {
 export const useObligationsStore = create<ObligationsStore>()((set, get) => ({
   obligations: [],
   checks: [],
-  addObligation: (o) => {
+  addObligation: async (o) => {
     set({ obligations: [...get().obligations, { id: crypto.randomUUID(), ...o }] })
-    fetch("/api/data", { method: "PATCH", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ key: "obligations", data: { obligations: get().obligations, checks: get().checks } }) })
+    await fetch("/api/data", { method: "PATCH", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ key: "obligations", data: { obligations: get().obligations, checks: get().checks } }) })
   },
-  updateObligation: (id, o) => {
+  updateObligation: async (id, o) => {
     set({ obligations: get().obligations.map((x) => x.id === id ? { ...x, ...o } : x) })
-    fetch("/api/data", { method: "PATCH", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ key: "obligations", data: { obligations: get().obligations, checks: get().checks } }) })
+    await fetch("/api/data", { method: "PATCH", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ key: "obligations", data: { obligations: get().obligations, checks: get().checks } }) })
   },
-  deleteObligation: (id) => {
+  deleteObligation: async (id) => {
     set({ obligations: get().obligations.filter((x) => x.id !== id) })
-    fetch("/api/data", { method: "PATCH", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ key: "obligations", data: { obligations: get().obligations, checks: get().checks } }) })
+    await fetch("/api/data", { method: "PATCH", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ key: "obligations", data: { obligations: get().obligations, checks: get().checks } }) })
   },
-  togglePaid: (obligationId, month) => {
+  togglePaid: async (obligationId, month) => {
     const existing = get().checks.find((c) => c.month === month)
     if (existing) {
       const paid = existing.paid.includes(obligationId)
@@ -51,7 +51,7 @@ export const useObligationsStore = create<ObligationsStore>()((set, get) => ({
     } else {
       set({ checks: [...get().checks, { month, paid: [obligationId] }] })
     }
-    fetch("/api/data", { method: "PATCH", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ key: "obligations", data: { obligations: get().obligations, checks: get().checks } }) })
+    await fetch("/api/data", { method: "PATCH", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ key: "obligations", data: { obligations: get().obligations, checks: get().checks } }) })
   },
   hydrate: async () => {
     const res = await fetch("/api/data")

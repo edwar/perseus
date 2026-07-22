@@ -21,12 +21,12 @@ export interface Investment {
 interface SavingsStore {
   goals: Goal[]
   investments: Investment[]
-  addGoal: (g: Omit<Goal, "id">) => void
-  updateGoal: (id: string, g: Partial<Goal>) => void
-  deleteGoal: (id: string) => void
-  addInvestment: (i: Omit<Investment, "id">) => void
-  updateInvestment: (id: string, i: Partial<Investment>) => void
-  deleteInvestment: (id: string) => void
+  addGoal: (g: Omit<Goal, "id">) => Promise<void>
+  updateGoal: (id: string, g: Partial<Goal>) => Promise<void>
+  deleteGoal: (id: string) => Promise<void>
+  addInvestment: (i: Omit<Investment, "id">) => Promise<void>
+  updateInvestment: (id: string, i: Partial<Investment>) => Promise<void>
+  deleteInvestment: (id: string) => Promise<void>
   hydrate: () => Promise<void>
   reset: () => void
 }
@@ -34,29 +34,29 @@ interface SavingsStore {
 export const useSavingsStore = create<SavingsStore>()((set, get) => ({
   goals: [],
   investments: [],
-  addGoal: (g) => {
+  addGoal: async (g) => {
     set({ goals: [...get().goals, { id: crypto.randomUUID(), ...g }] })
-    fetch("/api/data", { method: "PATCH", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ key: "savings", data: { goals: get().goals, investments: get().investments } }) })
+    await fetch("/api/data", { method: "PATCH", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ key: "savings", data: { goals: get().goals, investments: get().investments } }) })
   },
-  updateGoal: (id, g) => {
+  updateGoal: async (id, g) => {
     set({ goals: get().goals.map((x) => x.id === id ? { ...x, ...g } : x) })
-    fetch("/api/data", { method: "PATCH", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ key: "savings", data: { goals: get().goals, investments: get().investments } }) })
+    await fetch("/api/data", { method: "PATCH", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ key: "savings", data: { goals: get().goals, investments: get().investments } }) })
   },
-  deleteGoal: (id) => {
+  deleteGoal: async (id) => {
     set({ goals: get().goals.filter((x) => x.id !== id) })
-    fetch("/api/data", { method: "PATCH", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ key: "savings", data: { goals: get().goals, investments: get().investments } }) })
+    await fetch("/api/data", { method: "PATCH", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ key: "savings", data: { goals: get().goals, investments: get().investments } }) })
   },
-  addInvestment: (i) => {
+  addInvestment: async (i) => {
     set({ investments: [...get().investments, { id: crypto.randomUUID(), ...i }] })
-    fetch("/api/data", { method: "PATCH", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ key: "savings", data: { goals: get().goals, investments: get().investments } }) })
+    await fetch("/api/data", { method: "PATCH", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ key: "savings", data: { goals: get().goals, investments: get().investments } }) })
   },
-  updateInvestment: (id, i) => {
+  updateInvestment: async (id, i) => {
     set({ investments: get().investments.map((x) => x.id === id ? { ...x, ...i } : x) })
-    fetch("/api/data", { method: "PATCH", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ key: "savings", data: { goals: get().goals, investments: get().investments } }) })
+    await fetch("/api/data", { method: "PATCH", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ key: "savings", data: { goals: get().goals, investments: get().investments } }) })
   },
-  deleteInvestment: (id) => {
+  deleteInvestment: async (id) => {
     set({ investments: get().investments.filter((x) => x.id !== id) })
-    fetch("/api/data", { method: "PATCH", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ key: "savings", data: { goals: get().goals, investments: get().investments } }) })
+    await fetch("/api/data", { method: "PATCH", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ key: "savings", data: { goals: get().goals, investments: get().investments } }) })
   },
   hydrate: async () => {
     const res = await fetch("/api/data")

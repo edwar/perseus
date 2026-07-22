@@ -15,25 +15,25 @@ export interface Budget {
 
 interface BudgetStore {
   budgets: Budget[]
-  upsertBudget: (b: Omit<Budget, "id"> & { id?: string }) => void
-  deleteBudget: (id: string) => void
+  upsertBudget: (b: Omit<Budget, "id"> & { id?: string }) => Promise<void>
+  deleteBudget: (id: string) => Promise<void>
   hydrate: () => Promise<void>
   reset: () => void
 }
 
 export const useBudgetStore = create<BudgetStore>()((set, get) => ({
   budgets: [],
-  upsertBudget: (b) => {
+  upsertBudget: async (b) => {
     if (b.id) {
       set({ budgets: get().budgets.map((x) => (x.id === b.id ? { ...x, ...b } : x)) })
     } else {
       set({ budgets: [...get().budgets, { id: crypto.randomUUID(), ...b }] })
     }
-    fetch("/api/data", { method: "PATCH", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ key: "budgets", data: get().budgets }) })
+    await fetch("/api/data", { method: "PATCH", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ key: "budgets", data: get().budgets }) })
   },
-  deleteBudget: (id) => {
+  deleteBudget: async (id) => {
     set({ budgets: get().budgets.filter((x) => x.id !== id) })
-    fetch("/api/data", { method: "PATCH", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ key: "budgets", data: get().budgets }) })
+    await fetch("/api/data", { method: "PATCH", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ key: "budgets", data: get().budgets }) })
   },
   hydrate: async () => {
     const res = await fetch("/api/data")

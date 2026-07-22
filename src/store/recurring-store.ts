@@ -13,29 +13,34 @@ export interface RecurringItem {
 
 interface RecurringStore {
   items: RecurringItem[]
-  addItem: (d: Omit<RecurringItem, "id">) => void
-  updateItem: (id: string, d: Partial<RecurringItem>) => void
-  deleteItem: (id: string) => void
+  addItem: (d: Omit<RecurringItem, "id">) => Promise<void>
+  updateItem: (id: string, d: Partial<RecurringItem>) => Promise<void>
+  deleteItem: (id: string) => Promise<void>
   hydrate: () => Promise<void>
   reset: () => void
 }
 
+const API = "/api/data"
+const save = (items: RecurringItem[]) =>
+  fetch(API, { method: "PATCH", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ key: "recurring", data: items }) })
+
 export const useRecurringStore = create<RecurringStore>()((set, get) => ({
   items: [],
-  addItem: (d) => {
-    set({ items: [...get().items, { id: crypto.randomUUID(), ...d }] })
-    fetch("/api/data", { method: "PATCH", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ key: "recurring", data: get().items }) })
+  addItem: async (d) => {
+    const newItem = { id: crypto.randomUUID(), ...d }
+    set({ items: [...get().items, newItem] })
+    await save(get().items)
   },
-  updateItem: (id, d) => {
+  updateItem: async (id, d) => {
     set({ items: get().items.map((x) => x.id === id ? { ...x, ...d } : x) })
-    fetch("/api/data", { method: "PATCH", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ key: "recurring", data: get().items }) })
+    await save(get().items)
   },
-  deleteItem: (id) => {
+  deleteItem: async (id) => {
     set({ items: get().items.filter((x) => x.id !== id) })
-    fetch("/api/data", { method: "PATCH", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ key: "recurring", data: get().items }) })
+    await save(get().items)
   },
   hydrate: async () => {
-    const res = await fetch("/api/data")
+    const res = await fetch(API)
     const json = await res.json()
     set({ items: json.recurring ?? [] })
   },

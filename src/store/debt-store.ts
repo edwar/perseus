@@ -16,26 +16,26 @@ interface Debt {
 
 interface DebtStore {
   debts: Debt[]
-  addDebt: (d: Omit<Debt, "id">) => void
-  updateDebt: (id: string, d: Partial<Debt>) => void
-  deleteDebt: (id: string) => void
+  addDebt: (d: Omit<Debt, "id">) => Promise<void>
+  updateDebt: (id: string, d: Partial<Debt>) => Promise<void>
+  deleteDebt: (id: string) => Promise<void>
   hydrate: () => Promise<void>
   reset: () => void
 }
 
 export const useDebtStore = create<DebtStore>()((set, get) => ({
   debts: [],
-  addDebt: (d) => {
+  addDebt: async (d) => {
     set({ debts: [...get().debts, { id: crypto.randomUUID(), ...d }] })
-    fetch("/api/data", { method: "PATCH", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ key: "debts", data: get().debts }) })
+    await fetch("/api/data", { method: "PATCH", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ key: "debts", data: get().debts }) })
   },
-  updateDebt: (id, d) => {
+  updateDebt: async (id, d) => {
     set({ debts: get().debts.map((x) => x.id === id ? { ...x, ...d } : x) })
-    fetch("/api/data", { method: "PATCH", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ key: "debts", data: get().debts }) })
+    await fetch("/api/data", { method: "PATCH", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ key: "debts", data: get().debts }) })
   },
-  deleteDebt: (id) => {
+  deleteDebt: async (id) => {
     set({ debts: get().debts.filter((x) => x.id !== id) })
-    fetch("/api/data", { method: "PATCH", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ key: "debts", data: get().debts }) })
+    await fetch("/api/data", { method: "PATCH", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ key: "debts", data: get().debts }) })
   },
   hydrate: async () => {
     const res = await fetch("/api/data")
