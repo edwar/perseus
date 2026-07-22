@@ -27,11 +27,11 @@ export const useBudgetStore = create<BudgetStore>()((set, get) => ({
   upsertBudget: async (b) => {
     if (b.id) {
       set({ budgets: get().budgets.map((x) => (x.id === b.id ? { ...x, ...b } : x)) })
-      await updateItem("/api/budgets", { ...b })
+      await updateItem("/api/budgets", { ...b, items: JSON.stringify(b.items ?? []) })
     } else {
       const newBudget: Budget = { id: crypto.randomUUID(), ...b }
       set({ budgets: [...get().budgets, newBudget] })
-      await createItem("/api/budgets", { ...newBudget })
+      await createItem("/api/budgets", { ...newBudget, items: JSON.stringify(newBudget.items ?? []) })
     }
   },
   deleteBudget: async (id) => {

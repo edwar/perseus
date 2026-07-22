@@ -14,7 +14,7 @@ export async function GET() {
       category: r.category,
       amount: Number(r.amount),
       color: r.color,
-      items: r.items,
+      items: Array.isArray(r.items) ? r.items : (typeof r.items === "string" ? JSON.parse(r.items) : []),
     })))
   } catch {
     return NextResponse.json([])
