@@ -184,7 +184,7 @@ function BudgetForm({ initial, onSave, onClose }: {
   const [category, setCategory] = useState(initial?.category ?? "")
   const [color, setColor] = useState(initial?.color ?? COLORS[0])
   const [items, setItems] = useState<{ name: string; amount: string }[]>(
-    initial?.items?.map((i) => ({ name: i.name, amount: String(i.amount) })) ?? [{ name: "", amount: "" }]
+    Array.isArray(initial?.items) ? initial!.items.map((i: { name: string; amount: number }) => ({ name: i.name, amount: String(i.amount) })) : [{ name: "", amount: "" }]
   )
 
   const total = useMemo(
