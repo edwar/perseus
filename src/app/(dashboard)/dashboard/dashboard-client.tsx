@@ -94,51 +94,58 @@ export function DashboardClient({
     <div className="space-y-6">
       <h1 className="text-2xl font-bold mt-10 md:hidden">Dashboard</h1>
 
-      <div className="grid gap-4 sm:grid-cols-3">
-        <Card>
-          <CardContent className="flex items-center gap-3">
-            <div className="flex h-10 w-10 items-center justify-center rounded-full bg-muted">
-              <Wallet className="h-5 w-5 text-muted-foreground" />
+      <div className="grid gap-5 sm:grid-cols-3">
+        <div className="group relative overflow-hidden rounded-2xl bg-linear-to-br from-blue-500 to-blue-700 p-5 text-white shadow-lg shadow-blue-500/20 transition-all duration-200 hover:-translate-y-0.5 hover:shadow-xl hover:shadow-blue-500/30">
+          <div className="absolute -right-4 -top-4 h-24 w-24 rounded-full bg-white/10" />
+          <div className="absolute -bottom-6 -right-6 h-20 w-20 rounded-full bg-white/5" />
+          <div className="relative flex items-center gap-4">
+            <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-white/20 backdrop-blur-sm">
+              <Wallet className="h-6 w-6" />
             </div>
             <div>
-              <p className="text-xs text-muted-foreground">Balance total</p>
-              <p className={cn("text-xl font-bold", totalBalance >= 0 ? "text-emerald-600" : "text-red-600")}>{formatCurrency(totalBalance)}</p>
+              <p className="text-sm font-medium text-blue-100">Balance total</p>
+              <p className="text-2xl font-bold">{formatCurrency(totalBalance)}</p>
             </div>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardContent className="flex items-center gap-3">
-            <div className="flex h-10 w-10 items-center justify-center rounded-full bg-emerald-100">
-              <ArrowUpRight className="h-5 w-5 text-emerald-600" />
-            </div>
-            <div>
-              <p className="text-xs text-muted-foreground">Ingresos del mes</p>
-              <p className="text-xl font-bold text-emerald-600">{formatCurrency(monthlyIncome)}</p>
-            </div>
-          </CardContent>
-        </Card>
+          </div>
+        </div>
 
-        <Card>
-          <CardContent className="flex items-center gap-3">
-            <div className="flex h-10 w-10 items-center justify-center rounded-full bg-red-100">
-              <ArrowDownRight className="h-5 w-5 text-red-600" />
+        <div className="group relative overflow-hidden rounded-2xl bg-linear-to-br from-emerald-500 to-emerald-700 p-5 text-white shadow-lg shadow-emerald-500/20 transition-all duration-200 hover:-translate-y-0.5 hover:shadow-xl hover:shadow-emerald-500/30">
+          <div className="absolute -right-4 -top-4 h-24 w-24 rounded-full bg-white/10" />
+          <div className="absolute -bottom-6 -right-6 h-20 w-20 rounded-full bg-white/5" />
+          <div className="relative flex items-center gap-4">
+            <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-white/20 backdrop-blur-sm">
+              <ArrowUpRight className="h-6 w-6" />
             </div>
             <div>
-              <p className="text-xs text-muted-foreground">Gastos del mes</p>
-              <p className="text-xl font-bold text-red-600">{formatCurrency(monthlyExpenses)}</p>
+              <p className="text-sm font-medium text-emerald-100">Ingresos del mes</p>
+              <p className="text-2xl font-bold">{formatCurrency(monthlyIncome)}</p>
             </div>
-          </CardContent>
-        </Card>
+          </div>
+        </div>
+
+        <div className="group relative overflow-hidden rounded-2xl bg-linear-to-br from-rose-500 to-rose-700 p-5 text-white shadow-lg shadow-rose-500/20 transition-all duration-200 hover:-translate-y-0.5 hover:shadow-xl hover:shadow-rose-500/30">
+          <div className="absolute -right-4 -top-4 h-24 w-24 rounded-full bg-white/10" />
+          <div className="absolute -bottom-6 -right-6 h-20 w-20 rounded-full bg-white/5" />
+          <div className="relative flex items-center gap-4">
+            <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-white/20 backdrop-blur-sm">
+              <ArrowDownRight className="h-6 w-6" />
+            </div>
+            <div>
+              <p className="text-sm font-medium text-rose-100">Gastos del mes</p>
+              <p className="text-2xl font-bold">{formatCurrency(monthlyExpenses)}</p>
+            </div>
+          </div>
+        </div>
       </div>
 
       {spendingByCategory.length > 0 && (
-        <div className="grid gap-4 sm:grid-cols-2">
+        <div className="grid gap-5 sm:grid-cols-2">
           <SpendingPie data={spendingByCategory} />
           <IncomeBar data={monthlyChart} />
         </div>
       )}
 
-      <Card>
+      <Card className="overflow-hidden rounded-2xl border-0 shadow-lg">
         <div className="border-b px-6 py-4">
           <p className="font-semibold">Transacciones recientes</p>
         </div>
@@ -148,7 +155,7 @@ export function DashboardClient({
               {editTx === tx.id ? (
                 <DashboardInlineEdit tx={tx} onSave={(d) => { updateTransaction(tx.id, d); setEditTx(null) }} onCancel={() => setEditTx(null)} />
               ) : (
-                <div className="flex items-center justify-between px-6 py-3">
+                <div className="flex items-center justify-between px-6 py-3 transition-colors hover:bg-muted/50">
                   <div className="flex items-center gap-3">
                     <div className={cn("flex h-9 w-9 items-center justify-center rounded-full", tx.type === "INCOME" ? "bg-emerald-100" : "bg-red-100")}>
                       {tx.type === "INCOME" ? <ArrowUpRight className="h-4 w-4 text-emerald-600" /> : <ArrowDownRight className="h-4 w-4 text-red-600" />}
@@ -175,7 +182,16 @@ export function DashboardClient({
             </div>
           ))}
           {recentTransactions.length === 0 && (
-            <Empty icon={ArrowLeftRight} title="No hay transacciones" description="Registra tu primera transacción para ver tu actividad aquí" action={<Button size="sm" onClick={() => window.location.href = "/transactions"}>Ir a Transacciones</Button>} />
+            <div className="flex flex-col items-center justify-center py-16 text-center">
+              <div className="mb-4 flex h-16 w-16 items-center justify-center rounded-2xl bg-linear-to-br from-blue-50 to-blue-100/50">
+                <ArrowLeftRight className="h-8 w-8 text-blue-500" />
+              </div>
+              <h3 className="mb-1 text-base font-semibold text-foreground">No hay transacciones</h3>
+              <p className="mb-4 max-w-xs text-sm text-muted-foreground">Registra tu primera transacción para ver tu actividad aquí</p>
+              <Button size="sm" className="gap-1.5" onClick={() => window.location.href = "/transactions"}>
+                <ArrowUpRight className="h-3.5 w-3.5" /> Ir a Transacciones
+              </Button>
+            </div>
           )}
         </div>
         {totalPages > 1 && (

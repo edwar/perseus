@@ -9,15 +9,18 @@ export function Empty({ icon: Icon, title, description, action, className }: {
   className?: string
 }) {
   return (
-    <div className={cn("flex flex-col items-center justify-center gap-3 py-16 text-center", className)}>
+    <div className={cn("flex flex-col items-center justify-center gap-4 py-16 text-center", className)}>
       {Icon && (
-        <div className="flex h-14 w-14 items-center justify-center rounded-full bg-muted">
-          <Icon className="h-7 w-7 text-muted-foreground" />
+        <div className="relative">
+          <div className="absolute inset-0 rounded-2xl bg-linear-to-br from-blue-500/10 to-cyan-500/10 blur-xl" />
+          <div className="relative flex h-16 w-16 items-center justify-center rounded-2xl bg-linear-to-br from-blue-50 to-cyan-50 ring-1 ring-blue-100/50">
+            <Icon className="h-8 w-8 text-blue-500" />
+          </div>
         </div>
       )}
       <div>
-        <p className="text-sm font-medium text-foreground">{title}</p>
-        {description && <p className="mt-1 text-xs text-muted-foreground">{description}</p>}
+        <p className="text-base font-semibold text-foreground">{title}</p>
+        {description && <p className="mt-1.5 max-w-xs text-sm text-muted-foreground">{description}</p>}
       </div>
       {action}
     </div>

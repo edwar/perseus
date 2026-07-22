@@ -60,16 +60,16 @@ export function Sidebar() {
       {/* Sidebar: mobile=overlay, desktop=fixed */}
       <aside
         className={cn(
-          "fixed left-0 top-0 z-40 flex h-screen flex-col border-r bg-sidebar-background transition-all duration-300",
+          "fixed left-0 top-0 z-40 flex h-screen flex-col border-r border-border/50 bg-sidebar-background transition-all duration-300",
           "md:static md:z-auto md:translate-x-0",
           sidebarOpen
             ? "w-64 translate-x-0"
             : "-translate-x-full md:w-16"
         )}
       >
-        <div className="flex h-14 items-center gap-2 border-b px-4 shrink-0">
+        <div className="flex h-14 items-center gap-2 border-b border-border/50 px-4 shrink-0">
           <img src="/logo.svg" alt="Perseus" className="h-7 w-7 shrink-0" />
-          {sidebarOpen && <span className="text-lg font-semibold text-sidebar-foreground">Perseus</span>}
+          {sidebarOpen && <span className="text-lg font-bold tracking-tight text-sidebar-foreground">Perseus</span>}
         </div>
         <nav className="flex-1 space-y-1 p-2">
           {navItems.map((item) => {
@@ -81,13 +81,13 @@ export function Sidebar() {
                 href={item.href}
                 onClick={() => { if (window.innerWidth < 768) setSidebarOpen(false) }}
                 className={cn(
-                  "flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors",
+                  "flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium transition-all duration-150",
                   isActive
-                    ? "bg-sidebar-accent text-sidebar-accent-foreground"
-                    : "text-sidebar-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground"
+                    ? "bg-sidebar-accent text-sidebar-accent-foreground shadow-sm"
+                    : "text-sidebar-foreground/70 hover:bg-sidebar-accent/50 hover:text-sidebar-foreground"
                 )}
               >
-                <Icon className="h-5 w-5 shrink-0" />
+                <Icon className={cn("h-5 w-5 shrink-0", isActive && "text-primary")} />
                 {sidebarOpen && <span>{item.label}</span>}
               </Link>
             )

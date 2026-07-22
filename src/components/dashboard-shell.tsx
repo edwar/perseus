@@ -13,7 +13,7 @@ export function DashboardShell({ children }: { children: React.ReactNode }) {
       )}
     >
       <Header />
-      <main className="flex-1 p-4 md:p-6">{children}</main>
+      <main className="flex-1 bg-linear-to-br from-background via-background to-muted/30 p-4 md:p-6">{children}</main>
     </div>
   )
 }
