@@ -56,9 +56,9 @@ export default function BudgetsPage() {
         <div className="h-14 w-full animate-pulse rounded-lg bg-muted" />
         <div className="grid gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
           {Array.from({ length: 14 }).map((_, i) => (
-            <Card key={i}><CardContent>
+            <Card key={i} className="rounded-2xl border-0 shadow-md transition-shadow hover:shadow-lg"><CardContent>
               <div className="flex items-center gap-2"><div className="h-3 w-3 animate-pulse rounded-full bg-muted" /><div className="h-4 w-28 animate-pulse rounded bg-muted flex-1" /><div className="h-4 w-32 animate-pulse rounded bg-muted" /></div>
-              <div className="mt-3 h-2 animate-pulse rounded-full bg-muted" />
+              <div className="mt-3 h-2.5 animate-pulse rounded-full bg-muted" />
               <div className="mt-1 h-3 w-16 animate-pulse rounded bg-muted" />
               <div className="flex mt-3 space-y-2 pt-2 gap-2">
                 <div className="flex-1 h-9 animate-pulse rounded-lg bg-muted" />
@@ -90,7 +90,7 @@ export default function BudgetsPage() {
       )}
 
       {budgets.length > 0 && (
-        <div className="rounded-lg border bg-card p-4 text-sm text-muted-foreground">
+        <div className="rounded-2xl border-0 bg-card p-4 text-sm text-muted-foreground shadow-md transition-shadow hover:shadow-lg">
           Presupuesto total estimado:{" "}
           <span className="font-semibold text-foreground">${totalBudget.toLocaleString("es-CO")}</span>
           {totalBalance > 0 && (
@@ -115,34 +115,34 @@ export default function BudgetsPage() {
             const budgetItems = budget.items?.filter((i) => i.name) ?? []
 
             return (
-              <Card key={budget.id}>
+              <Card key={budget.id} className="rounded-2xl border-0 shadow-md transition-all hover:shadow-lg hover:-translate-y-0.5">
                 <CardContent>
                   <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-2">
-                      <div className="h-3 w-3 rounded-full" style={{ backgroundColor: budget.color }} />
-                      <h3 className="font-semibold">{budget.category}</h3>
+                    <div className="flex items-center gap-2.5">
+                      <div className="h-4 w-4 rounded-full shadow-sm ring-2 ring-white" style={{ backgroundColor: budget.color }} />
+                      <h3 className="font-bold text-base">{budget.category}</h3>
                     </div>
-                    <span className={`text-sm font-semibold ${isOverBudget ? "text-red-600" : ""}`}>
+                    <span className={`text-sm font-bold ${isOverBudget ? "text-red-600" : ""}`}>
                       ${spent.toLocaleString("es-CO")} / ${budget.amount.toLocaleString("es-CO")}
                     </span>
                   </div>
-                  <div className="mt-3 h-2 rounded-full bg-muted">
+                  <div className="mt-3 h-2.5 rounded-full bg-muted">
                     <div
-                      className={`h-2 rounded-full ${isOverBudget ? "bg-red-500" : "bg-primary"}`}
+                      className={`h-2.5 rounded-full transition-all duration-500 ${isOverBudget ? "bg-gradient-to-r from-red-400 to-red-600" : "bg-gradient-to-r from-primary/80 to-primary"}`}
                       style={{ width: `${Math.min(percentage, 100)}%` }}
                     />
                   </div>
-                  <p className="mt-1 text-xs text-muted-foreground">{Math.round(percentage)}% usado</p>
+                  <p className="mt-1.5 text-xs font-medium text-muted-foreground">{Math.round(percentage)}% usado</p>
 
                   {budgetItems.length > 0 && (
                     <div className="mt-3 space-y-1.5 border-t pt-3">
-                      <p className="text-[11px] font-medium text-muted-foreground uppercase tracking-wider">Actividades</p>
+                      <p className="text-[11px] font-semibold text-muted-foreground uppercase tracking-wider">Actividades</p>
                       {budgetItems.map((item, i) => {
                         const itemPct = (item.amount / budget.amount) * 100
                         return (
                           <div key={i} className="flex items-center justify-between text-xs">
                             <span className="text-muted-foreground">{item.name}</span>
-                            <span className="font-medium">${item.amount.toLocaleString("es-CO")} ({Math.round(itemPct)}%)</span>
+                            <span className="font-semibold">${item.amount.toLocaleString("es-CO")} ({Math.round(itemPct)}%)</span>
                           </div>
                         )
                       })}
@@ -221,10 +221,10 @@ function BudgetForm({ initial, onSave, onClose }: {
   const isValid = category && (items.some((i) => i.amount && Number.parseFloat(i.amount.replace(",", ".")) > 0))
 
   return (
-    <Card>
+    <Card className="rounded-2xl border-0 shadow-md">
       <CardContent>
         <div className="mb-4 flex items-center justify-between">
-          <h2 className="font-semibold">{initial ? "Editar" : "Nuevo"} presupuesto</h2>
+          <h2 className="font-bold text-lg">{initial ? "Editar" : "Nuevo"} presupuesto</h2>
           <Button variant="ghost" size="icon" onClick={onClose}>
             <X className="h-4 w-4" />
           </Button>

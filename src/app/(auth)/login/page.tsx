@@ -120,7 +120,7 @@ export default function LoginPage() {
 
       {/* Panel derecho — Formulario */}
       <div className="relative flex w-full items-center justify-center px-6 py-12 lg:w-[45%]">
-        <div className="w-full max-w-sm">
+        <div className="w-full max-w-sm rounded-3xl bg-white/40 p-8 shadow-xl shadow-gray-200/50 backdrop-blur-md ring-1 ring-white/60">
           {/* Mobile header */}
           <div className="mb-10 flex flex-col items-center text-center lg:hidden">
             <div className="mb-4 flex h-24 w-24 items-center justify-center rounded-2xl bg-linear-to-br from-white/60 to-white/20 p-4 shadow-lg ring-1 ring-white/40 backdrop-blur-sm">
@@ -153,7 +153,7 @@ export default function LoginPage() {
                 placeholder="tu@email.com"
                 required
                 autoComplete="email"
-                className="h-11 rounded-xl border-gray-200 bg-white/80 pl-4 text-sm shadow-sm backdrop-blur-sm transition-shadow focus-visible:shadow-blue-500/10"
+                className="h-11 rounded-xl border-gray-200 bg-white/80 pl-4 text-sm shadow-sm backdrop-blur-sm transition-all focus-visible:border-blue-400 focus-visible:ring-2 focus-visible:ring-blue-500/20 focus-visible:shadow-blue-500/10"
               />
             </div>
 
@@ -170,7 +170,7 @@ export default function LoginPage() {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="••••••••"
-                  className="h-11 w-full rounded-xl border-gray-200 bg-white/80 pl-4 pr-11 text-sm shadow-sm backdrop-blur-sm transition-shadow focus-visible:shadow-blue-500/10"
+                  className="h-11 w-full rounded-xl border-gray-200 bg-white/80 pl-4 pr-11 text-sm shadow-sm backdrop-blur-sm transition-all focus-visible:border-blue-400 focus-visible:ring-2 focus-visible:ring-blue-500/20 focus-visible:shadow-blue-500/10"
                   required
                   autoComplete="current-password"
                 />
@@ -186,14 +186,17 @@ export default function LoginPage() {
             </div>
 
             {error && (
-              <div className="rounded-xl bg-red-50 px-4 py-2.5 text-sm text-red-600">
+              <div className="flex items-center gap-2 rounded-xl border border-red-200 bg-red-50 px-4 py-2.5 text-sm text-red-600">
+                <svg className="h-4 w-4 shrink-0" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v3.75m9-.75a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9 3.75h.008v.008H12v-.008Z" />
+                </svg>
                 {error}
               </div>
             )}
 
             <Button
               type="submit"
-              className="h-11 w-full gap-2 rounded-xl bg-linear-to-r from-blue-600 to-blue-500 text-sm font-medium text-white shadow-lg shadow-blue-500/20 transition-all hover:shadow-xl hover:shadow-blue-500/30 active:scale-[0.98]"
+              className="h-11 w-full gap-2 rounded-xl bg-linear-to-r from-blue-600 via-blue-500 to-indigo-500 text-sm font-medium text-white shadow-lg shadow-blue-500/25 transition-all hover:shadow-xl hover:shadow-blue-500/35 active:scale-[0.98]"
               disabled={loading}
             >
               {loading ? "Iniciando sesión…" : "Iniciar sesión"}
@@ -212,7 +215,7 @@ export default function LoginPage() {
 
           <button
             type="button"
-            className="flex h-11 w-full items-center justify-center gap-3 rounded-xl border border-gray-200 bg-white text-sm font-medium text-gray-700 shadow-sm transition-all hover:bg-gray-50 hover:shadow-md active:scale-[0.98] dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 dark:hover:bg-gray-800"
+            className="flex h-11 w-full items-center justify-center gap-3 rounded-xl border border-gray-300 bg-white text-sm font-medium text-gray-700 shadow-sm transition-all hover:border-gray-400 hover:bg-gray-50 hover:shadow-md active:scale-[0.98] dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 dark:hover:bg-gray-800"
             onClick={() => authClient.signIn.social({ provider: "google" })}
           >
             <svg viewBox="0 0 24 24" className="h-5 w-5 shrink-0">

@@ -109,8 +109,11 @@ export function Sidebar() {
                 import("@/store/obligations-store"),
               ])
               for (const s of stores) {
-                const store = Object.values(s).find((v) => typeof v === "function" && (v as any).getState)
-                if (store) (store as any).getState().reset()
+                const store = Object.values(s).find(
+                  (v): v is { getState: () => { reset: () => void } } =>
+                    typeof v === "function" && typeof (v as unknown as { getState?: unknown }).getState === "function"
+                )
+                if (store) store.getState().reset()
               }
 
               router.push("/")

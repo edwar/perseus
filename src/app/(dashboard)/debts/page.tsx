@@ -35,7 +35,7 @@ export default function DebtsPage() {
         <div className="flex items-center justify-between mt-10 md:hidden"><h1 className="text-2xl font-bold">Deudas</h1><div className="h-9 w-24 animate-pulse rounded-lg bg-muted" /></div>
         <div className="grid gap-4 sm:grid-cols-2">
           {Array.from({ length: 14 }).map((_, i) => (
-            <Card key={i}><CardContent>
+            <Card key={i} className="rounded-2xl border-0 shadow-md transition-shadow hover:shadow-lg"><CardContent>
               <div className="flex items-start justify-between">
                 <div className="space-y-1.5 flex-1">
                   <div className="h-4 w-40 animate-pulse rounded bg-muted" />
@@ -46,7 +46,7 @@ export default function DebtsPage() {
               <div className="mt-4 space-y-2">
                 <div className="flex justify-between"><div className="h-3 w-16 animate-pulse rounded bg-muted" /><div className="h-3 w-24 animate-pulse rounded bg-muted" /></div>
                 <div className="flex justify-between"><div className="h-3 w-20 animate-pulse rounded bg-muted" /><div className="h-3 w-20 animate-pulse rounded bg-muted" /></div>
-                <div className="h-2 animate-pulse rounded-full bg-muted" />
+                <div className="h-2.5 animate-pulse rounded-full bg-muted" />
               </div>
               <div className="mt-4 flex gap-2">
                 <div className="flex-1 h-9 animate-pulse rounded-lg bg-muted" />
@@ -101,44 +101,44 @@ export default function DebtsPage() {
           {debts.map((debt) => {
             const progress = debt.total > 0 ? ((debt.total - debt.remaining) / debt.total) * 100 : 0
             return (
-              <Card key={debt.id}>
+              <Card key={debt.id} className="rounded-2xl border-0 shadow-md transition-all hover:shadow-lg hover:-translate-y-0.5">
                 <CardContent>
                   <div className="flex items-start justify-between">
                     <div>
-                      <h3 className="font-semibold">{debt.name}</h3>
+                      <h3 className="font-bold text-base">{debt.name}</h3>
                       <p className="text-xs text-muted-foreground">{debt.creditor}{debt.category && <span> · {debt.category}</span>}</p>
                     </div>
-                    <div className="flex items-center gap-1 text-red-600">
+                    <div className="flex items-center gap-1.5 rounded-lg bg-red-50 px-2.5 py-1 text-red-600">
                       <TrendingDown className="h-4 w-4" />
-                      <span className="text-sm font-semibold">{debt.rate}%</span>
+                      <span className="text-sm font-bold">{debt.rate}%</span>
                     </div>
                   </div>
 
                   <div className="mt-4 space-y-2">
                     <div className="flex justify-between text-sm">
                       <span className="text-muted-foreground">Restante</span>
-                      <span className="font-semibold">${debt.remaining.toLocaleString("es-CO")}</span>
+                      <span className="font-bold">${debt.remaining.toLocaleString("es-CO")}</span>
                     </div>
                     <div className="flex justify-between text-sm">
                       <span className="text-muted-foreground">Cuota mensual</span>
-                      <span>${debt.monthly.toLocaleString("es-CO")}</span>
+                      <span className="font-semibold">${debt.monthly.toLocaleString("es-CO")}</span>
                     </div>
                     {debt.minimum && (
                       <div className="flex justify-between text-sm">
                         <span className="text-muted-foreground">Pago mínimo</span>
-                        <span className="text-amber-600">${debt.minimum.toLocaleString("es-CO")}</span>
+                        <span className="font-semibold text-amber-600">${debt.minimum.toLocaleString("es-CO")}</span>
                       </div>
                     )}
                     {debt.installments && (
                       <div className="flex justify-between text-sm">
                         <span className="text-muted-foreground">Cuotas</span>
-                        <span>{debt.paid} / {debt.installments}</span>
+                        <span className="font-semibold">{debt.paid} / {debt.installments}</span>
                       </div>
                     )}
-                    <div className="h-2 rounded-full bg-muted">
-                      <div className="h-2 rounded-full bg-primary" style={{ width: `${Math.min(progress, 100)}%` }} />
+                    <div className="h-2.5 rounded-full bg-muted">
+                      <div className="h-2.5 rounded-full bg-gradient-to-r from-primary/80 to-primary transition-all duration-500" style={{ width: `${Math.min(progress, 100)}%` }} />
                     </div>
-                    <p className="text-xs text-muted-foreground">{Math.round(progress)}% pagado</p>
+                    <p className="text-xs font-medium text-muted-foreground">{Math.round(progress)}% pagado</p>
                   </div>
 
                   <div className="mt-4 flex gap-2">
@@ -202,10 +202,10 @@ function AddDebtForm({ initial, onSave, onClose }: {
   }
 
   return (
-    <Card>
+    <Card className="rounded-2xl border-0 shadow-md">
       <CardContent>
         <div className="mb-4 flex items-center justify-between">
-          <h2 className="font-semibold">{initial ? "Editar" : "Nueva"} deuda</h2>
+          <h2 className="font-bold text-lg">{initial ? "Editar" : "Nueva"} deuda</h2>
           <Button variant="ghost" size="icon" onClick={onClose}>
             <X className="h-4 w-4" />
           </Button>
