@@ -1,4 +1,5 @@
 import { create } from "zustand"
+import { fetchHydrate, persistData } from "./api"
 
 export interface Obligation {
   id: string
@@ -21,25 +22,20 @@ interface ObligationsStore {
   reset: () => void
 }
 
-function currentMonth() {
-  const d = new Date()
-  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}`
-}
-
 export const useObligationsStore = create<ObligationsStore>()((set, get) => ({
   obligations: [],
   checks: [],
   addObligation: async (o) => {
     set({ obligations: [...get().obligations, { id: crypto.randomUUID(), ...o }] })
-    await fetch("/api/data", { method: "PATCH", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ key: "obligations", data: { obligations: get().obligations, checks: get().checks } }) })
+    await persistData("obligations", { obligations: get().obligations, checks: get().checks })
   },
   updateObligation: async (id, o) => {
     set({ obligations: get().obligations.map((x) => x.id === id ? { ...x, ...o } : x) })
-    await fetch("/api/data", { method: "PATCH", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ key: "obligations", data: { obligations: get().obligations, checks: get().checks } }) })
+    await persistData("obligations", { obligations: get().obligations, checks: get().checks })
   },
   deleteObligation: async (id) => {
     set({ obligations: get().obligations.filter((x) => x.id !== id) })
-    await fetch("/api/data", { method: "PATCH", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ key: "obligations", data: { obligations: get().obligations, checks: get().checks } }) })
+    await persistData("obligations", { obligations: get().obligations, checks: get().checks })
   },
   togglePaid: async (obligationId, month) => {
     const existing = get().checks.find((c) => c.month === month)
@@ -51,12 +47,11 @@ export const useObligationsStore = create<ObligationsStore>()((set, get) => ({
     } else {
       set({ checks: [...get().checks, { month, paid: [obligationId] }] })
     }
-    await fetch("/api/data", { method: "PATCH", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ key: "obligations", data: { obligations: get().obligations, checks: get().checks } }) })
+    await persistData("obligations", { obligations: get().obligations, checks: get().checks })
   },
   hydrate: async () => {
-    const res = await fetch("/api/data")
-    const json = await res.json()
-    set({ obligations: json.obligations?.obligations ?? [], checks: json.obligations?.checks ?? [] })
+    const data = await fetchHydrate("obligations", { obligations: [], checks: [] })
+    set({ obligations: data.obligations ?? [], checks: data.checks ?? [] })
   },
   reset: () => set({ obligations: [], checks: [] }),
 }))

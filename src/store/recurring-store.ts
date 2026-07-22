@@ -1,4 +1,5 @@
 import { create } from "zustand"
+import { persistData, fetchHydrate } from "./api"
 
 export interface RecurringItem {
   id: string
@@ -20,31 +21,22 @@ interface RecurringStore {
   reset: () => void
 }
 
-const API = "/api/data"
-const save = async (items: RecurringItem[]) => {
-  const res = await fetch(API, { method: "PATCH", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ key: "recurring", data: items }) })
-  if (!res.ok) console.error("Save failed", await res.text())
-}
-
 export const useRecurringStore = create<RecurringStore>()((set, get) => ({
   items: [],
   addItem: async (d) => {
-    const newItem = { id: crypto.randomUUID(), ...d }
-    set({ items: [...get().items, newItem] })
-    await save(get().items)
+    set({ items: [...get().items, { id: crypto.randomUUID(), ...d }] })
+    await persistData("recurring", get().items)
   },
   updateItem: async (id, d) => {
     set({ items: get().items.map((x) => x.id === id ? { ...x, ...d } : x) })
-    await save(get().items)
+    await persistData("recurring", get().items)
   },
   deleteItem: async (id) => {
     set({ items: get().items.filter((x) => x.id !== id) })
-    await save(get().items)
+    await persistData("recurring", get().items)
   },
   hydrate: async () => {
-    const res = await fetch(API)
-    const json = await res.json()
-    set({ items: json.recurring ?? [] })
+    set({ items: await fetchHydrate("recurring", []) })
   },
   reset: () => set({ items: [] }),
 }))

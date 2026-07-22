@@ -1,4 +1,5 @@
 import { create } from "zustand"
+import { persistData, fetchHydrate } from "./api"
 
 interface Debt {
   id: string
@@ -27,20 +28,18 @@ export const useDebtStore = create<DebtStore>()((set, get) => ({
   debts: [],
   addDebt: async (d) => {
     set({ debts: [...get().debts, { id: crypto.randomUUID(), ...d }] })
-    await fetch("/api/data", { method: "PATCH", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ key: "debts", data: get().debts }) })
+    await persistData("debts", get().debts)
   },
   updateDebt: async (id, d) => {
     set({ debts: get().debts.map((x) => x.id === id ? { ...x, ...d } : x) })
-    await fetch("/api/data", { method: "PATCH", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ key: "debts", data: get().debts }) })
+    await persistData("debts", get().debts)
   },
   deleteDebt: async (id) => {
     set({ debts: get().debts.filter((x) => x.id !== id) })
-    await fetch("/api/data", { method: "PATCH", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ key: "debts", data: get().debts }) })
+    await persistData("debts", get().debts)
   },
   hydrate: async () => {
-    const res = await fetch("/api/data")
-    const json = await res.json()
-    set({ debts: json.debts ?? [] })
+    set({ debts: await fetchHydrate("debts", []) })
   },
   reset: () => set({ debts: [] }),
 }))

@@ -92,7 +92,8 @@ export async function PATCH(req: NextRequest) {
     )
 
     return NextResponse.json({ ok: true })
-  } catch {
+  } catch (err) {
+    console.error("[PATCH /api/data] Error:", err)
     return NextResponse.json({ error: "Sync failed" }, { status: 500 })
   }
 }
