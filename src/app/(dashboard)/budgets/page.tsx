@@ -50,14 +50,14 @@ export default function BudgetsPage() {
   const editBudget = budgets.find((b) => b.id === editing)
   const setHeaderAction = useHeaderStore((s) => s.setAction)
 
-  useState(() => {
+  useEffect(() => {
     setHeaderAction(
       <Button size="sm" onClick={() => { setEditing(null); setShowForm(true) }}>
         <Plus className="h-4 w-4" /> Crear
       </Button>
     )
     return () => setHeaderAction(null)
-  })
+  }, [setHeaderAction])
 
   if (isLoading) {
     return (
