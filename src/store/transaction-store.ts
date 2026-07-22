@@ -1,6 +1,6 @@
 import { create } from "zustand"
 import { useBalanceStore } from "./balance-store"
-import { persistData, fetchHydrate } from "./api"
+import { fetchAll, createItem, updateItem, deleteItem } from "./api"
 
 export interface Transaction {
   id: string
@@ -30,13 +30,24 @@ interface TransactionStore {
 export const useTransactionStore = create<TransactionStore>()((set, get) => ({
   transactions: [],
   hydrate: async () => {
-    set({ transactions: await fetchHydrate<Transaction[]>("transactions", []) })
+    const items = await fetchAll<Transaction>("/api/transactions")
+    set({ transactions: items })
   },
   addTransaction: async (tx) => {
     const newTx: Transaction = { id: crypto.randomUUID(), ...tx }
     set((state) => ({ transactions: [...state.transactions, newTx] }))
     useBalanceStore.getState().addToBalance(txImpact(newTx))
-    await persistData("transactions", get().transactions)
+    await createItem("/api/transactions", {
+      id: newTx.id,
+      description: newTx.description,
+      amount: newTx.amount,
+      type: newTx.type,
+      category: newTx.category,
+      date: newTx.date,
+      recurring: newTx.recurring,
+      frequency: newTx.frequency,
+      next_date: newTx.nextDate,
+    })
   },
   updateTransaction: async (id, tx) => {
     const prev = get().transactions.find((x) => x.id === id)
@@ -48,13 +59,13 @@ export const useTransactionStore = create<TransactionStore>()((set, get) => ({
       bal.addToBalance(-txImpact(prev))
       bal.addToBalance(txImpact({ ...prev, ...tx }))
     }
-    await persistData("transactions", get().transactions)
+    await updateItem("/api/transactions", { id, ...tx, next_date: tx.nextDate })
   },
   deleteTransaction: async (id) => {
     const tx = get().transactions.find((x) => x.id === id)
     set((state) => ({ transactions: state.transactions.filter((x) => x.id !== id) }))
     if (tx) useBalanceStore.getState().addToBalance(-txImpact(tx))
-    await persistData("transactions", get().transactions)
+    await deleteItem("/api/transactions", id)
   },
   reset: () => set({ transactions: [] }),
 }))

@@ -1,5 +1,5 @@
 import { create } from "zustand"
-import { fetchHydrate, persistData } from "./api"
+import { fetchObject, createItem, updateItem, deleteItem } from "./api"
 
 export interface Goal {
   id: string
@@ -36,31 +36,35 @@ export const useSavingsStore = create<SavingsStore>()((set, get) => ({
   goals: [],
   investments: [],
   addGoal: async (g) => {
-    set({ goals: [...get().goals, { id: crypto.randomUUID(), ...g }] })
-    await persistData("savings", { goals: get().goals, investments: get().investments })
+    const newGoal: Goal = { id: crypto.randomUUID(), ...g }
+    set({ goals: [...get().goals, newGoal] })
+    await createItem("/api/savings", {
+      id: newGoal.id,
+      name: newGoal.name,
+      target: newGoal.target,
+      current: newGoal.current,
+      deadline: newGoal.deadline,
+    })
   },
   updateGoal: async (id, g) => {
-    set({ goals: get().goals.map((x) => x.id === id ? { ...x, ...g } : x) })
-    await persistData("savings", { goals: get().goals, investments: get().investments })
+    set({ goals: get().goals.map((x) => (x.id === id ? { ...x, ...g } : x)) })
+    await updateItem("/api/savings", { id, ...g })
   },
   deleteGoal: async (id) => {
     set({ goals: get().goals.filter((x) => x.id !== id) })
-    await persistData("savings", { goals: get().goals, investments: get().investments })
+    await deleteItem("/api/savings", id)
   },
   addInvestment: async (i) => {
     set({ investments: [...get().investments, { id: crypto.randomUUID(), ...i }] })
-    await persistData("savings", { goals: get().goals, investments: get().investments })
   },
   updateInvestment: async (id, i) => {
-    set({ investments: get().investments.map((x) => x.id === id ? { ...x, ...i } : x) })
-    await persistData("savings", { goals: get().goals, investments: get().investments })
+    set({ investments: get().investments.map((x) => (x.id === id ? { ...x, ...i } : x)) })
   },
   deleteInvestment: async (id) => {
     set({ investments: get().investments.filter((x) => x.id !== id) })
-    await persistData("savings", { goals: get().goals, investments: get().investments })
   },
   hydrate: async () => {
-    const data = await fetchHydrate("savings", { goals: [], investments: [] })
+    const data = await fetchObject<{ goals: Goal[]; investments: Investment[] }>("/api/savings")
     set({ goals: data.goals ?? [], investments: data.investments ?? [] })
   },
   reset: () => set({ goals: [], investments: [] }),

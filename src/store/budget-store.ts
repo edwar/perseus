@@ -1,5 +1,5 @@
 import { create } from "zustand"
-import { persistData, fetchHydrate } from "./api"
+import { fetchAll, createItem, updateItem, deleteItem } from "./api"
 
 export interface BudgetItem {
   name: string
@@ -27,17 +27,20 @@ export const useBudgetStore = create<BudgetStore>()((set, get) => ({
   upsertBudget: async (b) => {
     if (b.id) {
       set({ budgets: get().budgets.map((x) => (x.id === b.id ? { ...x, ...b } : x)) })
+      await updateItem("/api/budgets", { ...b, items: JSON.stringify(b.items) })
     } else {
-      set({ budgets: [...get().budgets, { id: crypto.randomUUID(), ...b }] })
+      const newBudget: Budget = { id: crypto.randomUUID(), ...b }
+      set({ budgets: [...get().budgets, newBudget] })
+      await createItem("/api/budgets", { ...newBudget, items: JSON.stringify(newBudget.items) })
     }
-    await persistData("budgets", get().budgets)
   },
   deleteBudget: async (id) => {
     set({ budgets: get().budgets.filter((x) => x.id !== id) })
-    await persistData("budgets", get().budgets)
+    await deleteItem("/api/budgets", id)
   },
   hydrate: async () => {
-    set({ budgets: await fetchHydrate("budgets", []) })
+    const items = await fetchAll<Budget>("/api/budgets")
+    set({ budgets: items })
   },
   reset: () => set({ budgets: [] }),
 }))

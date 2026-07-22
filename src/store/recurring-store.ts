@@ -1,5 +1,5 @@
 import { create } from "zustand"
-import { persistData, fetchHydrate } from "./api"
+import { fetchAll, createItem, updateItem, deleteItem } from "./api"
 
 export interface RecurringItem {
   id: string
@@ -24,19 +24,35 @@ interface RecurringStore {
 export const useRecurringStore = create<RecurringStore>()((set, get) => ({
   items: [],
   addItem: async (d) => {
-    set({ items: [...get().items, { id: crypto.randomUUID(), ...d }] })
-    await persistData("recurring", get().items)
+    const newItem: RecurringItem = { id: crypto.randomUUID(), ...d }
+    set({ items: [...get().items, newItem] })
+    await createItem("/api/recurring", {
+      id: newItem.id,
+      name: newItem.name,
+      amount: newItem.amount,
+      type: newItem.type,
+      frequency: newItem.frequency,
+      day_of_month: newItem.dayOfMonth,
+      category: newItem.category,
+      debt_id: newItem.debtId,
+    })
   },
   updateItem: async (id, d) => {
-    set({ items: get().items.map((x) => x.id === id ? { ...x, ...d } : x) })
-    await persistData("recurring", get().items)
+    set({ items: get().items.map((x) => (x.id === id ? { ...x, ...d } : x)) })
+    await updateItem("/api/recurring", {
+      id,
+      ...d,
+      day_of_month: d.dayOfMonth,
+      debt_id: d.debtId,
+    })
   },
   deleteItem: async (id) => {
     set({ items: get().items.filter((x) => x.id !== id) })
-    await persistData("recurring", get().items)
+    await deleteItem("/api/recurring", id)
   },
   hydrate: async () => {
-    set({ items: await fetchHydrate("recurring", []) })
+    const items = await fetchAll<RecurringItem>("/api/recurring")
+    set({ items })
   },
   reset: () => set({ items: [] }),
 }))

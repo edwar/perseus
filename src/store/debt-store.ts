@@ -1,5 +1,5 @@
 import { create } from "zustand"
-import { persistData, fetchHydrate } from "./api"
+import { fetchAll, createItem, updateItem, deleteItem } from "./api"
 
 interface Debt {
   id: string
@@ -27,19 +27,21 @@ interface DebtStore {
 export const useDebtStore = create<DebtStore>()((set, get) => ({
   debts: [],
   addDebt: async (d) => {
-    set({ debts: [...get().debts, { id: crypto.randomUUID(), ...d }] })
-    await persistData("debts", get().debts)
+    const newDebt: Debt = { id: crypto.randomUUID(), ...d }
+    set({ debts: [...get().debts, newDebt] })
+    await createItem("/api/debts", { id: newDebt.id, ...d })
   },
   updateDebt: async (id, d) => {
-    set({ debts: get().debts.map((x) => x.id === id ? { ...x, ...d } : x) })
-    await persistData("debts", get().debts)
+    set({ debts: get().debts.map((x) => (x.id === id ? { ...x, ...d } : x)) })
+    await updateItem("/api/debts", { id, ...d })
   },
   deleteDebt: async (id) => {
     set({ debts: get().debts.filter((x) => x.id !== id) })
-    await persistData("debts", get().debts)
+    await deleteItem("/api/debts", id)
   },
   hydrate: async () => {
-    set({ debts: await fetchHydrate("debts", []) })
+    const items = await fetchAll<Debt>("/api/debts")
+    set({ debts: items })
   },
   reset: () => set({ debts: [] }),
 }))

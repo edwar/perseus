@@ -1,5 +1,5 @@
 import { create } from "zustand"
-import { fetchHydrate, persistData } from "./api"
+import { fetchObject, updateItem, deleteItem } from "./api"
 
 export interface Obligation {
   id: string
@@ -26,16 +26,21 @@ export const useObligationsStore = create<ObligationsStore>()((set, get) => ({
   obligations: [],
   checks: [],
   addObligation: async (o) => {
-    set({ obligations: [...get().obligations, { id: crypto.randomUUID(), ...o }] })
-    await persistData("obligations", { obligations: get().obligations, checks: get().checks })
+    const id = crypto.randomUUID()
+    set({ obligations: [...get().obligations, { id, ...o }] })
+    await fetch("/api/obligations", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ type: "obligation", id, name: o.name }),
+    })
   },
   updateObligation: async (id, o) => {
-    set({ obligations: get().obligations.map((x) => x.id === id ? { ...x, ...o } : x) })
-    await persistData("obligations", { obligations: get().obligations, checks: get().checks })
+    set({ obligations: get().obligations.map((x) => (x.id === id ? { ...x, ...o } : x)) })
+    await updateItem("/api/obligations", { id, name: o.name })
   },
   deleteObligation: async (id) => {
     set({ obligations: get().obligations.filter((x) => x.id !== id) })
-    await persistData("obligations", { obligations: get().obligations, checks: get().checks })
+    await deleteItem("/api/obligations", id)
   },
   togglePaid: async (obligationId, month) => {
     const existing = get().checks.find((c) => c.month === month)
@@ -43,14 +48,18 @@ export const useObligationsStore = create<ObligationsStore>()((set, get) => ({
       const paid = existing.paid.includes(obligationId)
         ? existing.paid.filter((id) => id !== obligationId)
         : [...existing.paid, obligationId]
-      set({ checks: get().checks.map((c) => c.month === month ? { ...c, paid } : c) })
+      set({ checks: get().checks.map((c) => (c.month === month ? { ...c, paid } : c)) })
     } else {
       set({ checks: [...get().checks, { month, paid: [obligationId] }] })
     }
-    await persistData("obligations", { obligations: get().obligations, checks: get().checks })
+    await fetch("/api/obligations", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ type: "toggle", month, obligation_id: obligationId }),
+    })
   },
   hydrate: async () => {
-    const data = await fetchHydrate("obligations", { obligations: [], checks: [] })
+    const data = await fetchObject<{ obligations: Obligation[]; checks: MonthlyCheck[] }>("/api/obligations")
     set({ obligations: data.obligations ?? [], checks: data.checks ?? [] })
   },
   reset: () => set({ obligations: [], checks: [] }),
