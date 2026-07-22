@@ -46,10 +46,13 @@ export async function GET() {
     const row = rows[0]
     const result: Record<string, unknown> = {}
     for (const key of VALID_KEYS) {
-      try {
-        result[key] = row[key] ? JSON.parse(row[key] as string) : (key === "balance" ? {} : [])
-      } catch {
+      const val = row[key]
+      if (val == null) {
         result[key] = key === "balance" ? {} : []
+      } else if (typeof val === "string") {
+        try { result[key] = JSON.parse(val) } catch { result[key] = key === "balance" ? {} : [] }
+      } else {
+        result[key] = val
       }
     }
     return NextResponse.json(result)

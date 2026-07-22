@@ -21,8 +21,10 @@ interface RecurringStore {
 }
 
 const API = "/api/data"
-const save = (items: RecurringItem[]) =>
-  fetch(API, { method: "PATCH", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ key: "recurring", data: items }) })
+const save = async (items: RecurringItem[]) => {
+  const res = await fetch(API, { method: "PATCH", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ key: "recurring", data: items }) })
+  if (!res.ok) console.error("Save failed", await res.text())
+}
 
 export const useRecurringStore = create<RecurringStore>()((set, get) => ({
   items: [],
