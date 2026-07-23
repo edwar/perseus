@@ -51,7 +51,7 @@ export default function SavingsPage() {
               <div className="h-9 w-24 rounded-lg bg-muted-foreground/20" />
             </div>
             <div className="grid gap-4 grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-              {[1, 2].map((i) => (
+              {Array.from({ length: 16 }).map((_, i) => (
                 <div key={i} className="animate-pulse rounded-xl border bg-card p-5">
                   <div className="flex items-center gap-3">
                     <div className="h-10 w-10 rounded-full bg-muted-foreground/20" />
