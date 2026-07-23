@@ -42,24 +42,24 @@ export default function DebtsPage() {
       <div className="space-y-6">
         <div className="flex items-center justify-between mt-10 md:hidden"><h1 className="text-2xl font-bold">Deudas</h1><div className="h-9 w-24 animate-pulse rounded-lg bg-muted" /></div>
         <div className="grid gap-4 grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-          {[1, 2].map((i) => (
+          {Array.from({ length: 16 }).map((_, i) => (
             <Card key={i} className="rounded-2xl border-0 shadow-md transition-shadow hover:shadow-lg">
               <CardContent>
                 <div className="flex items-start justify-between">
                   <div>
-                    <div className="h-5 w-32 rounded bg-muted-foreground/20" />
-                    <div className="mt-1 h-3 w-24 rounded bg-muted-foreground/20" />
+                    <div className="h-6 w-32 rounded bg-muted-foreground/20" />
+                    <div className="mt-1 h-4 w-24 rounded bg-muted-foreground/20" />
                   </div>
-                  <div className="h-7 w-20 rounded-lg bg-muted-foreground/20" />
+                  <div className="h-8 w-20 rounded-lg bg-muted-foreground/20" />
                 </div>
                 <div className="mt-4 space-y-2">
-                  <div className="flex justify-between text-sm"><div className="h-3 w-16 rounded bg-muted-foreground/20" /><div className="h-3 w-28 rounded bg-muted-foreground/20" /></div>
-                  <div className="flex justify-between text-sm"><div className="h-3 w-24 rounded bg-muted-foreground/20" /><div className="h-3 w-24 rounded bg-muted-foreground/20" /></div>
-                  <div className="flex justify-between text-sm"><div className="h-3 w-12 rounded bg-muted-foreground/20" /><div className="h-3 w-16 rounded bg-muted-foreground/20" /></div>
-                  <div className="h-2.5 rounded-full bg-muted-foreground/20" />
+                  <div className="flex justify-between text-sm"><div className="h-4 w-16 rounded bg-muted-foreground/20" /><div className="h-4 w-28 rounded bg-muted-foreground/20" /></div>
+                  <div className="flex justify-between text-sm"><div className="h-4 w-24 rounded bg-muted-foreground/20" /><div className="h-4 w-24 rounded bg-muted-foreground/20" /></div>
+                  <div className="flex justify-between text-sm"><div className="h-4 w-12 rounded bg-muted-foreground/20" /><div className="h-4 w-16 rounded bg-muted-foreground/20" /></div>
+                  <div className="h-3 rounded-full bg-muted-foreground/20" />
                   <div className="h-3 w-20 rounded bg-muted-foreground/20" />
                 </div>
-                <div className="mt-4 flex gap-2">
+                <div className="mt-6 flex gap-2">
                   <div className="flex-1 h-9 rounded-lg bg-muted-foreground/20" />
                   <div className="h-9 w-10 rounded-lg bg-muted-foreground/20" />
                 </div>

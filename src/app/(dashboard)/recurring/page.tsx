@@ -68,7 +68,7 @@ export default function RecurringPage() {
 
       {isLoading ? (
         <div className="grid gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
-          {Array.from({ length: 14 }).map((_, i) => (
+          {Array.from({ length: 28 }).map((_, i) => (
             <div key={i} className="animate-pulse rounded-xl bg-muted p-5">
               <div className="flex items-start justify-between">
                 <div className="flex items-center gap-3">

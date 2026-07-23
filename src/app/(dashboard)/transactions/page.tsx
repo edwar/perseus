@@ -54,18 +54,25 @@ export default function TransactionsPage() {
     return (
       <div className="space-y-6">
         <div className="flex items-center justify-between mt-10 md:hidden"><h1 className="text-2xl font-bold">Transacciones</h1><div className="h-9 w-24 animate-pulse rounded-lg bg-muted" /></div>
-        <div className="grid gap-2 sm:grid-cols-[1fr_180px]"><div className="h-10 animate-pulse rounded-xl bg-muted" /><div className="h-10 animate-pulse rounded-xl bg-muted" /></div>
+        <div className="flex gap-2 flex-col sm:flex-row">
+          <div className="h-10 flex-1 animate-pulse rounded-xl bg-muted" />
+          <div className="flex gap-1 p-1 bg-muted/50 rounded-xl">
+            {[1, 2, 3].map((i) => (
+              <div key={i} className="flex-1 h-8 rounded-lg bg-muted-foreground/20" />
+            ))}
+          </div>
+        </div>
         <Card><div className="divide-y">
-          {Array.from({ length: 14 }).map((_, i) => (
+          {[1, 2, 3].map((i) => (
             <div key={i} className="flex items-center justify-between px-6 py-3">
               <div className="flex items-center gap-3 flex-1">
-                <div className="h-7 w-7 animate-pulse rounded-full bg-muted" />
+                <div className="h-9 w-9 animate-pulse rounded-full bg-muted-foreground/20" />
                 <div className="flex-1 space-y-1.5">
-                  <div className="h-3 w-48 animate-pulse rounded bg-muted" />
-                  <div className="h-2.5 w-32 animate-pulse rounded bg-muted" />
+                  <div className="h-3 w-48 rounded bg-muted-foreground/20" />
+                  <div className="h-2.5 w-32 rounded bg-muted-foreground/20" />
                 </div>
               </div>
-              <div className="h-4 w-20 animate-pulse rounded bg-muted" />
+              <div className="h-4 w-20 rounded bg-muted-foreground/20" />
             </div>
           ))}
         </div></Card>
