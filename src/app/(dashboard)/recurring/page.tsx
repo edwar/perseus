@@ -66,14 +66,27 @@ export default function RecurringPage() {
       )}
 
       {isLoading ? (
-        <div className="grid gap-4 sm:grid-cols-2">
-          {[1, 2].map((i) => (
+        <div className="grid gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6">
+          {Array.from({ length: 14 }).map((_, i) => (
             <div key={i} className="animate-pulse rounded-xl bg-muted p-5">
-              <div className="flex items-center gap-3">
-                <div className="h-10 w-10 rounded-full bg-muted" />
-                <div className="flex-1 space-y-2">
-                  <div className="h-3 w-24 rounded bg-muted" />
-                  <div className="h-4 w-40 rounded bg-muted" />
+              <div className="flex items-start justify-between">
+                <div className="flex items-center gap-3">
+                  <div className="h-10 w-10 rounded-full bg-muted-foreground/20" />
+                  <div>
+                    <div className="h-4 w-24 rounded bg-muted-foreground/20" />
+                    <div className="mt-1 h-3 w-16 rounded bg-muted-foreground/20" />
+                  </div>
+                </div>
+                <div className="h-5 w-28 rounded bg-muted-foreground/20" />
+              </div>
+              <div className="mt-3 flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  <div className="h-3 w-16 rounded bg-muted-foreground/20" />
+                  <div className="h-3 w-12 rounded bg-muted-foreground/20" />
+                </div>
+                <div className="flex gap-1">
+                  <div className="h-8 w-8 rounded bg-muted-foreground/20" />
+                  <div className="h-8 w-8 rounded bg-muted-foreground/20" />
                 </div>
               </div>
             </div>
@@ -82,7 +95,7 @@ export default function RecurringPage() {
       ) : items.length === 0 && !showForm ? (
         <Empty icon={Repeat} title="No hay recurrentes" description="Agrega ingresos o gastos recurrentes para automatizar tu registro" action={<Button size="sm" onClick={() => { setEditingId(null); setShowForm(true) }}><Plus className="h-3 w-3" /> Crear</Button>} />
       ) : (
-        <div className="grid gap-4 sm:grid-cols-2">
+        <div className="grid gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6">
           {items.map((item) => (
             <Card key={item.id} size="sm">
               <CardContent>
