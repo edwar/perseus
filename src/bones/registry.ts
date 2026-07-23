@@ -3,24 +3,10 @@
 import { registerBones } from 'boneyard-js'
 import { configureBoneyard } from 'boneyard-js/react'
 
-import _budgets_grid from './budgets-grid.bones.json'
 import _dashboard_summary from './dashboard-summary.bones.json'
-import _debts_grid from './debts-grid.bones.json'
-import _documents_grid from './documents-grid.bones.json'
-import _obligations_list from './obligations-list.bones.json'
-import _recurring_grid from './recurring-grid.bones.json'
-import _savings_tabs from './savings-tabs.bones.json'
-import _transactions_list from './transactions-list.bones.json'
 
 configureBoneyard({"color":"rgba(0,0,0,0.06)","animate":"shimmer"})
 
 registerBones({
-  "budgets-grid": _budgets_grid,
   "dashboard-summary": _dashboard_summary,
-  "debts-grid": _debts_grid,
-  "documents-grid": _documents_grid,
-  "obligations-list": _obligations_list,
-  "recurring-grid": _recurring_grid,
-  "savings-tabs": _savings_tabs,
-  "transactions-list": _transactions_list,
 })

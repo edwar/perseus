@@ -1,7 +1,6 @@
 "use client"
 
 import { useState, useEffect } from "react"
-import { Skeleton } from "boneyard-js/react"
 import { Plus, X, Pencil, Trash2, Check, ChevronLeft, ChevronRight } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -50,46 +49,42 @@ export default function ObligationsPage() {
   const total = obligations.length
   const paid = obligations.filter((o) => paidIds.includes(o.id)).length
 
-  return (
-    <Skeleton
-      name="obligations-list"
-      loading={isLoading}
-      fixture={
-        <div className="space-y-6">
-          <div className="flex items-center justify-between mt-10 md:hidden">
-            <h1 className="text-2xl font-bold">Obligaciones</h1>
-            <div className="h-9 w-24 rounded-lg bg-muted" />
-          </div>
-          <div className="rounded-xl border shadow-sm">
-            <div className="flex items-center justify-between py-3 px-4">
-              <div className="h-8 w-8 rounded-lg bg-muted-foreground/20" />
-              <div className="flex-1 text-center">
-                <div className="h-4 w-32 mx-auto rounded bg-muted-foreground/20" />
-                <div className="mt-1 h-3 w-20 mx-auto rounded bg-muted-foreground/20" />
-              </div>
-              <div className="h-8 w-8 rounded-lg bg-muted-foreground/20" />
+  if (isLoading) {
+    return (
+      <div className="space-y-6">
+        <div className="flex items-center justify-between mt-10 md:hidden"><h1 className="text-2xl font-bold">Obligaciones</h1><div className="h-9 w-24 animate-pulse rounded-lg bg-muted" /></div>
+        <Card>
+          <CardContent className="flex items-center justify-between py-3 px-4">
+            <div className="h-8 w-8 animate-pulse rounded-lg bg-muted-foreground/20" />
+            <div className="flex-1 text-center">
+              <div className="h-4 w-32 mx-auto rounded bg-muted-foreground/20" />
+              <div className="mt-1 h-3 w-20 mx-auto rounded bg-muted-foreground/20" />
             </div>
-            <div className="h-2 bg-muted mx-5 mb-4 rounded-full overflow-hidden">
-              <div className="h-full bg-muted-foreground/20 rounded-full" style={{ width: "50%" }} />
-            </div>
+            <div className="h-8 w-8 animate-pulse rounded-lg bg-muted-foreground/20" />
+          </CardContent>
+          <div className="h-2 bg-muted mx-5 mb-4 rounded-full overflow-hidden">
+            <div className="h-full bg-muted-foreground/20 rounded-full" style={{ width: "50%" }} />
           </div>
-          <div className="space-y-2">
-            {[1, 2, 3].map((i) => (
-              <div key={i} className="rounded-xl border shadow-sm">
-                <div className="flex items-center gap-3 py-3 px-4">
-                  <div className="h-7 w-7 shrink-0 rounded-full bg-muted-foreground/20" />
-                  <div className="flex-1 min-w-0">
-                    <div className="h-3 w-32 rounded bg-muted-foreground/20" />
-                  </div>
-                  <div className="h-6 w-6 rounded bg-muted-foreground/20" />
-                  <div className="h-6 w-6 rounded bg-muted-foreground/20" />
+        </Card>
+        <div className="space-y-2">
+          {[1, 2, 3].map((i) => (
+            <Card key={i}>
+              <CardContent className="flex items-center gap-3 py-3 px-4">
+                <div className="h-7 w-7 shrink-0 rounded-full bg-muted-foreground/20" />
+                <div className="flex-1 min-w-0">
+                  <div className="h-3 w-32 rounded bg-muted-foreground/20" />
                 </div>
-              </div>
-            ))}
-          </div>
+                <div className="h-6 w-6 rounded bg-muted-foreground/20" />
+                <div className="h-6 w-6 rounded bg-muted-foreground/20" />
+              </CardContent>
+            </Card>
+          ))}
         </div>
-      }
-    >
+      </div>
+    )
+  }
+
+  return (
     <div className="space-y-6">
       <div className="flex items-center justify-between mt-10 md:hidden">
         <h1 className="text-2xl font-bold">Obligaciones</h1>
@@ -172,7 +167,6 @@ export default function ObligationsPage() {
 
       <ConfirmDialog open={!!deleteId} title="Eliminar obligación" message={`¿Estás seguro?`} onConfirm={() => { if (deleteId) remove.mutate(deleteId); setDeleteId(null) }} onCancel={() => setDeleteId(null)} />
     </div>
-    </Skeleton>
   )
 }
 

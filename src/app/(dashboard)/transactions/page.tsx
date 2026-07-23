@@ -1,7 +1,6 @@
 "use client"
 
 import { useEffect, useState } from "react"
-import { Skeleton } from "boneyard-js/react"
 import { Search, Plus, X, ArrowLeft, ArrowDown, ArrowUp, ScanLine, PenLine, Repeat, Calendar, Receipt, Pencil, Trash2, ChevronLeft, ChevronRight } from "lucide-react"
 import { useHeaderStore } from "@/store/header-store"
 import { Scanner } from "@/components/scanner"
@@ -14,7 +13,7 @@ import { Label } from "@/components/ui/label"
 import { Badge } from "@/components/ui/badge"
 import { Card, CardContent } from "@/components/ui/card"
 import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@/components/ui/select"
-import { useTransactions, useTransactionMutations, useBudgets, useRecurring, useDebts, useDebtMutations, type Transaction } from "@/hooks/useData"
+import { useTransactions, useTransactionMutations, useBudgets, useBudgetMutations, useRecurring, useDebts, useDebtMutations, type Transaction } from "@/hooks/useData"
 import { Empty } from "@/components/ui/empty"
 import { ConfirmDialog } from "@/components/ui/confirm-dialog"
 
@@ -33,7 +32,7 @@ const tabLabels: Record<Tab, string> = {
 
 export default function TransactionsPage() {
   const { data: transactions = [], isLoading } = useTransactions()
-  const { update, remove } = useTransactionMutations()
+  const { add, update, remove } = useTransactionMutations()
   const [search, setSearch] = useState("")
   const [tab, setTab] = useState<Tab>("all")
   const [showNewForm, setShowNewForm] = useState(false)
@@ -51,56 +50,41 @@ export default function TransactionsPage() {
   const safePage = page > totalPages ? 1 : page
   const paginated = filtered.slice((safePage - 1) * PAGE_SIZE, safePage * PAGE_SIZE)
 
+  if (isLoading) {
+    return (
+      <div className="space-y-6">
+        <div className="flex items-center justify-between mt-10 md:hidden"><h1 className="text-2xl font-bold">Transacciones</h1><div className="h-9 w-24 animate-pulse rounded-lg bg-muted" /></div>
+        <div className="flex gap-2 flex-col sm:flex-row">
+          <div className="h-10 flex-1 animate-pulse rounded-xl bg-muted" />
+          <div className="flex gap-1 p-1 bg-muted/50 rounded-xl">
+            {[1, 2, 3].map((i) => (
+              <div key={i} className="flex-1 h-8 rounded-lg bg-muted-foreground/20" />
+            ))}
+          </div>
+        </div>
+        <Card><div className="divide-y">
+          {[1, 2, 3].map((i) => (
+            <div key={i} className="flex items-center justify-between px-6 py-3">
+              <div className="flex items-center gap-3 flex-1">
+                <div className="h-9 w-9 animate-pulse rounded-full bg-muted-foreground/20" />
+                <div className="flex-1 space-y-1.5">
+                  <div className="h-3 w-48 rounded bg-muted-foreground/20" />
+                  <div className="h-2.5 w-32 rounded bg-muted-foreground/20" />
+                </div>
+              </div>
+              <div className="h-4 w-20 rounded bg-muted-foreground/20" />
+            </div>
+          ))}
+        </div></Card>
+      </div>
+    )
+  }
+
   if (showNewForm) {
     return <NewTransactionForm onClose={() => setShowNewForm(false)} />
   }
 
   return (
-    <Skeleton
-      name="transactions-list"
-      loading={isLoading}
-      fixture={
-        <div className="space-y-6">
-          <div className="items-center justify-between mt-10 flex md:hidden">
-            <h1 className="text-2xl font-bold">Transacciones</h1>
-            <div className="inline-flex items-center justify-center gap-2 h-9 px-4 rounded-md bg-primary text-primary-foreground text-sm font-medium">Crear</div>
-          </div>
-          <div className="space-y-3">
-            <div className="relative">
-              <div className="absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-              <div className="flex h-10 w-full rounded-xl border bg-muted/50 pl-10 pr-4 py-2" />
-            </div>
-            <div className="flex gap-1 p-1 bg-muted/50 rounded-xl">
-              <div className="flex-1 rounded-lg px-3 py-1.5 text-sm font-medium bg-card text-foreground shadow-sm text-center">Todas</div>
-              <div className="flex-1 rounded-lg px-3 py-1.5 text-sm font-medium text-muted-foreground text-center">Recurrentes</div>
-              <div className="flex-1 rounded-lg px-3 py-1.5 text-sm font-medium text-muted-foreground text-center">Ocasionales</div>
-            </div>
-          </div>
-          <div className="rounded-xl border shadow-sm overflow-hidden">
-            {[1, 2, 3, 4, 5].map((i) => (
-              <div key={i} className="flex items-center justify-between px-6 py-3.5 border-l-2 border-l-red-500/60 border-b last:border-b-0">
-                <div className="flex items-center gap-3">
-                  <div className="flex h-9 w-9 items-center justify-center rounded-full bg-red-100" />
-                  <div>
-                    <div className="h-3 w-32 rounded bg-muted-foreground/20" />
-                    <div className="flex items-center gap-2 mt-1">
-                      <div className="h-4 w-16 rounded-md bg-muted-foreground/20" />
-                      <div className="text-xs text-muted-foreground">·</div>
-                      <div className="h-3 w-20 rounded bg-muted-foreground/20" />
-                    </div>
-                  </div>
-                </div>
-                <div className="flex items-center gap-2">
-                  <div className="h-3.5 w-16 rounded bg-muted-foreground/20" />
-                  <div className="h-6 w-6 rounded bg-muted-foreground/20" />
-                  <div className="h-6 w-6 rounded bg-muted-foreground/20" />
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      }
-    >
     <div className="space-y-6">
       <div className="items-center justify-between mt-10 flex md:hidden">
         <h1 className="text-2xl font-bold">Transacciones</h1>
@@ -111,147 +95,146 @@ export default function TransactionsPage() {
       </div>
 
       {/* Filtros */}
-          <div className="space-y-3">
-            <div className="relative">
-              <Search className="absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-              <Input
-                type="text"
-                placeholder="Buscar transacciones..."
-                value={search}
-                onChange={(e) => setSearch(e.target.value)}
-                className="pl-10 bg-muted/50 border-transparent focus:bg-card focus:border-border focus:ring-1 focus:ring-primary/20 h-10 rounded-xl"
-              />
-            </div>
-            <div className="flex gap-1 p-1 bg-muted/50 rounded-xl">
-              {(Object.keys(tabLabels) as Tab[]).map((t) => (
-                <button
-                  key={t}
-                  onClick={() => setTab(t)}
-                  className={cn(
-                    "flex-1 rounded-lg px-3 py-1.5 text-sm font-medium transition-all duration-200",
-                    tab === t
-                      ? "bg-card text-foreground shadow-sm"
-                      : "text-muted-foreground hover:text-foreground"
-                  )}
-                >
-                  {tabLabels[t]}
-                </button>
-              ))}
-            </div>
-          </div>
-
-          <Card>
-            {filtered.length === 0 ? (
-              <Empty icon={Receipt} title="No hay transacciones" description={search ? "Intenta con otra búsqueda" : "Registra tu primera transacción para empezar"} action={!search ? <Button size="sm" onClick={() => setShowNewForm(true)}><Plus className="h-3 w-3" /> Crear</Button> : undefined} />
-            ) : (
-              <div>
-                {paginated.map((tx) => (
-                  <div key={tx.id}>
-                    {editTx === tx.id ? (
-                      <InlineEditForm
-                        tx={tx}
-                        onSave={(d) => { update.mutate({ ...tx, ...d }); setEditTx(null) }}
-                        onCancel={() => setEditTx(null)}
-                      />
-                    ) : (
-                      <div className={cn(
-                        "flex items-center justify-between px-6 py-3.5 transition-colors duration-150 hover:bg-muted/40",
-                        tx.type === "INCOME" ? "border-l-2 border-l-emerald-500/60" : "border-l-2 border-l-red-500/60"
-                      )}>
-                        <div className="flex items-center gap-3">
-                          {tx.recurring && (
-                            <div className="flex h-7 w-7 items-center justify-center rounded-full bg-amber-100">
-                              <Repeat className="h-3.5 w-3.5 text-amber-600" />
-                            </div>
-                          )}
-                          <div>
-                            <p className="text-sm font-medium">{tx.description}</p>
-                            <p className="flex items-center gap-2 text-xs text-muted-foreground">
-                              <Badge variant="secondary" className="px-1.5 py-0 text-[10px] font-medium rounded-md">
-                                {tx.category || (tx.type === "INCOME" ? "Ingreso" : "Gasto")}
-                              </Badge>
-                              <span>·</span>
-                              <span>{tx.date}</span>
-                              {tx.recurring && tx.nextDate && (
-                                <Badge variant="outline" className="flex items-center gap-0.5 border-amber-200 text-amber-600">
-                                  <Calendar className="h-3 w-3" />
-                                  Próximo: {tx.nextDate}
-                                </Badge>
-                              )}
-                            </p>
-                          </div>
-                        </div>
-                        <div className="flex items-center gap-2">
-                          <span className={cn(
-                            "text-sm font-semibold tabular-nums",
-                            tx.type === "INCOME" ? "text-emerald-600" : "text-red-600"
-                          )}>
-                            {tx.type === "INCOME" ? "+" : "-"}$
-                            {tx.amount.toLocaleString("es-CO")}
-                          </span>
-                          <Button variant="ghost" size="icon-xs" onClick={() => setEditTx(tx.id)}>
-                            <Pencil className="h-3 w-3" />
-                          </Button>
-                          <Button variant="ghost" size="icon-xs" onClick={() => setDeleteTx(tx.id)} className="text-red-500 hover:text-red-700">
-                            <Trash2 className="h-3 w-3" />
-                          </Button>
-                        </div>
-                      </div>
-                    )}
-                  </div>
-                ))}
-              </div>
-            )}
-          </Card>
-
-          {totalPages > 1 && (
-            <div className="flex items-center justify-center gap-1.5">
-              <Button
-                variant="outline"
-                size="sm"
-                className="h-8 w-8 p-0 rounded-lg"
-                disabled={safePage <= 1}
-                onClick={() => setPage(safePage - 1)}
-              >
-                <ChevronLeft className="h-4 w-4" />
-              </Button>
-              {Array.from({ length: totalPages }, (_, i) => i + 1).map((p) => (
-                <Button
-                  key={p}
-                  variant={p === safePage ? "default" : "outline"}
-                  size="sm"
-                  className={cn(
-                    "h-8 w-8 p-0 text-xs rounded-lg transition-all duration-150",
-                    p === safePage && "shadow-sm"
-                  )}
-                  onClick={() => setPage(p)}
-                >
-                  {p}
-                </Button>
-              ))}
-              <Button
-                variant="outline"
-                size="sm"
-                className="h-8 w-8 p-0 rounded-lg"
-                disabled={safePage >= totalPages}
-                onClick={() => setPage(safePage + 1)}
-              >
-                <ChevronRight className="h-4 w-4" />
-              </Button>
-            </div>
-          )}
-
-          <ConfirmDialog
-            open={!!deleteTx}
-            title="Eliminar transacción"
-            message={`¿Estás seguro de eliminar "${transactions.find((t) => t.id === deleteTx)?.description}"?`}
-            onConfirm={() => { if (deleteTx) remove.mutate(deleteTx); setDeleteTx(null) }}
-            onCancel={() => setDeleteTx(null)}
+      <div className="space-y-3">
+        <div className="relative">
+          <Search className="absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+          <Input
+            type="text"
+            placeholder="Buscar transacciones..."
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            className="pl-10 bg-muted/50 border-transparent focus:bg-card focus:border-border focus:ring-1 focus:ring-primary/20 h-10 rounded-xl"
           />
         </div>
-      </Skeleton>
-    )
-  }
+        <div className="flex gap-1 p-1 bg-muted/50 rounded-xl">
+          {(Object.keys(tabLabels) as Tab[]).map((t) => (
+            <button
+              key={t}
+              onClick={() => setTab(t)}
+              className={cn(
+                "flex-1 rounded-lg px-3 py-1.5 text-sm font-medium transition-all duration-200",
+                tab === t
+                  ? "bg-card text-foreground shadow-sm"
+                  : "text-muted-foreground hover:text-foreground"
+              )}
+            >
+              {tabLabels[t]}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      <Card>
+        {filtered.length === 0 ? (
+          <Empty icon={Receipt} title="No hay transacciones" description={search ? "Intenta con otra búsqueda" : "Registra tu primera transacción para empezar"} action={!search ? <Button size="sm" onClick={() => setShowNewForm(true)}><Plus className="h-3 w-3" /> Crear</Button> : undefined} />
+        ) : (
+          <div>
+            {paginated.map((tx) => (
+              <div key={tx.id}>
+                {editTx === tx.id ? (
+                  <InlineEditForm
+                    tx={tx}
+                    onSave={(d) => { update.mutate({ ...tx, ...d }); setEditTx(null) }}
+                    onCancel={() => setEditTx(null)}
+                  />
+                ) : (
+                  <div className={cn(
+                    "flex items-center justify-between px-6 py-3.5 transition-colors duration-150 hover:bg-muted/40",
+                    tx.type === "INCOME" ? "border-l-2 border-l-emerald-500/60" : "border-l-2 border-l-red-500/60"
+                  )}>
+                    <div className="flex items-center gap-3">
+                      {tx.recurring && (
+                        <div className="flex h-7 w-7 items-center justify-center rounded-full bg-amber-100">
+                          <Repeat className="h-3.5 w-3.5 text-amber-600" />
+                        </div>
+                      )}
+                      <div>
+                        <p className="text-sm font-medium">{tx.description}</p>
+                        <p className="flex items-center gap-2 text-xs text-muted-foreground">
+                          <Badge variant="secondary" className="px-1.5 py-0 text-[10px] font-medium rounded-md">
+                            {tx.category || (tx.type === "INCOME" ? "Ingreso" : "Gasto")}
+                          </Badge>
+                          <span>·</span>
+                          <span>{tx.date}</span>
+                          {tx.recurring && tx.nextDate && (
+                            <Badge variant="outline" className="flex items-center gap-0.5 border-amber-200 text-amber-600">
+                              <Calendar className="h-3 w-3" />
+                              Próximo: {tx.nextDate}
+                            </Badge>
+                          )}
+                        </p>
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <span className={cn(
+                        "text-sm font-semibold tabular-nums",
+                        tx.type === "INCOME" ? "text-emerald-600" : "text-red-600"
+                      )}>
+                        {tx.type === "INCOME" ? "+" : "-"}$
+                        {tx.amount.toLocaleString("es-CO")}
+                      </span>
+                      <Button variant="ghost" size="icon-xs" onClick={() => setEditTx(tx.id)}>
+                        <Pencil className="h-3 w-3" />
+                      </Button>
+                      <Button variant="ghost" size="icon-xs" onClick={() => setDeleteTx(tx.id)} className="text-red-500 hover:text-red-700">
+                        <Trash2 className="h-3 w-3" />
+                      </Button>
+                    </div>
+                  </div>
+                )}
+              </div>
+            ))}
+          </div>
+        )}
+      </Card>
+
+      {totalPages > 1 && (
+        <div className="flex items-center justify-center gap-1.5">
+          <Button
+            variant="outline"
+            size="sm"
+            className="h-8 w-8 p-0 rounded-lg"
+            disabled={safePage <= 1}
+            onClick={() => setPage(safePage - 1)}
+          >
+            <ChevronLeft className="h-4 w-4" />
+          </Button>
+          {Array.from({ length: totalPages }, (_, i) => i + 1).map((p) => (
+            <Button
+              key={p}
+              variant={p === safePage ? "default" : "outline"}
+              size="sm"
+              className={cn(
+                "h-8 w-8 p-0 text-xs rounded-lg transition-all duration-150",
+                p === safePage && "shadow-sm"
+              )}
+              onClick={() => setPage(p)}
+            >
+              {p}
+            </Button>
+          ))}
+          <Button
+            variant="outline"
+            size="sm"
+            className="h-8 w-8 p-0 rounded-lg"
+            disabled={safePage >= totalPages}
+            onClick={() => setPage(safePage + 1)}
+          >
+            <ChevronRight className="h-4 w-4" />
+          </Button>
+        </div>
+      )}
+
+      <ConfirmDialog
+        open={!!deleteTx}
+        title="Eliminar transacción"
+        message={`¿Estás seguro de eliminar "${transactions.find((t) => t.id === deleteTx)?.description}"?`}
+        onConfirm={() => { if (deleteTx) remove.mutate(deleteTx); setDeleteTx(null) }}
+        onCancel={() => setDeleteTx(null)}
+      />
+    </div>
+  )
+}
 
 function InlineEditForm({ tx, onSave, onCancel }: {
   tx: Transaction

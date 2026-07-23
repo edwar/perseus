@@ -2,11 +2,11 @@
 
 import dynamic from "next/dynamic"
 import { useEffect, useState } from "react"
-import { Skeleton } from "boneyard-js/react"
 import { cn, formatCurrency } from "@/lib/utils"
 import { ArrowUpRight, ArrowDownRight, ArrowLeftRight, Pencil, Trash2, Wallet, ChevronLeft, ChevronRight } from "lucide-react"
-import { Card } from "@/components/ui/card"
+import { Card, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
+import { Empty } from "@/components/ui/empty"
 import { CurrencyInput } from "@/components/ui/currency-input"
 import { Input } from "@/components/ui/input"
 import { useTransactionStore } from "@/store/transaction-store"
@@ -51,82 +51,46 @@ export function DashboardClient({
   const paginatedTxs = recentTransactions.slice((safePage - 1) * PAGE_SIZE, safePage * PAGE_SIZE)
   const [ready, setReady] = useState(false)
   useEffect(() => { const t = setTimeout(() => setReady(true), 100); return () => clearTimeout(t) }, [])
-  return (
-    <Skeleton
-      name="dashboard-summary"
-      loading={!ready}
-      fixture={
-        <div className="space-y-6">
-          <h1 className="text-2xl font-bold mt-10 md:hidden">Dashboard</h1>
-          <div className="grid gap-5 sm:grid-cols-3">
-            <div className="group relative overflow-hidden rounded-2xl bg-linear-to-br from-blue-500 to-blue-700 p-5 text-white shadow-lg shadow-blue-500/20">
-              <div className="absolute -right-4 -top-4 h-24 w-24 rounded-full bg-white/10" />
-              <div className="absolute -bottom-6 -right-6 h-20 w-20 rounded-full bg-white/5" />
-              <div className="relative flex items-center gap-4">
-                <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-white/20 backdrop-blur-sm" />
-                <div>
-                  <p className="text-sm font-medium text-blue-100">Balance total</p>
-                  <p className="text-2xl font-bold">$1.200.000</p>
+  if (!ready) {
+    return (
+      <div className="space-y-6">
+        <h1 className="text-2xl font-bold mt-10 md:hidden">Dashboard</h1>
+        <div className="grid gap-4 sm:grid-cols-3">
+          {[1, 2, 3].map((i) => (
+            <Card key={i}>
+              <CardContent className="flex items-center gap-3">
+                <div className="h-10 w-10 animate-pulse rounded-full bg-muted" />
+                <div className="flex-1 space-y-2">
+                  <div className="h-3 w-20 animate-pulse rounded bg-muted" />
+                  <div className="h-5 w-32 animate-pulse rounded bg-muted" />
                 </div>
-              </div>
-            </div>
-            <div className="group relative overflow-hidden rounded-2xl bg-linear-to-br from-emerald-500 to-emerald-700 p-5 text-white shadow-lg shadow-emerald-500/20">
-              <div className="absolute -right-4 -top-4 h-24 w-24 rounded-full bg-white/10" />
-              <div className="absolute -bottom-6 -right-6 h-20 w-20 rounded-full bg-white/5" />
-              <div className="relative flex items-center gap-4">
-                <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-white/20 backdrop-blur-sm" />
-                <div>
-                  <p className="text-sm font-medium text-emerald-100">Ingresos del mes</p>
-                  <p className="text-2xl font-bold">$800.000</p>
-                </div>
-              </div>
-            </div>
-            <div className="group relative overflow-hidden rounded-2xl bg-linear-to-br from-rose-500 to-rose-700 p-5 text-white shadow-lg shadow-rose-500/20">
-              <div className="absolute -right-4 -top-4 h-24 w-24 rounded-full bg-white/10" />
-              <div className="absolute -bottom-6 -right-6 h-20 w-20 rounded-full bg-white/5" />
-              <div className="relative flex items-center gap-4">
-                <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-white/20 backdrop-blur-sm" />
-                <div>
-                  <p className="text-sm font-medium text-rose-100">Gastos del mes</p>
-                  <p className="text-2xl font-bold">$500.000</p>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div className="grid gap-5 sm:grid-cols-2">
-            <div className="rounded-2xl border shadow-lg overflow-hidden">
-              <div className="border-b px-6 py-4"><div className="h-4 w-36 rounded bg-muted" /></div>
-              <div className="p-5"><div className="h-52 rounded-lg bg-muted" /></div>
-            </div>
-            <div className="rounded-2xl border shadow-lg overflow-hidden">
-              <div className="border-b px-6 py-4"><div className="h-4 w-36 rounded bg-muted" /></div>
-              <div className="p-5"><div className="h-52 rounded-lg bg-muted" /></div>
-            </div>
-          </div>
-          <div className="overflow-hidden rounded-2xl border-0 shadow-lg">
-            <div className="border-b px-6 py-4"><p className="font-semibold">Transacciones recientes</p></div>
-            <div className="divide-y">
-              {Array.from({ length: 5 }).map((_, i) => (
-                <div key={i} className="flex items-center justify-between px-6 py-3 transition-colors hover:bg-muted/50">
-                  <div className="flex items-center gap-3">
-                    <div className="flex h-9 w-9 items-center justify-center rounded-full bg-red-100" />
-                    <div>
-                      <p className="text-sm font-medium">Supermercado</p>
-                      <p className="text-xs text-red-600 font-medium">Gasto</p>
-                    </div>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <span className="text-sm font-semibold text-red-600">-$45.000</span>
-                    <div className="h-6 w-6 rounded bg-muted-foreground/20" />
-                    <div className="h-6 w-6 rounded bg-muted-foreground/20" />
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
+              </CardContent>
+            </Card>
+          ))}
         </div>
-      }
-    >
+        <div className="grid gap-4 sm:grid-cols-2">
+          <Card><div className="border-b px-6 py-4"><div className="h-4 w-36 animate-pulse rounded bg-muted" /></div><div className="p-5"><div className="h-52 animate-pulse rounded-lg bg-muted" /></div></Card>
+          <Card><div className="border-b px-6 py-4"><div className="h-4 w-36 animate-pulse rounded bg-muted" /></div><div className="p-5"><div className="h-52 animate-pulse rounded-lg bg-muted" /></div></Card>
+        </div>
+        <Card>
+          <div className="border-b px-6 py-4"><div className="h-4 w-40 animate-pulse rounded bg-muted" /></div>
+          <div className="divide-y">
+            {Array.from({ length: 14 }).map((_, i) => (
+              <div key={i} className="flex items-center gap-3 px-6 py-3">
+                <div className="h-9 w-9 animate-pulse rounded-full bg-muted" />
+                <div className="flex-1 space-y-1.5">
+                  <div className="h-3 w-40 animate-pulse rounded bg-muted" />
+                  <div className="h-2.5 w-24 animate-pulse rounded bg-muted" />
+                </div>
+                <div className="h-4 w-20 animate-pulse rounded bg-muted" />
+              </div>
+            ))}
+          </div>
+        </Card>
+      </div>
+    )
+  }
+  return (
     <div className="space-y-6">
       <h1 className="text-2xl font-bold mt-10 md:hidden">Dashboard</h1>
 
@@ -249,7 +213,6 @@ export function DashboardClient({
 
       <ConfirmDialog open={!!deleteTx} title="Eliminar transacción" message={`¿Estás seguro?`} onConfirm={() => { if (deleteTx) deleteTransaction(deleteTx); setDeleteTx(null) }} onCancel={() => setDeleteTx(null)} />
     </div>
-    </Skeleton>
   )
 }
 
