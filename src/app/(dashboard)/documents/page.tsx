@@ -2,7 +2,7 @@
 
 import Image from "next/image"
 import { useMemo, useState, useEffect } from "react"
-import { useDocumentStore, type ScannedDoc } from "@/store/document-store"
+import { useDocuments, useDocumentMutations, type ScannedDoc } from "@/hooks/useDocuments"
 import { useHeaderStore } from "@/store/header-store"
 import { Empty } from "@/components/ui/empty"
 import { Button } from "@/components/ui/button"
@@ -38,7 +38,8 @@ const fieldLabels: Record<string, string> = {
 }
 
 export default function DocumentsPage() {
-  const docs = useDocumentStore((s) => s.docs)
+  const { data: docs = [], isLoading } = useDocuments()
+  const { remove } = useDocumentMutations()
   const setHeaderAction = useHeaderStore((s) => s.setAction)
   const [year, setYear] = useState<string | null>(null)
   const [month, setMonth] = useState<string | null>(null)
@@ -90,6 +91,19 @@ export default function DocumentsPage() {
       <div className="space-y-6">
         <h1 className="text-2xl font-bold mt-10 md:hidden">Documentos</h1>
         <Empty icon={ScanLine} title="No hay documentos" description="Los documentos escaneados aparecerán aquí" />
+      </div>
+    )
+  }
+
+  if (isLoading) {
+    return (
+      <div className="space-y-6">
+        <div className="flex items-center justify-between mt-10 md:hidden"><h1 className="text-2xl font-bold">Documentos</h1></div>
+        <div className="grid gap-4 grid-cols-[repeat(auto-fill,200px)]">
+          {[1, 2].map((i) => (
+            <div key={i} className="animate-pulse h-[200px] w-[200px] rounded-sm bg-muted-foreground/20" />
+          ))}
+        </div>
       </div>
     )
   }
@@ -153,7 +167,7 @@ export default function DocumentsPage() {
                 </div>
                 <div className="grid gap-4 grid-cols-[repeat(auto-fill,200px)]">
                   {items.map((doc, i) => (
-                    <DocumentCard key={doc.id ?? doc.publicId ?? i} doc={doc} />
+                    <DocumentCard key={doc.id ?? doc.publicId ?? i} doc={doc} onDelete={() => {}} />
                   ))}
                 </div>
               </div>
@@ -165,18 +179,17 @@ export default function DocumentsPage() {
   )
 }
 
-function DocumentCard({ doc }: { doc: ScannedDoc }) {
+function DocumentCard({ doc, onDelete }: { doc: ScannedDoc; onDelete?: () => void }) {
   const [open, setOpen] = useState(false)
   const [deleteConfirm, setDeleteConfirm] = useState(false)
   const [deleting, setDeleting] = useState(false)
-  const deleteDoc = useDocumentStore((s) => s.deleteDoc)
   const isPDF = doc.url.endsWith(".pdf")
 
   async function handleDelete() {
     setDeleting(true)
     try {
       await fetch(`/api/documents?publicId=${encodeURIComponent(doc.publicId)}`, { method: "DELETE" })
-      deleteDoc(doc.id)
+      onDelete?.()
       setOpen(false)
     } catch {
       console.error("Error al eliminar de Cloudinary")
