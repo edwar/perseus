@@ -355,10 +355,11 @@ function BudgetForm({ initial, onSave, onClose, isPending }: {
               ))}
             </div>
           </div>
-
-          <Button type="submit" className="w-full" disabled={!isValid || isPending}>
-            {isPending ? "Guardando..." : initial ? "Guardar cambios" : "Crear presupuesto"}
-          </Button>
+          <div className="flex md:justify-end">
+            <Button type="submit" className="w-full md:w-auto md:end" disabled={!isValid || isPending}>
+              {isPending ? "Guardando..." : initial ? "Guardar cambios" : "Crear presupuesto"}
+            </Button>
+          </div>
         </form>
       </CardContent>
     </Card>

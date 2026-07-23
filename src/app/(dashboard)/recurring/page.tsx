@@ -218,63 +218,68 @@ function RecurringForm({ editItem, onSave, onCancel, isPending }: {
               </Button>
             </div>
 
-            <div className="space-y-1.5">
-              <Label>Nombre</Label>
-              <Input value={name} onChange={(e) => setName(e.target.value)} placeholder="Netflix" required />
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="space-y-1.5">
+                <Label>Nombre</Label>
+                <Input value={name} onChange={(e) => setName(e.target.value)} placeholder="Netflix" required />
+              </div>
+
+              <div className="space-y-1.5">
+                <Label>Monto</Label>
+                <CurrencyInput value={amount} onChange={setAmount} placeholder="0" required />
+              </div>
             </div>
 
-            {type === "EXPENSE" && (
-              <div className="space-y-1.5">
-                <Label>Presupuesto que afecta</Label>
-                <Select value={category} onValueChange={(v) => v && setCategory(v)}>
-                  <SelectTrigger className="w-full">
-                    <SelectValue placeholder="Seleccionar presupuesto" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {!budgets || budgets.length === 0 ? (
-                      <div className="px-3 py-6 text-center text-xs text-muted-foreground space-y-2">
-                        <p>No hay presupuestos</p>
-                        <Button size="sm" onClick={() => window.location.href = "/budgets"}>Ir a Presupuestos</Button>
-                      </div>
-                    ) : budgets.map((b) => (
-                      <SelectItem key={b.id} value={b.category}>{b.category}</SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
-            )}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
 
-            <div className="space-y-1.5">
-              <Label>Monto</Label>
-              <CurrencyInput value={amount} onChange={setAmount} placeholder="0" required />
+              {type === "EXPENSE" && (
+                <div className="space-y-1.5">
+                  <Label>Presupuesto que afecta</Label>
+                  <Select value={category} onValueChange={(v) => v && setCategory(v)}>
+                    <SelectTrigger className="w-full">
+                      <SelectValue placeholder="Seleccionar presupuesto" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {!budgets || budgets.length === 0 ? (
+                        <div className="px-3 py-6 text-center text-xs text-muted-foreground space-y-2">
+                          <p>No hay presupuestos</p>
+                          <Button size="sm" onClick={() => window.location.href = "/budgets"}>Ir a Presupuestos</Button>
+                        </div>
+                      ) : budgets.map((b) => (
+                        <SelectItem key={b.id} value={b.category}>{b.category}</SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+              )}
+
+              {type === "EXPENSE" && debts && debts.length > 0 && (
+                <div className="space-y-1.5">
+                  <Label>Asociar a deuda (opcional)</Label>
+                  <Select value={debtId} onValueChange={(v) => v && setDebtId(v)}>
+                    <SelectTrigger className="w-full">
+                      <SelectValue>
+                        {(v: string) => {
+                          if (!v) return "Ninguna"
+                          const d = debts.find((d) => d.id === v)
+                          return d ? `${d.name} — $${d.remaining.toLocaleString("es-CO")}` : v
+                        }}
+                      </SelectValue>
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="">Ninguna</SelectItem>
+                      {debts.map((d) => (
+                        <SelectItem key={d.id} value={d.id}>
+                          {d.name} — ${d.remaining.toLocaleString("es-CO")}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+              )}
             </div>
 
-            {type === "EXPENSE" && debts && debts.length > 0 && (
-              <div className="space-y-1.5">
-                <Label>Asociar a deuda (opcional)</Label>
-                <Select value={debtId} onValueChange={(v) => v && setDebtId(v)}>
-                  <SelectTrigger className="w-full">
-                    <SelectValue>
-                      {(v: string) => {
-                        if (!v) return "Ninguna"
-                        const d = debts.find((d) => d.id === v)
-                        return d ? `${d.name} — $${d.remaining.toLocaleString("es-CO")}` : v
-                      }}
-                    </SelectValue>
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="">Ninguna</SelectItem>
-                    {debts.map((d) => (
-                      <SelectItem key={d.id} value={d.id}>
-                        {d.name} — ${d.remaining.toLocaleString("es-CO")}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
-            )}
-
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div className="space-y-1.5">
                 <Label>Frecuencia</Label>
                 <Select value={frequency} onValueChange={(value) => value && setFrequency(value)}>

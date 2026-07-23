@@ -281,19 +281,21 @@ function AddDebtForm({ initial, onSave, onClose, isPending }: {
               <p className="text-xs text-muted-foreground">{Math.round((installmentsPaid / Number(installments)) * 100)}% pagado</p>
             )}
 
-            <Button className="w-full" disabled={isPending} onClick={() => {
-              onSave({
-                name: name || "Deuda",
-                creditor: name || "Deuda",
-                category,
-                total: Number(total) || 0,
-                remaining: Number(remaining) || 0,
-                rate: Number(rate) || 0,
-                monthly: Number(monthly) || 0,
-                installments: Number(installments) || 0,
-                paid: installmentsPaid ?? 0,
-              })
-            }}>{isPending ? "Guardando..." : initial ? "Guardar cambios" : "Crear deuda"}</Button>
+            <div className="flex md:justify-end">
+              <Button className="w-full md:w-auto" disabled={isPending} onClick={() => {
+                onSave({
+                  name: name || "Deuda",
+                  creditor: name || "Deuda",
+                  category,
+                  total: Number(total) || 0,
+                  remaining: Number(remaining) || 0,
+                  rate: Number(rate) || 0,
+                  monthly: Number(monthly) || 0,
+                  installments: Number(installments) || 0,
+                  paid: installmentsPaid ?? 0,
+                })
+              }}>{isPending ? "Guardando..." : initial ? "Guardar cambios" : "Crear deuda"}</Button>
+            </div>
           </div>
         )}
       </CardContent>

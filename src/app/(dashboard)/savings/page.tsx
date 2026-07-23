@@ -259,17 +259,21 @@ function NewGoalForm({ initial, onSave, onClose, isPending }: {
             <Label className="text-xs font-medium">Nombre</Label>
             <Input value={name} onChange={(e) => setName(e.target.value)} placeholder="Ej: Fondo de emergencia" />
           </div>
-          <div className="space-y-1">
-            <Label className="text-xs font-medium">Meta</Label>
-            <CurrencyInput value={target} onChange={setTarget} placeholder="0" />
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="space-y-1">
+              <Label className="text-xs font-medium">Meta</Label>
+              <CurrencyInput value={target} onChange={setTarget} placeholder="0" />
+            </div>
+            <div className="space-y-1">
+              <Label className="text-xs font-medium">Fecha límite</Label>
+              <Input type="date" value={deadline} onChange={(e) => setDeadline(e.target.value)} />
+            </div>
           </div>
-          <div className="space-y-1">
-            <Label className="text-xs font-medium">Fecha límite</Label>
-            <Input type="date" value={deadline} onChange={(e) => setDeadline(e.target.value)} />
+          <div className="flex md:justify-end">
+            <Button className="w-full md:w-auto md:end" disabled={!name || !target || isPending} onClick={() => onSave?.({ name, target: Number(target), deadline })}>
+              {isPending ? "Guardando..." : initial ? "Guardar cambios" : "Crear meta"}
+            </Button>
           </div>
-          <Button className="w-full" disabled={!name || !target || isPending} onClick={() => onSave?.({ name, target: Number(target), deadline })}>
-            {isPending ? "Guardando..." : initial ? "Guardar cambios" : "Crear meta"}
-          </Button>
         </div>
       </CardContent>
     </Card>

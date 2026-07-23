@@ -189,9 +189,11 @@ function ObligationForm({ initial, onSave, onClose, isPending }: {
           <Label className="text-xs font-medium">Nombre</Label>
           <Input value={name} onChange={(e) => setName(e.target.value)} placeholder="Ej: Arriendo" />
         </div>
-        <Button className="w-full" disabled={!name || isPending} onClick={() => onSave({ name })}>
-          {isPending ? "Guardando..." : initial ? "Guardar cambios" : "Crear obligación"}
-        </Button>
+        <div className="flex md:justify-end">
+          <Button className="w-full md:w-auto md:end" disabled={!name || isPending} onClick={() => onSave({ name })}>
+            {isPending ? "Guardando..." : initial ? "Guardar cambios" : "Crear obligación"}
+          </Button>
+        </div>
       </CardContent>
     </Card>
   )
