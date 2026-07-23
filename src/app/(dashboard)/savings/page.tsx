@@ -15,7 +15,7 @@ import { Tabs, TabPanel } from "@/components/ui/tabs"
 import { useSavings, useSavingsMutations, type Goal, type Investment } from "@/hooks/useData"
 
 export default function SavingsPage() {
-  const { data: savingsData } = useSavings()
+  const { data: savingsData, isLoading } = useSavings()
   const goals = savingsData?.goals ?? []
   const investments = savingsData?.investments ?? []
   const { addGoal, updateGoal, deleteGoal, addInvestment, updateInvestment, deleteInvestment } = useSavingsMutations()
@@ -42,6 +42,31 @@ export default function SavingsPage() {
 
   return (
     <div className="space-y-6 mt-10 md:mt-0">
+      {isLoading ? (
+        <div className="space-y-4">
+          <div className="flex gap-4">
+            <div className="h-10 w-40 animate-pulse rounded-lg bg-muted" />
+            <div className="h-10 w-40 animate-pulse rounded-lg bg-muted" />
+          </div>
+          {[1, 2].map((i) => (
+            <div key={i} className="animate-pulse rounded-xl bg-muted p-5">
+              <div className="flex items-start justify-between">
+                <div className="flex items-center gap-3">
+                  <div className="h-10 w-10 rounded-full bg-muted-foreground/20" />
+                  <div>
+                    <div className="h-4 w-32 rounded bg-muted-foreground/20" />
+                    <div className="mt-1 h-3 w-24 rounded bg-muted-foreground/20" />
+                  </div>
+                </div>
+                <div className="h-5 w-24 rounded bg-muted-foreground/20" />
+              </div>
+              <div className="mt-3">
+                <div className="h-2 w-full rounded-full bg-muted-foreground/20" />
+              </div>
+            </div>
+          ))}
+        </div>
+      ) : (
       <Tabs tabs={[{ id: "goals", label: "Metas de Ahorro", icon: <Target className="h-4 w-4" /> }, { id: "invest", label: "Inversiones", icon: <Landmark className="h-4 w-4" /> }]}>
 
         <TabPanel id="goals">
@@ -66,7 +91,7 @@ export default function SavingsPage() {
             {goals.length === 0 && !showNewGoal ? (
               <Empty icon={Target} title="No hay metas de ahorro" description="Crea tu primera meta para empezar a ahorrar" action={<Button size="sm" onClick={() => setShowNewGoal(true)}><Plus className="h-3 w-3" /> Crear</Button>} />
             ) : (
-              <div className="grid gap-4 sm:grid-cols-2">
+              <div className="grid gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
                 {goals.map((goal) => {
                   const progress = (goal.current / goal.target) * 100
                   return (
@@ -191,6 +216,7 @@ export default function SavingsPage() {
           </section>
         </TabPanel>
       </Tabs>
+      )}
 
       <ConfirmDialog open={!!deleteGoalConfirm} title="Eliminar meta" message={`¿Estás seguro de eliminar "${goals.find((g) => g.id === deleteGoalConfirm)?.name}"?`} onConfirm={() => { if (deleteGoalConfirm) deleteGoal.mutate(deleteGoalConfirm); setDeleteGoalConfirm(null) }} onCancel={() => setDeleteGoalConfirm(null)} />
       <ConfirmDialog open={!!deleteInvestmentConfirm} title="Eliminar inversión" message={`¿Estás seguro de eliminar la inversión de "${investments.find((c) => c.id === deleteInvestmentConfirm)?.entity}"?`} onConfirm={() => { if (deleteInvestmentConfirm) deleteInvestment.mutate(deleteInvestmentConfirm); setDeleteInvestmentConfirm(null) }} onCancel={() => setDeleteInvestmentConfirm(null)} />
