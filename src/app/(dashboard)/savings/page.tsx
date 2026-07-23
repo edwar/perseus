@@ -1,6 +1,7 @@
 "use client"
 
 import { useState } from "react"
+import { Skeleton } from "boneyard-js/react"
 import { Plus, Target, X, HandCoins, Landmark, Pencil, Trash2 } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
@@ -27,11 +28,6 @@ export default function SavingsPage() {
   const [deleteGoalConfirm, setDeleteGoalConfirm] = useState<string | null>(null)
   const [deleteInvestmentConfirm, setDeleteInvestmentConfirm] = useState<string | null>(null)
 
-  const freqLabels: Record<string, string> = {
-    DAILY: "Diario", WEEKLY: "Semanal", BIWEEKLY: "Quincenal",
-    MONTHLY: "Mensual", QUARTERLY: "Trimestral", YEARLY: "Anual",
-  }
-
   function handleContribute(id: string, amount: number) {
     const goal = goals.find((g) => g.id === id)
     if (goal) {
@@ -41,18 +37,23 @@ export default function SavingsPage() {
   }
 
   return (
-    <div className="space-y-6 mt-10 md:mt-0">
-      <Tabs tabs={[{ id: "goals", label: "Metas de Ahorro", icon: <Target className="h-4 w-4" /> }, { id: "invest", label: "Inversiones", icon: <Landmark className="h-4 w-4" /> }]}>
-
-        {isLoading ? (
-          <section className="space-y-4">
+    <Skeleton
+      name="savings-tabs"
+      loading={isLoading}
+      fixture={
+        <div className="space-y-6 mt-10 md:mt-0">
+          <div className="flex gap-2 p-1 bg-muted/50 rounded-xl">
+            <div className="flex-1 h-10 rounded-lg bg-muted-foreground/20" />
+            <div className="flex-1 h-10 rounded-lg bg-muted-foreground/20" />
+          </div>
+          <div className="space-y-4">
             <div className="flex items-center justify-between">
               <div className="h-7 w-36 rounded bg-muted-foreground/20" />
               <div className="h-9 w-24 rounded-lg bg-muted-foreground/20" />
             </div>
             <div className="grid gap-4 grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-              {Array.from({ length: 16 }).map((_, i) => (
-                <div key={i} className="animate-pulse rounded-xl border bg-card p-5">
+              {[1, 2, 3, 4].map((i) => (
+                <div key={i} className="rounded-xl border bg-card p-5">
                   <div className="flex items-center gap-3">
                     <div className="h-10 w-10 rounded-full bg-muted-foreground/20" />
                     <div className="flex-1">
@@ -76,47 +77,51 @@ export default function SavingsPage() {
                 </div>
               ))}
             </div>
-          </section>
-        ) : (
-          <>
-            <TabPanel id="goals">
-              <section className="space-y-4">
-                <div className="flex items-center justify-between">
-                  <h2 className="text-xl font-bold">Metas de Ahorro</h2>
-                  <Button className="gap-2" onClick={() => setShowNewGoal(true)}>
-                    <Plus className="h-4 w-4" /> Crear
-                  </Button>
-                </div>
+          </div>
+        </div>
+      }
+    >
+    <div className="space-y-6 mt-10 md:mt-0">
+      <Tabs tabs={[{ id: "goals", label: "Metas de Ahorro", icon: <Target className="h-4 w-4" /> }, { id: "invest", label: "Inversiones", icon: <Landmark className="h-4 w-4" /> }]}>
 
-                {showNewGoal && (
-                  <NewGoalForm onSave={async (d) => { await addGoal.mutateAsync({ current: 0, ...d }); setShowNewGoal(false) }} onClose={() => setShowNewGoal(false)} isPending={addGoal.isPending} />
-                )}
+        <TabPanel id="goals">
+          <section className="space-y-4">
+            <div className="flex items-center justify-between">
+              <h2 className="text-xl font-bold">Metas de Ahorro</h2>
+              <Button className="gap-2" onClick={() => setShowNewGoal(true)}>
+                <Plus className="h-4 w-4" /> Crear
+              </Button>
+            </div>
 
-                {editGoal && (() => {
-                  const g = goals.find((x) => x.id === editGoal)
-                  if (!g) return null
-                  return <NewGoalForm initial={g} onSave={async (d) => { await updateGoal.mutateAsync({ id: editGoal, current: g.current, ...d }); setEditGoal(null) }} onClose={() => setEditGoal(null)} isPending={updateGoal.isPending} />
-                })()}
+            {showNewGoal && (
+              <NewGoalForm onSave={async (d) => { await addGoal.mutateAsync({ current: 0, ...d }); setShowNewGoal(false) }} onClose={() => setShowNewGoal(false)} isPending={addGoal.isPending} />
+            )}
 
-                {goals.length === 0 && !showNewGoal ? (
-                  <Empty icon={Target} title="No hay metas de ahorro" description="Crea tu primera meta para empezar a ahorrar" action={<Button size="sm" onClick={() => setShowNewGoal(true)}><Plus className="h-3 w-3" /> Crear</Button>} />
-                ) : (
-                  <div className="grid gap-4 grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-                    {goals.map((goal) => {
-                      const progress = (goal.current / goal.target) * 100
-                      return (
-                        <div key={goal.id} className="rounded-xl border bg-card p-5">
-                          <div className="flex items-center gap-3">
-                            <div className="flex h-10 w-10 items-center justify-center rounded-full bg-emerald-100">
-                              <Target className="h-5 w-5 text-emerald-600" />
-                            </div>
-                            <div className="flex-1">
-                              <h3 className="font-semibold">{goal.name}</h3>
-                              <p className="text-xs text-muted-foreground">Meta: ${goal.target.toLocaleString("es-CO")}</p>
-                            </div>
-                          </div>
-                          <div className="mt-4 space-y-2">
-                            <div className="flex justify-between text-sm">
+            {editGoal && (() => {
+              const g = goals.find((x) => x.id === editGoal)
+              if (!g) return null
+              return <NewGoalForm initial={g} onSave={async (d) => { await updateGoal.mutateAsync({ id: editGoal, current: g.current, ...d }); setEditGoal(null) }} onClose={() => setEditGoal(null)} isPending={updateGoal.isPending} />
+            })()}
+
+            {goals.length === 0 && !showNewGoal ? (
+              <Empty icon={Target} title="No hay metas de ahorro" description="Crea tu primera meta para empezar a ahorrar" action={<Button size="sm" onClick={() => setShowNewGoal(true)}><Plus className="h-3 w-3" /> Crear</Button>} />
+            ) : (
+              <div className="grid gap-4 grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+                {goals.map((goal) => {
+                  const progress = (goal.current / goal.target) * 100
+                  return (
+                    <div key={goal.id} className="rounded-xl border bg-card p-5">
+                      <div className="flex items-center gap-3">
+                        <div className="flex h-10 w-10 items-center justify-center rounded-full bg-emerald-100">
+                          <Target className="h-5 w-5 text-emerald-600" />
+                        </div>
+                        <div className="flex-1">
+                          <h3 className="font-semibold">{goal.name}</h3>
+                          <p className="text-xs text-muted-foreground">Meta: ${goal.target.toLocaleString("es-CO")}</p>
+                        </div>
+                      </div>
+                      <div className="mt-4 space-y-2">
+                        <div className="flex justify-between text-sm">
                               <span className="text-muted-foreground">Progreso</span>
                               <span className="font-semibold">${goal.current.toLocaleString("es-CO")}</span>
                             </div>
@@ -225,13 +230,12 @@ export default function SavingsPage() {
                 )}
               </section>
             </TabPanel>
-          </>
-        )}
       </Tabs>
 
       <ConfirmDialog open={!!deleteGoalConfirm} title="Eliminar meta" message={`¿Estás seguro de eliminar "${goals.find((g) => g.id === deleteGoalConfirm)?.name}"?`} onConfirm={() => { if (deleteGoalConfirm) deleteGoal.mutate(deleteGoalConfirm); setDeleteGoalConfirm(null) }} onCancel={() => setDeleteGoalConfirm(null)} />
       <ConfirmDialog open={!!deleteInvestmentConfirm} title="Eliminar inversión" message={`¿Estás seguro de eliminar la inversión de "${investments.find((c) => c.id === deleteInvestmentConfirm)?.entity}"?`} onConfirm={() => { if (deleteInvestmentConfirm) deleteInvestment.mutate(deleteInvestmentConfirm); setDeleteInvestmentConfirm(null) }} onCancel={() => setDeleteInvestmentConfirm(null)} />
     </div>
+    </Skeleton>
   )
 }
 

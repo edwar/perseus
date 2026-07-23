@@ -2,7 +2,8 @@
 
 import Image from "next/image"
 import { useMemo, useState, useEffect } from "react"
-import { useDocuments, useDocumentMutations, type ScannedDoc } from "@/hooks/useDocuments"
+import { Skeleton } from "boneyard-js/react"
+import { useDocuments, type ScannedDoc } from "@/hooks/useDocuments"
 import { useHeaderStore } from "@/store/header-store"
 import { Empty } from "@/components/ui/empty"
 import { Button } from "@/components/ui/button"
@@ -39,7 +40,6 @@ const fieldLabels: Record<string, string> = {
 
 export default function DocumentsPage() {
   const { data: docs = [], isLoading } = useDocuments()
-  const { remove } = useDocumentMutations()
   const setHeaderAction = useHeaderStore((s) => s.setAction)
   const [year, setYear] = useState<string | null>(null)
   const [month, setMonth] = useState<string | null>(null)
@@ -86,96 +86,100 @@ export default function DocumentsPage() {
     return { receipt, invoice }
   }, [docs, year, month])
 
-  if (isLoading) {
-    return (
-      <div className="space-y-6">
-        <div className="flex items-center justify-between mt-10 md:hidden"><h1 className="text-2xl font-bold">Documentos</h1></div>
-        <div className="grid gap-4 grid-cols-[repeat(auto-fill,200px)]">
-          {Array.from({ length: 33 }).map((_, i) => (
-            <div key={i} className="animate-pulse h-[200px] w-[200px] rounded-sm bg-muted-foreground/20" />
-          ))}
-        </div>
-      </div>
-    )
-  }
-
-  if (docs.length === 0) {
-    return (
-      <div className="space-y-6">
-        <h1 className="text-2xl font-bold mt-10 md:hidden">Documentos</h1>
-        <Empty icon={ScanLine} title="No hay documentos" description="Los documentos escaneados aparecerán aquí" />
-      </div>
-    )
-  }
-
   return (
+    <Skeleton
+      name="documents-grid"
+      loading={isLoading}
+      fixture={
+        <div className="space-y-6">
+          <div className="flex items-center justify-between mt-10 md:hidden">
+            <h1 className="text-2xl font-bold">Documentos</h1>
+          </div>
+          <div className="grid gap-4 grid-cols-[repeat(auto-fill,200px)]">
+            {Array.from({ length: 6 }).map((_, i) => (
+              <div key={i} className="h-[200px] w-[200px] rounded-sm bg-muted-foreground/20" />
+            ))}
+          </div>
+        </div>
+      }
+    >
     <div className="space-y-6">
-      {/* Year selector */}
-      {!year && (
-        <div className="grid gap-4 grid-cols-[repeat(auto-fill,200px)]">
-          {years.map((y) => {
-            const count = docs.filter((d) => d.uploadedAt.startsWith(y)).length
-            return (
-              <Card key={y} className="cursor-pointer transition-colors hover:bg-accent w-48 h-48" onClick={() => setYear(y)}>
-                <CardContent className="flex flex-col items-center justify-center py-8">
-                  <FolderOpen className="mb-3 h-10 w-10 text-primary" />
-                  <p className="text-xl font-bold">{y}</p>
-                  <p className="text-xs text-muted-foreground">{count} documentos</p>
-                </CardContent>
-              </Card>
-            )
-          })}
+      {docs.length === 0 ? (
+        <div className="space-y-6">
+          <h1 className="text-2xl font-bold mt-10 md:hidden">Documentos</h1>
+          <Empty icon={ScanLine} title="No hay documentos" description="Los documentos escaneados aparecerán aquí" />
         </div>
-      )}
+      ) : (
+        <div className="space-y-6">
+          {/* Year selector */}
+          {!year && (
+            <div className="grid gap-4 grid-cols-[repeat(auto-fill,200px)]">
+              {years.map((y) => {
+                const count = docs.filter((d) => d.uploadedAt.startsWith(y)).length
+                return (
+                  <Card key={y} className="cursor-pointer transition-colors hover:bg-accent w-48 h-48" onClick={() => setYear(y)}>
+                    <CardContent className="flex flex-col items-center justify-center py-8">
+                      <FolderOpen className="mb-3 h-10 w-10 text-primary" />
+                      <p className="text-xl font-bold">{y}</p>
+                      <p className="text-xs text-muted-foreground">{count} documentos</p>
+                    </CardContent>
+                  </Card>
+                )
+              })}
+            </div>
+          )}
 
-      {/* Month selector */}
-      {year && !month && (
-        <div className="grid gap-4 grid-cols-[repeat(auto-fill,200px)]">
-          {monthsInYear.map((m) => {
-            const count = docs.filter((d) => d.uploadedAt.startsWith(`${year}-${m}`)).length
-            return (
-              <Card key={m} className="cursor-pointer transition-colors hover:bg-accent w-48 h-48" onClick={() => setMonth(m)}>
-                <CardContent className="flex flex-col items-center justify-center py-8">
-                  <CalendarDays className="mb-3 h-10 w-10 text-primary" />
-                  <p className="text-lg font-bold">{months[Number(m) - 1]}</p>
-                  <p className="text-xs text-muted-foreground">{count} documentos</p>
-                </CardContent>
-              </Card>
-            )
-          })}
-        </div>
-      )}
+          {/* Month selector */}
+          {year && !month && (
+            <div className="grid gap-4 grid-cols-[repeat(auto-fill,200px)]">
+              {monthsInYear.map((m) => {
+                const count = docs.filter((d) => d.uploadedAt.startsWith(`${year}-${m}`)).length
+                return (
+                  <Card key={m} className="cursor-pointer transition-colors hover:bg-accent w-48 h-48" onClick={() => setMonth(m)}>
+                    <CardContent className="flex flex-col items-center justify-center py-8">
+                      <CalendarDays className="mb-3 h-10 w-10 text-primary" />
+                      <p className="text-lg font-bold">{months[Number(m) - 1]}</p>
+                      <p className="text-xs text-muted-foreground">{count} documentos</p>
+                    </CardContent>
+                  </Card>
+                )
+              })}
+            </div>
+          )}
 
-      {/* Documents by type */}
-      {year && month && (
-        <div className="space-y-8">
-          {(["receipt", "invoice"] as const).map((type) => {
-            const items = docsInMonth[type]
-            if (items.length === 0) return null
-            return (
-              <div key={type}>
-                <div className="mb-3 flex items-center gap-2">
-                  {type === "receipt" ? (
-                    <Receipt className="h-5 w-5 text-muted-foreground" />
-                  ) : (
-                    <FileText className="h-5 w-5 text-muted-foreground" />
-                  )}
-                  <h2 className="text-lg font-semibold">
-                    {type === "receipt" ? "Recibos" : "Facturas"}
-                  </h2>
-                  <span className="text-xs text-muted-foreground">({items.length})</span>
-                </div>
-                <div className="grid gap-4 grid-cols-[repeat(auto-fill,200px)]">
-                  {items.map((doc, i) => (
-                    <DocumentCard key={doc.id ?? doc.publicId ?? i} doc={doc} onDelete={() => { }} />
-                  ))}
-                </div>
-              </div>
-            )
-          })}
+          {/* Documents by type */}
+          {year && month && (
+            <div className="space-y-8">
+              {(["receipt", "invoice"] as const).map((type) => {
+                const items = docsInMonth[type]
+                if (items.length === 0) return null
+                return (
+                  <div key={type}>
+                    <div className="mb-3 flex items-center gap-2">
+                      {type === "receipt" ? (
+                        <Receipt className="h-5 w-5 text-muted-foreground" />
+                      ) : (
+                        <FileText className="h-5 w-5 text-muted-foreground" />
+                      )}
+                      <h2 className="text-lg font-semibold">
+                        {type === "receipt" ? "Recibos" : "Facturas"}
+                      </h2>
+                      <span className="text-xs text-muted-foreground">({items.length})</span>
+                    </div>
+                    <div className="grid gap-4 grid-cols-[repeat(auto-fill,200px)]">
+                      {items.map((doc, i) => (
+                        <DocumentCard key={doc.id ?? doc.publicId ?? i} doc={doc} onDelete={() => { }} />
+                      ))}
+                    </div>
+                  </div>
+                )
+              })}
+            </div>
+          )}
         </div>
       )}
     </div>
+    </Skeleton>
   )
 }
 

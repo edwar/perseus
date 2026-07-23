@@ -1,6 +1,7 @@
 "use client"
 
 import { useState, useEffect } from "react"
+import { Skeleton } from "boneyard-js/react"
 import { Plus, Repeat, ArrowUp, ArrowDown, Pencil, Trash2, X } from "lucide-react"
 import { useHeaderStore } from "@/store/header-store"
 import { cn } from "@/lib/utils"
@@ -39,6 +40,44 @@ export default function RecurringPage() {
   }, [setHeaderAction])
 
   return (
+    <Skeleton
+      name="recurring-grid"
+      loading={isLoading}
+      fixture={
+        <div className="space-y-6">
+          <div className="items-center justify-between mt-10 flex md:hidden">
+            <h1 className="text-2xl font-bold">Recurrentes</h1>
+            <div className="h-9 w-24 rounded-lg bg-muted" />
+          </div>
+          <div className="grid gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
+            {[1, 2, 3, 4].map((i) => (
+              <div key={i} className="rounded-xl border shadow-sm p-5">
+                <div className="flex items-start justify-between">
+                  <div className="flex items-center gap-3">
+                    <div className="h-10 w-10 rounded-full bg-muted-foreground/20" />
+                    <div>
+                      <div className="h-4 w-18 rounded bg-muted-foreground/20" />
+                      <div className="mt-1 h-3 w-16 rounded bg-muted-foreground/20" />
+                    </div>
+                  </div>
+                  <div className="h-7 w-24 rounded bg-muted-foreground/20" />
+                </div>
+                <div className="mt-3 flex items-center justify-between">
+                  <div className="flex items-center gap-3">
+                    <div className="h-3 w-16 rounded bg-muted-foreground/20" />
+                    <div className="h-3 w-12 rounded bg-muted-foreground/20" />
+                  </div>
+                  <div className="flex gap-1">
+                    <div className="h-8 w-8 rounded bg-muted-foreground/20" />
+                    <div className="h-8 w-8 rounded bg-muted-foreground/20" />
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      }
+    >
     <div className="space-y-6">
       <div className="items-center justify-between mt-10 flex md:hidden">
         <h1 className="text-2xl font-bold">Recurrentes</h1>
@@ -66,34 +105,7 @@ export default function RecurringPage() {
         />
       )}
 
-      {isLoading ? (
-        <div className="grid gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
-          {Array.from({ length: 28 }).map((_, i) => (
-            <div key={i} className="animate-pulse rounded-xl bg-muted p-5">
-              <div className="flex items-start justify-between">
-                <div className="flex items-center gap-3">
-                  <div className="h-9 w-10 rounded-full bg-muted-foreground/20" />
-                  <div>
-                    <div className="h-4 w-18 rounded bg-muted-foreground/20" />
-                    <div className="mt-1 h-3 w-16 rounded bg-muted-foreground/20" />
-                  </div>
-                </div>
-                <div className="h-7 w-24 rounded bg-muted-foreground/20" />
-              </div>
-              <div className="mt-3 flex items-center justify-between">
-                <div className="flex items-center gap-3">
-                  <div className="h-3 w-16 rounded bg-muted-foreground/20" />
-                  <div className="h-3 w-12 rounded bg-muted-foreground/20" />
-                </div>
-                <div className="flex gap-1">
-                  <div className="h-8 w-8 rounded bg-muted-foreground/20" />
-                  <div className="h-8 w-8 rounded bg-muted-foreground/20" />
-                </div>
-              </div>
-            </div>
-          ))}
-        </div>
-      ) : items.length === 0 && !showForm ? (
+      {items.length === 0 && !showForm ? (
         <Empty icon={Repeat} title="No hay recurrentes" description="Agrega ingresos o gastos recurrentes para automatizar tu registro" action={<Button size="sm" onClick={() => { setEditingId(null); setShowForm(true) }}><Plus className="h-3 w-3" /> Crear</Button>} />
       ) : (
         <div className="grid gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
@@ -155,6 +167,7 @@ export default function RecurringPage() {
         onCancel={() => setDeleteConfirm(null)}
       />
     </div>
+    </Skeleton>
   )
 }
 

@@ -1,6 +1,6 @@
 import type { Metadata } from "next"
 import { Inter, JetBrains_Mono } from "next/font/google"
-import "@/bones/registry"
+import { BonesProvider } from "@/components/bones-provider"
 import "./globals.css"
 
 const fontSans = Inter({ variable: "--font-sans", subsets: ["latin"] })
@@ -19,7 +19,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="es" suppressHydrationWarning>
       <body className={`${fontSans.variable} ${fontMono.variable} font-sans antialiased`}>
-        {children}
+        <BonesProvider>{children}</BonesProvider>
       </body>
     </html>
   )

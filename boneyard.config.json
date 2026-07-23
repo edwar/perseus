@@ -1,7 +1,8 @@
 {
   "breakpoints": [375, 768, 1280],
   "out": "./src/bones",
-  "wait": 800,
+  "wait": 1500,
   "color": "rgba(0,0,0,0.06)",
-  "animate": "shimmer"
+  "animate": "shimmer",
+  "routes": ["/dashboard", "/transactions", "/budgets", "/debts", "/obligations", "/recurring", "/savings", "/documents"]
 }

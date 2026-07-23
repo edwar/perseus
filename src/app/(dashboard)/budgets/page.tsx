@@ -1,6 +1,7 @@
 "use client"
 
 import { useState, useMemo, useCallback, useEffect } from "react"
+import { Skeleton } from "boneyard-js/react"
 import { Plus, Pencil, Trash2, X, PiggyBank } from "lucide-react"
 import { useHeaderStore } from "@/store/header-store"
 import { Button } from "@/components/ui/button"
@@ -60,15 +61,20 @@ export default function BudgetsPage() {
     return () => setHeaderAction(null)
   }, [setHeaderAction])
 
-  if (isLoading) {
-    return (
-      <div className="space-y-6">
-        <div className="flex items-center justify-between mt-10 md:hidden"><h1 className="text-2xl font-bold">Presupuestos</h1><div className="h-9 w-24 animate-pulse rounded-lg bg-muted" /></div>
-        <div className="h-14 w-full animate-pulse rounded-lg bg-muted" />
-        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-          {[1, 2].map((i) => (
-            <Card key={i} className="rounded-2xl border-0 shadow-md transition-shadow hover:shadow-lg">
-              <CardContent className="flex flex-col">
+  return (
+    <Skeleton
+      name="budgets-grid"
+      loading={isLoading}
+      fixture={
+        <div className="space-y-6">
+          <div className="flex items-center justify-between mt-10 md:hidden">
+            <h1 className="text-2xl font-bold">Presupuestos</h1>
+            <div className="h-9 w-24 rounded-lg bg-muted" />
+          </div>
+          <div className="h-14 w-full rounded-lg bg-muted" />
+          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+            {[1, 2].map((i) => (
+              <div key={i} className="rounded-2xl border-0 shadow-md border p-5">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2.5">
                     <div className="h-4 w-4 rounded-full bg-muted-foreground/20" />
@@ -84,23 +90,13 @@ export default function BudgetsPage() {
                     <div className="h-3 w-24 rounded bg-muted-foreground/20" />
                     <div className="h-3 w-20 rounded bg-muted-foreground/20" />
                   </div>
-                  <div className="h-3 w-24 rounded bg-muted-foreground/20" />
-                  <div className="h-3 w-24 rounded bg-muted-foreground/20" />
-                  <div className="h-3 w-20 rounded bg-primary/30" />
                 </div>
-                <div className="mt-auto pt-3 flex gap-2">
-                  <div className="flex-1 h-9 rounded-lg bg-muted-foreground/20" />
-                  <div className="h-9 w-10 rounded-lg bg-muted-foreground/20" />
-                </div>
-              </CardContent>
-            </Card>
-          ))}
+              </div>
+            ))}
+          </div>
         </div>
-      </div>
-    )
-  }
-
-  return (
+      }
+    >
     <div className="space-y-6">
       <div className="flex items-center justify-between mt-10 md:hidden">
         <h1 className="text-2xl font-bold">Presupuestos</h1>
@@ -239,6 +235,7 @@ export default function BudgetsPage() {
         )
       })()}
     </div>
+    </Skeleton>
   )
 }
 
