@@ -1,41 +1,14 @@
 "use client"
 
-import Image from "next/image"
 import { useMemo, useState, useEffect } from "react"
-import { useDocuments, useDocumentMutations, type ScannedDoc } from "@/hooks/useDocuments"
+import { useDocuments, useDocumentMutations } from "@/hooks/useDocuments"
 import { useHeaderStore } from "@/store/header-store"
 import { Empty } from "@/components/ui/empty"
 import { Button } from "@/components/ui/button"
-import { cn } from "@/lib/utils"
 import { Card, CardContent } from "@/components/ui/card"
-import { ConfirmDialog } from "@/components/ui/confirm-dialog"
-import { FileText, Receipt, FolderOpen, ChevronLeft, X, Trash2, ScanLine, CalendarDays } from "lucide-react"
-
-const months = ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"]
-
-const fieldLabels: Record<string, string> = {
-  totalCuotas: "Total cuotas",
-  cuotasPagadas: "Cuotas pagadas",
-  pagoMinimo: "Pago mínimo",
-  montoTotal: "Monto total",
-  fechaVencimiento: "Fecha de vencimiento",
-  acreedor: "Acreedor",
-  tasaInteres: "Tasa de interés",
-  saldoActual: "Saldo actual",
-  totalInstallments: "Total cuotas",
-  installmentsPaid: "Cuotas pagadas",
-  minimumPayment: "Pago mínimo",
-  amount: "Monto total",
-  dueDate: "Fecha de vencimiento",
-  creditor: "Acreedor",
-  interestRate: "Tasa de interés",
-  currentBalance: "Saldo actual",
-  merchant: "Comercio",
-  date: "Fecha",
-  currency: "Moneda",
-  invoice: "Factura",
-  receipt: "Recibo",
-}
+import { FileText, FolderOpen, ChevronLeft, ScanLine, CalendarDays } from "lucide-react"
+import { DocumentCard } from "@/components/features/documents/document-card"
+import { MONTHS } from "@/lib/constants"
 
 export default function DocumentsPage() {
   const { data: docs = [], isLoading } = useDocuments()
@@ -73,10 +46,10 @@ export default function DocumentsPage() {
   }, [docs, year])
 
   const docsInMonth = useMemo(() => {
-    if (!year || !month) return { receipt: [], invoice: [] } as Record<string, ScannedDoc[]>
+    if (!year || !month) return { receipt: [], invoice: [] } as Record<string, typeof docs>
     const prefix = `${year}-${month}`
-    const receipt: ScannedDoc[] = []
-    const invoice: ScannedDoc[] = []
+    const receipt: typeof docs = []
+    const invoice: typeof docs = []
     for (const d of docs) {
       if (d.uploadedAt.startsWith(prefix)) {
         if (d.type === "receipt") receipt.push(d)
@@ -110,7 +83,6 @@ export default function DocumentsPage() {
 
   return (
     <div className="space-y-6">
-      {/* Year selector */}
       {!year && (
         <div className="grid gap-4 grid-cols-[repeat(auto-fill,200px)]">
           {years.map((y) => {
@@ -128,7 +100,6 @@ export default function DocumentsPage() {
         </div>
       )}
 
-      {/* Month selector */}
       {year && !month && (
         <div className="grid gap-4 grid-cols-[repeat(auto-fill,200px)]">
           {monthsInYear.map((m) => {
@@ -137,7 +108,7 @@ export default function DocumentsPage() {
               <Card key={m} className="cursor-pointer transition-colors hover:bg-accent w-48 h-48" onClick={() => setMonth(m)}>
                 <CardContent className="flex flex-col items-center justify-center py-8">
                   <CalendarDays className="mb-3 h-10 w-10 text-primary" />
-                  <p className="text-lg font-bold">{months[Number(m) - 1]}</p>
+                  <p className="text-lg font-bold">{MONTHS[Number(m) - 1]}</p>
                   <p className="text-xs text-muted-foreground">{count} documentos</p>
                 </CardContent>
               </Card>
@@ -146,7 +117,6 @@ export default function DocumentsPage() {
         </div>
       )}
 
-      {/* Documents by type */}
       {year && month && (
         <div className="space-y-8">
           {(["receipt", "invoice"] as const).map((type) => {
@@ -156,7 +126,7 @@ export default function DocumentsPage() {
               <div key={type}>
                 <div className="mb-3 flex items-center gap-2">
                   {type === "receipt" ? (
-                    <Receipt className="h-5 w-5 text-muted-foreground" />
+                    <FileText className="h-5 w-5 text-muted-foreground" />
                   ) : (
                     <FileText className="h-5 w-5 text-muted-foreground" />
                   )}
@@ -176,138 +146,5 @@ export default function DocumentsPage() {
         </div>
       )}
     </div>
-  )
-}
-
-function DocumentCard({ doc, onDelete }: { doc: ScannedDoc; onDelete?: () => void }) {
-  const [open, setOpen] = useState(false)
-  const [deleteConfirm, setDeleteConfirm] = useState(false)
-  const [deleting, setDeleting] = useState(false)
-  const isPDF = doc.url.endsWith(".pdf")
-
-  async function handleDelete() {
-    setDeleting(true)
-    try {
-      await fetch(`/api/documents?publicId=${encodeURIComponent(doc.publicId)}`, { method: "DELETE" })
-      onDelete?.()
-      setOpen(false)
-    } catch {
-      console.error("Error al eliminar de Cloudinary")
-    } finally {
-      setDeleting(false)
-      setDeleteConfirm(false)
-    }
-  }
-
-  return (
-    <>
-      <Card className="relative overflow-hidden h-[200px] w-[200px] rounded-sm cursor-pointer" onClick={() => setOpen(true)}>
-        <div className="absolute top-2 right-2 z-20">
-          <Button variant="ghost" size="icon" className="text-red-500 hover:text-white bg-white hover:bg-red-500 rounded-full" onClick={(e) => { e.stopPropagation(); setDeleteConfirm(true) }}>
-            <Trash2 className="h-4 w-4" />
-          </Button>
-        </div>
-        <div
-          className={cn(
-            "relative flex-1 bg-muted",
-            doc.type === "invoice" && "flex items-center justify-center"
-          )}
-        >
-          {doc.type === "invoice" ? (
-            <div className="flex w-full h-full flex-col items-center gap-2 text-muted-foreground">
-              <FileText className="h-full w-full" />
-              <span className="text-xs">Factura</span>
-            </div>
-          ) : (
-            <Image
-              src={doc.url}
-              alt="documento"
-              fill
-              className="object-cover"
-              sizes="200px"
-            />
-          )}
-        </div>
-        <div className="absolute bottom-0 w-full h-8 bg-white z-10 flex justify-center items-center">
-          <p className="text-xs text-muted-foreground font-bold">{new Date(doc.uploadedAt).toLocaleDateString("es-CO")}</p>
-        </div>
-      </Card>
-
-      {open && (
-        <div
-          className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 p-4 backdrop-blur-sm"
-          onClick={() => setOpen(false)}
-        >
-          <div
-            className="relative flex max-h-[90vh] w-screen md:w-[60vw] flex-col rounded-xl bg-background shadow-2xl"
-            onClick={(e) => e.stopPropagation()}
-          >
-            <div className="flex items-center justify-between gap-4 p-4 pb-0">
-              <div>
-                <p className="text-sm text-muted-foreground">
-                  {new Date(doc.uploadedAt).toLocaleDateString("es-CO", { year: "numeric", month: "long", day: "numeric" })}
-                </p>
-                <p className="text-xs text-muted-foreground capitalize">{doc.type === "receipt" ? "Recibo" : "Factura"}</p>
-              </div>
-              <div className="flex items-center gap-2">
-                {isPDF && (
-                  <a href={doc.url} target="_blank" rel="noopener noreferrer">
-                    <Button variant="outline" size="sm">
-                      <FileText className="mr-1 h-4 w-4" /> Abrir PDF
-                    </Button>
-                  </a>
-                )}
-                <Button variant="ghost" size="icon" className="text-red-500 hover:text-red-700" onClick={(e) => { e.stopPropagation(); setDeleteConfirm(true) }}>
-                  <Trash2 className="h-4 w-4" />
-                </Button>
-                <Button variant="ghost" size="icon" onClick={() => setOpen(false)}>
-                  <X className="h-5 w-5" />
-                </Button>
-              </div>
-            </div>
-
-            <div className="flex-1 overflow-auto p-4">
-              {isPDF ? (
-                <iframe src={doc.url} title="PDF" className="h-[70vh] w-full rounded-lg" />
-              ) : doc.type === "receipt" ? (
-                <div className="relative max-h-[60vh] w-full" style={{ minHeight: 300 }}>
-                  <Image
-                    src={doc.url}
-                    alt="documento"
-                    fill
-                    className="object-contain rounded-lg"
-                    sizes="(max-width: 768px) 100vw, 60vw"
-                  />
-                </div>
-              ) : (
-                <div className="flex items-center justify-center rounded-lg bg-muted py-16">
-                  <FileText className="h-16 w-16 text-muted-foreground" />
-                </div>
-              )}
-            </div>
-
-            {Object.entries(doc.data).filter(([, v]) => v != null && v !== "").length > 0 && (
-              <div className="mx-4 mb-4 space-y-2 rounded-lg bg-muted/50 p-4">
-                {Object.entries(doc.data).filter(([, v]) => v != null && v !== "").map(([key, val]) => (
-                  <div key={key} className="flex items-center justify-between text-sm">
-                    <span className="text-muted-foreground">{fieldLabels[key] ?? key}</span>
-                    <span className="font-medium">{String(val)}</span>
-                  </div>
-                ))}
-              </div>
-            )}
-          </div>
-        </div>
-      )}
-
-      <ConfirmDialog
-        open={deleteConfirm}
-        title="Eliminar documento"
-        message={`¿Eliminar este ${doc.type === "receipt" ? "recibo" : "factura"}? Se borrará de la nube y del sistema.`}
-        onConfirm={handleDelete}
-        onCancel={() => setDeleteConfirm(false)}
-        loading={deleting}
-      />
-    </>
   )
 }

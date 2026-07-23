@@ -1,16 +1,16 @@
 "use client"
 
 import { useState, useEffect } from "react"
-import { Plus, X, Pencil, Trash2, Check, ChevronLeft, ChevronRight } from "lucide-react"
+import { Plus, Check, ChevronLeft, ChevronRight } from "lucide-react"
 import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
 import { Card, CardContent } from "@/components/ui/card"
-import { ConfirmDialog } from "@/components/ui/confirm-dialog"
 import { Empty } from "@/components/ui/empty"
+import { ConfirmDialog } from "@/components/ui/confirm-dialog"
 import { useObligations, useObligationsMutations } from "@/hooks/useData"
 import { useHeaderStore } from "@/store/header-store"
-import { cn } from "@/lib/utils"
+import { formatMonthYear } from "@/lib/formats"
+import { ObligationForm } from "@/components/features/obligations/obligation-form"
+import { ObligationItem } from "@/components/features/obligations/obligation-item"
 
 export default function ObligationsPage() {
   const { data: obligationsData, isLoading } = useObligations()
@@ -31,12 +31,6 @@ export default function ObligationsPage() {
     return () => setHeaderAction(null)
   }, [setHeaderAction])
 
-  const monthName = (m: string) => {
-    const [y, month] = m.split("-").map(Number)
-    const d = new Date(y, month - 1, 1)
-    return d.toLocaleDateString("es", { month: "long", year: "numeric" })
-  }
-
   const today = new Date()
   const currentYear = today.getFullYear()
   const currentMonthNum = today.getMonth() + 1
@@ -55,27 +49,27 @@ export default function ObligationsPage() {
         <div className="flex items-center justify-between mt-10 md:hidden"><h1 className="text-2xl font-bold">Obligaciones</h1><div className="h-9 w-24 animate-shimmer rounded-lg bg-muted" /></div>
         <Card>
           <CardContent className="flex items-center justify-between py-3 px-4">
-            <div className="h-8 w-8 animate-shimmer rounded-lg  animate-shimmer bg-muted-foreground/20" />
+            <div className="h-8 w-8 animate-shimmer rounded-lg bg-muted-foreground/20" />
             <div className="flex-1 text-center">
-              <div className="h-4 w-32 mx-auto rounded  animate-shimmer bg-muted-foreground/20" />
-              <div className="mt-1 h-3 w-20 mx-auto rounded  animate-shimmer bg-muted-foreground/20" />
+              <div className="h-4 w-32 mx-auto rounded animate-shimmer bg-muted-foreground/20" />
+              <div className="mt-1 h-3 w-20 mx-auto rounded animate-shimmer bg-muted-foreground/20" />
             </div>
-            <div className="h-8 w-8 animate-shimmer rounded-lg  animate-shimmer bg-muted-foreground/20" />
+            <div className="h-8 w-8 animate-shimmer rounded-lg bg-muted-foreground/20" />
           </CardContent>
           <div className="h-2 bg-muted mx-5 mb-4 rounded-full overflow-hidden">
-            <div className="h-full  animate-shimmer bg-muted-foreground/20 rounded-full" style={{ width: "50%" }} />
+            <div className="h-full animate-shimmer bg-muted-foreground/20 rounded-full" style={{ width: "50%" }} />
           </div>
         </Card>
         <div className="space-y-2">
           {[1, 2, 3].map((i) => (
             <Card key={i}>
               <CardContent className="flex items-center gap-3 py-3 px-4">
-                <div className="h-7 w-7 shrink-0 rounded-full  animate-shimmer bg-muted-foreground/20" />
+                <div className="h-7 w-7 shrink-0 rounded-full animate-shimmer bg-muted-foreground/20" />
                 <div className="flex-1 min-w-0">
-                  <div className="h-3 w-32 rounded  animate-shimmer bg-muted-foreground/20" />
+                  <div className="h-3 w-32 rounded animate-shimmer bg-muted-foreground/20" />
                 </div>
-                <div className="h-6 w-6 rounded  animate-shimmer bg-muted-foreground/20" />
-                <div className="h-6 w-6 rounded  animate-shimmer bg-muted-foreground/20" />
+                <div className="h-6 w-6 rounded animate-shimmer bg-muted-foreground/20" />
+                <div className="h-6 w-6 rounded animate-shimmer bg-muted-foreground/20" />
               </CardContent>
             </Card>
           ))}
@@ -94,7 +88,6 @@ export default function ObligationsPage() {
         </Button>
       </div>
 
-      {/* Month navigation */}
       <Card>
         <CardContent className="flex items-center justify-between py-3 px-4">
           <Button variant="outline" size="sm" onClick={() => {
@@ -103,7 +96,7 @@ export default function ObligationsPage() {
             setCurrentMonth(next)
           }}><ChevronLeft className="h-5 w-5" /></Button>
           <div className="text-center flex-1">
-            <p className="text-sm font-semibold capitalize">{monthName(currentMonth)}</p>
+            <p className="text-sm font-semibold capitalize">{formatMonthYear(currentMonth)}</p>
             {total > 0 && <p className="text-xs text-muted-foreground">{paid} de {total} pagadas</p>}
           </div>
           <Button variant="outline" size="sm" disabled={isCurrentMonth} onClick={() => {
@@ -135,66 +128,20 @@ export default function ObligationsPage() {
         <Empty icon={Check} title="No hay obligaciones" description="Agrega tus pagos mensuales recurrentes para hacer seguimiento" action={<Button size="sm" onClick={() => setShowForm(true)}><Plus className="h-3 w-3" /> Crear obligación</Button>} />
       ) : (
         <div className="space-y-2">
-          {obligations.map((obl) => {
-            const isPaid = paidIds.includes(obl.id)
-            return (
-              <Card key={obl.id} className={isPaid ? "opacity-60" : ""}>
-                <CardContent className="flex items-center gap-3 py-3 px-4">
-                  <button
-                    onClick={() => togglePaid.mutate({ obligationId: obl.id, month: currentMonth })}
-                    className={cn(
-                      "flex h-7 w-7 shrink-0 items-center justify-center rounded-full border-2 transition-colors",
-                      isPaid ? "border-emerald-500 bg-emerald-500 text-white" : "border-muted-foreground/30 hover:border-primary"
-                    )}
-                  >
-                    {isPaid && <Check className="h-3.5 w-3.5" />}
-                  </button>
-                  <div className="flex-1 min-w-0">
-                    <p className={cn("text-sm font-medium truncate", isPaid && "line-through")}>{obl.name}</p>
-                  </div>
-                  <Button variant="ghost" size="icon-xs" onClick={() => { setEditId(obl.id); setShowForm(true) }}>
-                    <Pencil className="h-3 w-3" />
-                  </Button>
-                  <Button variant="ghost" size="icon-xs" onClick={() => setDeleteId(obl.id)} className="text-red-500">
-                    <Trash2 className="h-3 w-3" />
-                  </Button>
-                </CardContent>
-              </Card>
-            )
-          })}
+          {obligations.map((obl) => (
+            <ObligationItem
+              key={obl.id}
+              obligation={obl}
+              isPaid={paidIds.includes(obl.id)}
+              onTogglePaid={(id) => togglePaid.mutate({ obligationId: id, month: currentMonth })}
+              onEdit={(id) => { setEditId(id); setShowForm(true) }}
+              onDelete={setDeleteId}
+            />
+          ))}
         </div>
       )}
 
       <ConfirmDialog open={!!deleteId} title="Eliminar obligación" message={`¿Estás seguro?`} onConfirm={() => { if (deleteId) remove.mutate(deleteId); setDeleteId(null) }} onCancel={() => setDeleteId(null)} />
     </div>
-  )
-}
-
-function ObligationForm({ initial, onSave, onClose, isPending }: {
-  initial?: { name: string }
-  onSave: (d: { name: string }) => void
-  onClose: () => void
-  isPending?: boolean
-}) {
-  const [name, setName] = useState(initial?.name ?? "")
-
-  return (
-    <Card>
-      <CardContent className="p-4 space-y-3">
-        <div className="flex items-center justify-between">
-          <h3 className="font-semibold">{initial ? "Editar" : "Nueva"} obligación</h3>
-          <Button variant="ghost" size="icon" onClick={onClose}><X className="h-4 w-4" /></Button>
-        </div>
-        <div className="space-y-1">
-          <Label className="text-xs font-medium">Nombre</Label>
-          <Input value={name} onChange={(e) => setName(e.target.value)} placeholder="Ej: Arriendo" />
-        </div>
-        <div className="flex md:justify-end">
-          <Button className="w-full md:w-auto md:end" disabled={!name || isPending} onClick={() => onSave({ name })}>
-            {isPending ? "Guardando..." : initial ? "Guardar cambios" : "Crear obligación"}
-          </Button>
-        </div>
-      </CardContent>
-    </Card>
   )
 }
