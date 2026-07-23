@@ -86,24 +86,24 @@ export default function DocumentsPage() {
     return { receipt, invoice }
   }, [docs, year, month])
 
-  if (docs.length === 0) {
-    return (
-      <div className="space-y-6">
-        <h1 className="text-2xl font-bold mt-10 md:hidden">Documentos</h1>
-        <Empty icon={ScanLine} title="No hay documentos" description="Los documentos escaneados aparecerán aquí" />
-      </div>
-    )
-  }
-
   if (isLoading) {
     return (
       <div className="space-y-6">
         <div className="flex items-center justify-between mt-10 md:hidden"><h1 className="text-2xl font-bold">Documentos</h1></div>
         <div className="grid gap-4 grid-cols-[repeat(auto-fill,200px)]">
-          {[1, 2].map((i) => (
+          {Array.from({ length: 33 }).map((_, i) => (
             <div key={i} className="animate-pulse h-[200px] w-[200px] rounded-sm bg-muted-foreground/20" />
           ))}
         </div>
+      </div>
+    )
+  }
+
+  if (docs.length === 0) {
+    return (
+      <div className="space-y-6">
+        <h1 className="text-2xl font-bold mt-10 md:hidden">Documentos</h1>
+        <Empty icon={ScanLine} title="No hay documentos" description="Los documentos escaneados aparecerán aquí" />
       </div>
     )
   }
@@ -167,7 +167,7 @@ export default function DocumentsPage() {
                 </div>
                 <div className="grid gap-4 grid-cols-[repeat(auto-fill,200px)]">
                   {items.map((doc, i) => (
-                    <DocumentCard key={doc.id ?? doc.publicId ?? i} doc={doc} onDelete={() => {}} />
+                    <DocumentCard key={doc.id ?? doc.publicId ?? i} doc={doc} onDelete={() => { }} />
                   ))}
                 </div>
               </div>
