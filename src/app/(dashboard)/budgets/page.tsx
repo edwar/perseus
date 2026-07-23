@@ -142,8 +142,8 @@ export default function BudgetsPage() {
             const budgetItems = rawItems.filter((i: { name?: string }) => i.name)
 
             return (
-              <Card key={budget.id} className="rounded-2xl border-0 shadow-md transition-all hover:shadow-lg hover:-translate-y-0.5">
-                <CardContent>
+              <Card key={budget.id} className="rounded-2xl border-0 shadow-md transition-all hover:shadow-lg hover:-translate-y-0.5 flex flex-col">
+                <CardContent className="flex flex-col flex-1">
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-2.5">
                       <div className="h-4 w-4 rounded-full shadow-sm ring-2 ring-white" style={{ backgroundColor: budget.color }} />
@@ -162,7 +162,7 @@ export default function BudgetsPage() {
                   <p className="mt-1.5 text-xs font-medium text-muted-foreground">{Math.round(percentage)}% usado</p>
 
                   {budgetItems.length > 0 && (
-                    <div className="mt-3 space-y-1.5 border-t pt-3">
+                    <div className="mt-3 flex-1 space-y-1.5 border-t pt-3 overflow-y-auto max-h-32">
                       <p className="text-[11px] font-semibold text-muted-foreground uppercase tracking-wider">Actividades</p>
                       {budgetItems.map((item, i) => {
                         const itemPct = (item.amount / budget.amount) * 100
@@ -176,7 +176,7 @@ export default function BudgetsPage() {
                     </div>
                   )}
 
-                  <div className="mt-3 flex gap-2">
+                  <div className="mt-auto pt-3 flex gap-2">
                     <Button variant="outline" size="sm" onClick={() => { setEditing(budget.id); setShowForm(true) }} className="flex-1 gap-1">
                       <Pencil className="h-3 w-3" /> Editar
                     </Button>
