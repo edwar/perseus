@@ -13,10 +13,7 @@ import { Label } from "@/components/ui/label"
 import { Badge } from "@/components/ui/badge"
 import { Card, CardContent } from "@/components/ui/card"
 import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@/components/ui/select"
-import { useTransactions, useTransactionMutations, type Transaction } from "@/hooks/useData"
-import { useBudgetStore } from "@/store/budget-store"
-import { useDebtStore } from "@/store/debt-store"
-import { useRecurringStore } from "@/store/recurring-store"
+import { useTransactions, useTransactionMutations, useBudgets, useBudgetMutations, useRecurring, useDebts, useDebtMutations, type Transaction } from "@/hooks/useData"
 import { Empty } from "@/components/ui/empty"
 import { ConfirmDialog } from "@/components/ui/confirm-dialog"
 
@@ -252,11 +249,11 @@ function InlineEditForm({ tx, onSave, onCancel }: {
 }
 
 function NewTransactionForm({ onClose }: { onClose: () => void }) {
-  const budgets = useBudgetStore((s) => s.budgets)
-  const recurringItems = useRecurringStore((s) => s.items)
+  const { data: budgets } = useBudgets()
+  const { data: recurringItems } = useRecurring()
+  const { data: debts } = useDebts()
   const { add } = useTransactionMutations()
-  const debts = useDebtStore((s) => s.debts)
-  const updateDebt = useDebtStore((s) => s.updateDebt)
+  const { update: updateDebt } = useDebtMutations()
   const [step, setStep] = useState<"type" | "frequency" | "pick" | "method" | "manual" | "scan">("type")
   const [type, setType] = useState<"EXPENSE" | "INCOME">("EXPENSE")
   const [description, setDescription] = useState("")
@@ -278,12 +275,9 @@ function NewTransactionForm({ onClose }: { onClose: () => void }) {
       date: new Date().toISOString().split("T")[0],
     })
     if (debtId) {
-      const debt = debts.find((d) => d.id === debtId)
+      const debt = (debts ?? []).find((d) => d.id === debtId)
       if (debt) {
-        updateDebt(debtId, {
-          remaining: debt.remaining - txAmount,
-          paid: debt.paid + 1,
-        })
+        updateDebt.mutate({ ...debt, remaining: debt.remaining - txAmount, paid: debt.paid + 1 })
       }
     }
     onClose()
@@ -404,7 +398,7 @@ function NewTransactionForm({ onClose }: { onClose: () => void }) {
             {type === "EXPENSE" ? "¿Qué gasto recurrente estás pagando?" : "¿Qué ingreso recurrente recibiste?"}
           </p>
           <div className="space-y-2">
-            {recurringItems.filter((item) => item.type === type).map((item) => (
+            {(recurringItems ?? []).filter((item) => item.type === type).map((item) => (
               <Button
                 key={item.id}
                 variant="ghost"
@@ -517,9 +511,9 @@ function NewTransactionForm({ onClose }: { onClose: () => void }) {
                     <SelectValue placeholder="Seleccionar presupuesto" />
                   </SelectTrigger>
                   <SelectContent>
-                    {budgets.length === 0 ? (
+                    {(budgets ?? []).length === 0 ? (
                       <div className="px-3 py-6 text-center text-xs text-muted-foreground space-y-2"><p>No hay presupuestos</p><Button size="sm" onClick={() => window.location.href = "/budgets"}>Ir a Presupuestos</Button></div>
-                    ) : budgets.map((b) => (
+                    ) : (budgets ?? []).map((b) => (
                       <SelectItem key={b.id} value={b.category}>{b.category}</SelectItem>
                     ))}
                   </SelectContent>
@@ -528,33 +522,13 @@ function NewTransactionForm({ onClose }: { onClose: () => void }) {
             )}
 
             {isRecurring && (
-              <div className="grid grid-cols-2 gap-3">
-                <div className="space-y-1.5">
-                  <Label>Frecuencia</Label>
-                  <Select value={frequency} onValueChange={(v) => v && setFrequency(v)}>
-                    <SelectTrigger className="w-full">
-                      <SelectValue>{(v) => freqLabels[v]}</SelectValue>
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="DAILY">Diario</SelectItem>
-                      <SelectItem value="WEEKLY">Semanal</SelectItem>
-                      <SelectItem value="BIWEEKLY">Quincenal</SelectItem>
-                      <SelectItem value="MONTHLY">Mensual</SelectItem>
-                      <SelectItem value="QUARTERLY">Trimestral</SelectItem>
-                      <SelectItem value="YEARLY">Anual</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-                <div className="space-y-1.5">
-                  <Label>Día del mes</Label>
-                  <Input type="number" min={1} max={31} value={dayOfMonth} onChange={(e) => setDayOfMonth(e.target.value)} placeholder="15" />
-                </div>
-              </div>
+              <p className="text-xs text-muted-foreground">Transacción recurrente — se registra como pago de este {type === "EXPENSE" ? "gasto" : "ingreso"} periódico.</p>
             )}
-
-            <Button className="w-full" onClick={handleSave}>
-              Guardar {type === "EXPENSE" ? "gasto" : "ingreso"}{isRecurring && " recurrente"}
-            </Button>
+            <div className="flex md:justify-end">
+              <Button className="w-full md:w-auto md:end" onClick={handleSave}>
+                Guardar {type === "EXPENSE" ? "gasto" : "ingreso"}{isRecurring && " recurrente"}
+              </Button>
+            </div>
           </div>
         </CardContent>
       )}
@@ -602,9 +576,9 @@ function NewTransactionForm({ onClose }: { onClose: () => void }) {
                         <SelectValue placeholder="Seleccionar presupuesto" />
                       </SelectTrigger>
                       <SelectContent>
-                        {budgets.length === 0 ? (
+                        {(budgets ?? []).length === 0 ? (
                           <div className="px-3 py-6 text-center text-xs text-muted-foreground space-y-2"><p>No hay presupuestos</p><Button size="sm" onClick={() => window.location.href = "/budgets"}>Ir a Presupuestos</Button></div>
-                        ) : budgets.map((b) => (
+                        ) : (budgets ?? []).map((b) => (
                           <SelectItem key={b.id} value={b.category}>{b.category}</SelectItem>
                         ))}
                       </SelectContent>
