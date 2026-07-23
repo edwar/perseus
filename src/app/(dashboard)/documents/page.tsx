@@ -98,7 +98,7 @@ export default function DocumentsPage() {
     <div className="space-y-6">
       {/* Year selector */}
       {!year && (
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 200px), 1fr))", gap: "16px" }}>
+        <div className="grid gap-4 grid-cols-[repeat(auto-fill,200px)]">
           {years.map((y) => {
             const count = docs.filter((d) => d.uploadedAt.startsWith(y)).length
             return (
@@ -116,7 +116,7 @@ export default function DocumentsPage() {
 
       {/* Month selector */}
       {year && !month && (
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 200px), 1fr))", gap: "16px" }}>
+        <div className="grid gap-4 grid-cols-[repeat(auto-fill,200px)]">
           {monthsInYear.map((m) => {
             const count = docs.filter((d) => d.uploadedAt.startsWith(`${year}-${m}`)).length
             return (
