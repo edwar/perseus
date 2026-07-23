@@ -66,8 +66,8 @@ export default function RecurringPage() {
       )}
 
       {isLoading ? (
-        <div className="space-y-4">
-          {[1, 2, 3].map((i) => (
+        <div className="grid gap-4 sm:grid-cols-2">
+          {[1, 2].map((i) => (
             <div key={i} className="animate-pulse rounded-xl bg-muted p-5">
               <div className="flex items-center gap-3">
                 <div className="h-10 w-10 rounded-full bg-muted" />
