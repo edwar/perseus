@@ -54,13 +54,13 @@ export default function SavingsPage() {
             </div>
 
             {showNewGoal && (
-              <NewGoalForm onSave={(d) => { addGoal.mutate({ current: 0, ...d }); setShowNewGoal(false) }} onClose={() => setShowNewGoal(false)} isPending={addGoal.isPending} />
+              <NewGoalForm onSave={async (d) => { await addGoal.mutateAsync({ current: 0, ...d }); setShowNewGoal(false) }} onClose={() => setShowNewGoal(false)} isPending={addGoal.isPending} />
             )}
 
             {editGoal && (() => {
               const g = goals.find((x) => x.id === editGoal)
               if (!g) return null
-              return <NewGoalForm initial={g} onSave={(d) => { updateGoal.mutate({ id: editGoal, current: g.current, ...d }); setEditGoal(null) }} onClose={() => setEditGoal(null)} isPending={updateGoal.isPending} />
+              return <NewGoalForm initial={g} onSave={async (d) => { await updateGoal.mutateAsync({ id: editGoal, current: g.current, ...d }); setEditGoal(null) }} onClose={() => setEditGoal(null)} isPending={updateGoal.isPending} />
             })()}
 
             {goals.length === 0 && !showNewGoal ? (
@@ -122,13 +122,13 @@ export default function SavingsPage() {
             </div>
 
             {showNewInvestment && (
-              <NewInvestmentForm onClose={() => setShowNewInvestment(false)} onSave={(d) => { addInvestment.mutate(d); setShowNewInvestment(false) }} isPending={addInvestment.isPending} />
+              <NewInvestmentForm onClose={() => setShowNewInvestment(false)} onSave={async (d) => { await addInvestment.mutateAsync(d); setShowNewInvestment(false) }} isPending={addInvestment.isPending} />
             )}
 
             {editInvestment && (() => {
               const c = investments.find((x) => x.id === editInvestment)
               if (!c) return null
-              return <NewInvestmentForm initial={c} onSave={(d) => { updateInvestment.mutate({ id: editInvestment, ...d }); setEditInvestment(null) }} onClose={() => setEditInvestment(null)} isPending={updateInvestment.isPending} />
+              return <NewInvestmentForm initial={c} onSave={async (d) => { await updateInvestment.mutateAsync({ id: editInvestment, ...d }); setEditInvestment(null) }} onClose={() => setEditInvestment(null)} isPending={updateInvestment.isPending} />
             })()}
 
             {investments.length === 0 && !showNewInvestment ? (

@@ -37,11 +37,11 @@ export default function BudgetsPage() {
 
   const totalBudget = useMemo(() => budgets.reduce((s, b) => s + b.amount, 0), [budgets])
 
-  function handleSave(data: Omit<Budget, "id"> & { id?: string }) {
+  async function handleSave(data: Omit<Budget, "id"> & { id?: string }) {
     if (editing) {
-      updateBudget.mutate({ id: editing, ...data })
+      await updateBudget.mutateAsync({ id: editing, ...data })
     } else {
-      addBudget.mutate(data)
+      await addBudget.mutateAsync(data)
     }
     setShowForm(false)
     setEditing(null)

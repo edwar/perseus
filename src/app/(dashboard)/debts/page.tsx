@@ -25,12 +25,12 @@ export default function DebtsPage() {
   const setHeaderAction = useHeaderStore((s) => s.setAction)
   useEffect(() => { setHeaderAction(<Button size="sm" onClick={() => setShowAddDebt(true)}><Plus className="h-4 w-4" /> Crear</Button>); return () => setHeaderAction(null) }, [])
 
-  function handleSave(data: { name: string; creditor: string; category: string; total: number; remaining: number; rate: number; monthly: number; installments: number; paid: number }, id?: string) {
+  async function handleSave(data: { name: string; creditor: string; category: string; total: number; remaining: number; rate: number; monthly: number; installments: number; paid: number }, id?: string) {
     if (id) {
-      updateDebt.mutate({ id, ...data, minimum: null, installments: data.installments || null } as any)
+      await updateDebt.mutateAsync({ id, ...data, minimum: null, installments: data.installments || null } as any)
       setEditDebtId(null)
     } else {
-      addDebt.mutate({ ...data, minimum: null, installments: data.installments || null } as any)
+      await addDebt.mutateAsync({ ...data, minimum: null, installments: data.installments || null } as any)
       setShowAddDebt(false)
     }
   }

@@ -78,8 +78,8 @@ export default function ObligationsPage() {
       {showForm && (
         <ObligationForm
           initial={editId ? obligations.find((o) => o.id === editId) ?? undefined : undefined}
-          onSave={(d) => {
-            if (editId) { update.mutate({ id: editId, ...d }); setEditId(null) } else { add.mutate(d) }
+          onSave={async (d) => {
+            if (editId) { await update.mutateAsync({ id: editId, ...d }); setEditId(null) } else { await add.mutateAsync(d) }
             setShowForm(false)
           }}
           onClose={() => { setShowForm(false); setEditId(null) }}

@@ -51,13 +51,13 @@ export default function RecurringPage() {
       {showForm && (
         <RecurringForm
           editItem={editingId ? items.find((i) => i.id === editingId) ?? null : null}
-          onSave={(data) => {
+          onSave={async (data) => {
             if (editingId) {
-              update.mutate({ id: editingId, ...data })
+              await update.mutateAsync({ id: editingId, ...data })
               setEditingId(null)
               setShowForm(false)
             } else {
-              add.mutate(data)
+              await add.mutateAsync(data)
               setShowForm(false)
             }
           }}
@@ -294,10 +294,11 @@ function RecurringForm({ editItem, onSave, onCancel, isPending }: {
                 <Input type="number" min={1} max={31} value={dayOfMonth} onChange={(e) => setDayOfMonth(e.target.value)} placeholder="15" />
               </div>
             </div>
-
-            <Button type="submit" className="w-full" disabled={isPending}>
-              {isPending ? "Guardando..." : editItem ? "Guardar cambios" : "Crear recurrente"}
-            </Button>
+            <div className="flex md:justify-end">
+              <Button type="submit" className="w-full md:w-auto md:end" disabled={isPending}>
+                {isPending ? "Guardando..." : editItem ? "Guardar cambios" : "Crear recurrente"}
+              </Button>
+            </div>
           </div>
         </CardContent>
       </form>
