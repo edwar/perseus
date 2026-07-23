@@ -25,6 +25,7 @@ export default function BudgetsPage() {
   const [showForm, setShowForm] = useState(false)
   const [editing, setEditing] = useState<string | null>(null)
   const [deleteConfirm, setDeleteConfirm] = useState<string | null>(null)
+  const [viewActivities, setViewActivities] = useState<Budget | null>(null)
 
   const spentByCategory = useMemo(() => {
     const map: Record<string, number> = {}
@@ -162,9 +163,9 @@ export default function BudgetsPage() {
                   <p className="mt-1.5 text-xs font-medium text-muted-foreground">{Math.round(percentage)}% usado</p>
 
                   {budgetItems.length > 0 && (
-                    <div className="mt-3 flex-1 space-y-1.5 border-t pt-3 overflow-y-auto max-h-32">
+                    <div className="mt-3 space-y-1.5 border-t pt-3">
                       <p className="text-[11px] font-semibold text-muted-foreground uppercase tracking-wider">Actividades</p>
-                      {budgetItems.map((item, i) => {
+                      {budgetItems.slice(0, 2).map((item, i) => {
                         const itemPct = (item.amount / budget.amount) * 100
                         return (
                           <div key={i} className="flex items-center justify-between text-xs">
@@ -173,6 +174,11 @@ export default function BudgetsPage() {
                           </div>
                         )
                       })}
+                      {budgetItems.length > 2 && (
+                        <button type="button" onClick={() => setViewActivities(budget)} className="text-xs text-primary hover:underline mt-1">
+                          Ver todas ({budgetItems.length})
+                        </button>
+                      )}
                     </div>
                   )}
 
@@ -198,6 +204,37 @@ export default function BudgetsPage() {
         onConfirm={() => { if (deleteConfirm) removeBudget.mutate(deleteConfirm); setDeleteConfirm(null) }}
         onCancel={() => setDeleteConfirm(null)}
       />
+
+      {viewActivities && (() => {
+        const rawItems = Array.isArray(viewActivities.items) ? viewActivities.items : []
+        const items = rawItems.filter((i: { name?: string }) => i.name)
+        return (
+          <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 p-4 backdrop-blur-sm" onClick={() => setViewActivities(null)}>
+            <div className="w-full max-w-md rounded-xl bg-background p-6 shadow-2xl" onClick={(e) => e.stopPropagation()}>
+              <div className="mb-4 flex items-center justify-between">
+                <h3 className="font-bold text-lg">{viewActivities.category}</h3>
+                <Button variant="ghost" size="icon" onClick={() => setViewActivities(null)}>
+                  <X className="h-4 w-4" />
+                </Button>
+              </div>
+              <div className="space-y-2">
+                {items.map((item, i) => {
+                  const itemPct = (item.amount / viewActivities.amount) * 100
+                  return (
+                    <div key={i} className="flex items-center justify-between rounded-lg border p-3">
+                      <span className="text-sm font-medium">{item.name}</span>
+                      <span className="text-sm font-semibold">${item.amount.toLocaleString("es-CO")} ({Math.round(itemPct)}%)</span>
+                    </div>
+                  )
+                })}
+              </div>
+              <p className="mt-4 text-xs text-muted-foreground">
+                Total: ${items.reduce((s, i) => s + i.amount, 0).toLocaleString("es-CO")} / ${viewActivities.amount.toLocaleString("es-CO")}
+              </p>
+            </div>
+          </div>
+        )
+      })()}
     </div>
   )
 }
