@@ -96,6 +96,7 @@ export default function BudgetsPage() {
           initial={editBudget}
           onSave={handleSave}
           onClose={() => { setShowForm(false); setEditing(null) }}
+          isPending={addBudget.isPending || updateBudget.isPending}
         />
       )}
 
@@ -186,10 +187,11 @@ export default function BudgetsPage() {
   )
 }
 
-function BudgetForm({ initial, onSave, onClose }: {
+function BudgetForm({ initial, onSave, onClose, isPending }: {
   initial?: Budget
   onSave: (data: Omit<Budget, "id"> & { id?: string }) => void
   onClose: () => void
+  isPending?: boolean
 }) {
   const [category, setCategory] = useState(initial?.category ?? "")
   const [color, setColor] = useState(initial?.color ?? COLORS[0])
@@ -299,8 +301,8 @@ function BudgetForm({ initial, onSave, onClose }: {
             </div>
           </div>
 
-          <Button type="submit" className="w-full" disabled={!isValid}>
-            {initial ? "Guardar cambios" : "Crear presupuesto"}
+          <Button type="submit" className="w-full" disabled={!isValid || isPending}>
+            {isPending ? "Guardando..." : initial ? "Guardar cambios" : "Crear presupuesto"}
           </Button>
         </form>
       </CardContent>

@@ -54,13 +54,13 @@ export default function SavingsPage() {
             </div>
 
             {showNewGoal && (
-              <NewGoalForm onSave={(d) => { addGoal.mutate({ current: 0, ...d }); setShowNewGoal(false) }} onClose={() => setShowNewGoal(false)} />
+              <NewGoalForm onSave={(d) => { addGoal.mutate({ current: 0, ...d }); setShowNewGoal(false) }} onClose={() => setShowNewGoal(false)} isPending={addGoal.isPending} />
             )}
 
             {editGoal && (() => {
               const g = goals.find((x) => x.id === editGoal)
               if (!g) return null
-              return <NewGoalForm initial={g} onSave={(d) => { updateGoal.mutate({ id: editGoal, current: g.current, ...d }); setEditGoal(null) }} onClose={() => setEditGoal(null)} />
+              return <NewGoalForm initial={g} onSave={(d) => { updateGoal.mutate({ id: editGoal, current: g.current, ...d }); setEditGoal(null) }} onClose={() => setEditGoal(null)} isPending={updateGoal.isPending} />
             })()}
 
             {goals.length === 0 && !showNewGoal ? (
@@ -122,13 +122,13 @@ export default function SavingsPage() {
             </div>
 
             {showNewInvestment && (
-              <NewInvestmentForm onClose={() => setShowNewInvestment(false)} onSave={(d) => { addInvestment.mutate(d); setShowNewInvestment(false) }} />
+              <NewInvestmentForm onClose={() => setShowNewInvestment(false)} onSave={(d) => { addInvestment.mutate(d); setShowNewInvestment(false) }} isPending={addInvestment.isPending} />
             )}
 
             {editInvestment && (() => {
               const c = investments.find((x) => x.id === editInvestment)
               if (!c) return null
-              return <NewInvestmentForm initial={c} onSave={(d) => { updateInvestment.mutate({ id: editInvestment, ...d }); setEditInvestment(null) }} onClose={() => setEditInvestment(null)} />
+              return <NewInvestmentForm initial={c} onSave={(d) => { updateInvestment.mutate({ id: editInvestment, ...d }); setEditInvestment(null) }} onClose={() => setEditInvestment(null)} isPending={updateInvestment.isPending} />
             })()}
 
             {investments.length === 0 && !showNewInvestment ? (
@@ -198,10 +198,11 @@ export default function SavingsPage() {
   )
 }
 
-function NewGoalForm({ initial, onSave, onClose }: {
+function NewGoalForm({ initial, onSave, onClose, isPending }: {
   initial?: Goal
   onSave?: (d: { name: string; target: number; deadline: string }) => void
   onClose: () => void
+  isPending?: boolean
 }) {
   const [name, setName] = useState(initial?.name ?? "")
   const [target, setTarget] = useState(initial ? String(initial.target) : "")
@@ -227,8 +228,8 @@ function NewGoalForm({ initial, onSave, onClose }: {
             <Label className="text-xs font-medium">Fecha límite</Label>
             <Input type="date" value={deadline} onChange={(e) => setDeadline(e.target.value)} />
           </div>
-          <Button className="w-full" disabled={!name || !target} onClick={() => onSave?.({ name, target: Number(target), deadline })}>
-            {initial ? "Guardar cambios" : "Crear meta"}
+          <Button className="w-full" disabled={!name || !target || isPending} onClick={() => onSave?.({ name, target: Number(target), deadline })}>
+            {isPending ? "Guardando..." : initial ? "Guardar cambios" : "Crear meta"}
           </Button>
         </div>
       </CardContent>
@@ -236,10 +237,11 @@ function NewGoalForm({ initial, onSave, onClose }: {
   )
 }
 
-function NewInvestmentForm({ initial, onClose, onSave }: {
+function NewInvestmentForm({ initial, onClose, onSave, isPending }: {
   initial?: Investment
   onClose: () => void
   onSave: (inv: Omit<Investment, "id">) => void
+  isPending?: boolean
 }) {
   const [entity, setEntity] = useState(initial?.entity ?? "")
   const [amount, setAmount] = useState(initial ? String(initial.amount) : "")
@@ -295,8 +297,8 @@ function NewInvestmentForm({ initial, onClose, onSave }: {
             <Label className="text-xs font-medium">Fecha de apertura</Label>
             <Input type="date" value={startDate} onChange={(e) => setStartDate(e.target.value)} />
           </div>
-          <Button type="submit" className="w-full" disabled={!entity || !amount || !rate || !termDays || !startDate}>
-            {initial ? "Guardar cambios" : "Crear inversión"}
+          <Button type="submit" className="w-full" disabled={!entity || !amount || !rate || !termDays || !startDate || isPending}>
+            {isPending ? "Guardando..." : initial ? "Guardar cambios" : "Crear inversión"}
           </Button>
         </form>
       </CardContent>

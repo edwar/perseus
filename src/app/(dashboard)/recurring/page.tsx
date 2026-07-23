@@ -62,6 +62,7 @@ export default function RecurringPage() {
             }
           }}
           onCancel={() => { setShowForm(false); setEditingId(null) }}
+          isPending={add.isPending || update.isPending}
         />
       )}
 
@@ -157,10 +158,11 @@ export default function RecurringPage() {
   )
 }
 
-function RecurringForm({ editItem, onSave, onCancel }: {
+function RecurringForm({ editItem, onSave, onCancel, isPending }: {
   editItem: RecurringItem | null
   onSave: (data: Omit<RecurringItem, "id">) => void
   onCancel: () => void
+  isPending?: boolean
 }) {
   const { data: budgets } = useBudgets()
   const { data: debts } = useDebts()
@@ -293,8 +295,8 @@ function RecurringForm({ editItem, onSave, onCancel }: {
               </div>
             </div>
 
-            <Button type="submit" className="w-full">
-              {editItem ? "Guardar cambios" : "Crear recurrente"}
+            <Button type="submit" className="w-full" disabled={isPending}>
+              {isPending ? "Guardando..." : editItem ? "Guardar cambios" : "Crear recurrente"}
             </Button>
           </div>
         </CardContent>

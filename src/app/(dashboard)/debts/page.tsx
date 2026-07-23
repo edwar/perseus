@@ -48,7 +48,7 @@ export default function DebtsPage() {
       </div>
 
       {showAddDebt && (
-        <AddDebtForm onSave={(d) => handleSave(d)} onClose={() => setShowAddDebt(false)} />
+        <AddDebtForm onSave={(d) => handleSave(d)} onClose={() => setShowAddDebt(false)} isPending={addDebt.isPending} />
       )}
 
       {editDebtId && editDebt && (
@@ -56,6 +56,7 @@ export default function DebtsPage() {
           initial={{ name: editDebt.name, category: editDebt.category, total: editDebt.total, remaining: editDebt.remaining, rate: editDebt.rate, monthly: editDebt.monthly, installments: editDebt.installments ?? 0, paid: editDebt.paid }}
           onSave={(d) => handleSave(d, editDebtId)}
           onClose={() => setEditDebtId(null)}
+          isPending={updateDebt.isPending}
         />
       )}
 
@@ -133,10 +134,11 @@ export default function DebtsPage() {
   )
 }
 
-function AddDebtForm({ initial, onSave, onClose }: {
+function AddDebtForm({ initial, onSave, onClose, isPending }: {
   initial?: { name: string; category: string; total: number; remaining: number; rate: number; monthly: number; installments: number; paid: number }
   onSave: (data: { name: string; creditor: string; category: string; total: number; remaining: number; rate: number; monthly: number; installments: number; paid: number }) => void
   onClose: () => void
+  isPending?: boolean
 }) {
   const { data: budgetData } = useBudgets()
   const budgets = budgetData ?? []
@@ -245,7 +247,7 @@ function AddDebtForm({ initial, onSave, onClose }: {
               <p className="text-xs text-muted-foreground">{Math.round((installmentsPaid / Number(installments)) * 100)}% pagado</p>
             )}
 
-            <Button className="w-full" onClick={() => {
+            <Button className="w-full" disabled={isPending} onClick={() => {
               onSave({
                 name: name || "Deuda",
                 creditor: name || "Deuda",
@@ -257,7 +259,7 @@ function AddDebtForm({ initial, onSave, onClose }: {
                 installments: Number(installments) || 0,
                 paid: installmentsPaid ?? 0,
               })
-            }}>{initial ? "Guardar cambios" : "Crear deuda"}</Button>
+            }}>{isPending ? "Guardando..." : initial ? "Guardar cambios" : "Crear deuda"}</Button>
           </div>
         )}
       </CardContent>

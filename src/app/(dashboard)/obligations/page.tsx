@@ -83,6 +83,7 @@ export default function ObligationsPage() {
             setShowForm(false)
           }}
           onClose={() => { setShowForm(false); setEditId(null) }}
+          isPending={add.isPending || update.isPending}
         />
       )}
 
@@ -125,10 +126,11 @@ export default function ObligationsPage() {
   )
 }
 
-function ObligationForm({ initial, onSave, onClose }: {
+function ObligationForm({ initial, onSave, onClose, isPending }: {
   initial?: { name: string }
   onSave: (d: { name: string }) => void
   onClose: () => void
+  isPending?: boolean
 }) {
   const [name, setName] = useState(initial?.name ?? "")
 
@@ -143,8 +145,8 @@ function ObligationForm({ initial, onSave, onClose }: {
           <Label className="text-xs font-medium">Nombre</Label>
           <Input value={name} onChange={(e) => setName(e.target.value)} placeholder="Ej: Arriendo" />
         </div>
-        <Button className="w-full" disabled={!name} onClick={() => onSave({ name })}>
-          {initial ? "Guardar cambios" : "Crear obligación"}
+        <Button className="w-full" disabled={!name || isPending} onClick={() => onSave({ name })}>
+          {isPending ? "Guardando..." : initial ? "Guardar cambios" : "Crear obligación"}
         </Button>
       </CardContent>
     </Card>
