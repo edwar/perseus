@@ -92,7 +92,7 @@ export default function DocumentsPage() {
         <div className="flex items-center justify-between mt-10 md:hidden"><h1 className="text-2xl font-bold">Documentos</h1></div>
         <div className="grid gap-4 grid-cols-[repeat(auto-fill,200px)]">
           {Array.from({ length: 33 }).map((_, i) => (
-            <div key={i} className="animate-pulse h-[200px] w-[200px] rounded-sm bg-muted-foreground/20" />
+            <div key={i} className="animate-shimmer h-[200px] w-[200px] rounded-sm bg-muted-foreground/20" />
           ))}
         </div>
       </div>

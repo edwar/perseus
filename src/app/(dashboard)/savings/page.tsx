@@ -47,33 +47,35 @@ export default function SavingsPage() {
         {isLoading ? (
           <section className="space-y-4">
             <div className="flex items-center justify-between">
-              <div className="h-7 w-36 rounded bg-muted-foreground/20" />
-              <div className="h-9 w-24 rounded-lg bg-muted-foreground/20" />
+              <div className="h-7 w-36 rounded  animate-shimmer bg-muted-foreground/20" />
+              <div className="h-9 w-24 rounded-lg  animate-shimmer bg-muted-foreground/20" />
             </div>
             <div className="grid gap-4 grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
               {Array.from({ length: 16 }).map((_, i) => (
-                <div key={i} className="animate-pulse rounded-xl border bg-card p-5">
-                  <div className="flex items-center gap-3">
-                    <div className="h-10 w-10 rounded-full bg-muted-foreground/20" />
-                    <div className="flex-1">
-                      <div className="h-4 w-28 rounded bg-muted-foreground/20" />
-                      <div className="mt-1 h-3 w-32 rounded bg-muted-foreground/20" />
+                <Card key={i} className="rounded-2xl border-0 shadow-md transition-shadow hover:shadow-lg">
+                  <CardContent className="flex flex-col">
+                    <div className="flex items-center gap-3">
+                      <div className="h-10 w-10 rounded-full  animate-shimmer bg-muted-foreground/20" />
+                      <div className="flex-1">
+                        <div className="h-4 w-28 rounded  animate-shimmer bg-muted-foreground/20" />
+                        <div className="mt-1 h-3 w-32 rounded  animate-shimmer bg-muted-foreground/20" />
+                      </div>
                     </div>
-                  </div>
-                  <div className="mt-4 space-y-2">
-                    <div className="flex justify-between">
-                      <div className="h-3 w-16 rounded bg-muted-foreground/20" />
-                      <div className="h-4 w-24 rounded bg-muted-foreground/20" />
+                    <div className="mt-4 space-y-2">
+                      <div className="flex justify-between">
+                        <div className="h-3 w-16 rounded  animate-shimmer bg-muted-foreground/20" />
+                        <div className="h-4 w-24 rounded  animate-shimmer bg-muted-foreground/20" />
+                      </div>
+                      <div className="h-2 w-full rounded-full  animate-shimmer bg-muted-foreground/20" />
+                      <div className="h-3 w-20 rounded  animate-shimmer bg-muted-foreground/20" />
                     </div>
-                    <div className="h-2 w-full rounded-full bg-muted-foreground/20" />
-                    <div className="h-3 w-20 rounded bg-muted-foreground/20" />
-                  </div>
-                  <div className="mt-3 flex gap-2">
-                    <div className="h-8 flex-1 rounded-lg bg-muted-foreground/20" />
-                    <div className="h-8 w-8 rounded-lg bg-muted-foreground/20" />
-                    <div className="h-8 w-8 rounded-lg bg-muted-foreground/20" />
-                  </div>
-                </div>
+                    <div className="mt-3 flex gap-2">
+                      <div className="h-8 flex-1 rounded-lg  animate-shimmer bg-muted-foreground/20" />
+                      <div className="h-8 w-8 rounded-lg  animate-shimmer bg-muted-foreground/20" />
+                      <div className="h-8 w-8 rounded-lg  animate-shimmer bg-muted-foreground/20" />
+                    </div>
+                  </CardContent>
+                </Card>
               ))}
             </div>
           </section>

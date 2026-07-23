@@ -69,28 +69,30 @@ export default function RecurringPage() {
       {isLoading ? (
         <div className="grid gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
           {Array.from({ length: 28 }).map((_, i) => (
-            <div key={i} className="animate-pulse rounded-xl bg-muted p-5">
-              <div className="flex items-start justify-between">
-                <div className="flex items-center gap-3">
-                  <div className="h-9 w-10 rounded-full bg-muted-foreground/20" />
-                  <div>
-                    <div className="h-4 w-18 rounded bg-muted-foreground/20" />
-                    <div className="mt-1 h-3 w-16 rounded bg-muted-foreground/20" />
+            <Card key={i} className="rounded-2xl border-0 shadow-md transition-shadow hover:shadow-lg">
+              <CardContent className="flex flex-col">
+                <div className="flex items-start justify-between">
+                  <div className="flex items-center gap-3">
+                    <div className="h-9 w-10 animate-shimmer rounded-full bg-muted-foreground/20" />
+                    <div>
+                      <div className="h-4 w-18 animate-shimmer rounded bg-muted-foreground/20" />
+                      <div className="mt-1 h-3 w-16 animate-shimmer rounded bg-muted-foreground/20" />
+                    </div>
+                  </div>
+                  <div className="h-7 w-24 animate-shimmer rounded bg-muted-foreground/20" />
+                </div>
+                <div className="mt-3 flex items-center justify-between">
+                  <div className="flex items-center gap-3">
+                    <div className="h-3 w-16 animate-shimmer rounded bg-muted-foreground/20" />
+                    <div className="h-3 w-12 animate-shimmer rounded bg-muted-foreground/20" />
+                  </div>
+                  <div className="flex gap-1">
+                    <div className="h-8 w-8 animate-shimmer rounded bg-muted-foreground/20" />
+                    <div className="h-8 w-8 animate-shimmer rounded bg-muted-foreground/20" />
                   </div>
                 </div>
-                <div className="h-7 w-24 rounded bg-muted-foreground/20" />
-              </div>
-              <div className="mt-3 flex items-center justify-between">
-                <div className="flex items-center gap-3">
-                  <div className="h-3 w-16 rounded bg-muted-foreground/20" />
-                  <div className="h-3 w-12 rounded bg-muted-foreground/20" />
-                </div>
-                <div className="flex gap-1">
-                  <div className="h-8 w-8 rounded bg-muted-foreground/20" />
-                  <div className="h-8 w-8 rounded bg-muted-foreground/20" />
-                </div>
-              </div>
-            </div>
+              </CardContent>
+            </Card>
           ))}
         </div>
       ) : items.length === 0 && !showForm ? (
