@@ -265,9 +265,9 @@ function NewTransactionForm({ onClose }: { onClose: () => void }) {
   const [dayOfMonth, setDayOfMonth] = useState("")
   const [debtId, setDebtId] = useState("")
 
-  function handleSave() {
+  async function handleSave() {
     const txAmount = Number(amount) || 0
-    add.mutate({
+    await add.mutateAsync({
       description: description || "Transacción",
       amount: txAmount,
       type,
@@ -277,7 +277,7 @@ function NewTransactionForm({ onClose }: { onClose: () => void }) {
     if (debtId) {
       const debt = (debts ?? []).find((d) => d.id === debtId)
       if (debt) {
-        updateDebt.mutate({ ...debt, remaining: debt.remaining - txAmount, paid: debt.paid + 1 })
+        await updateDebt.mutateAsync({ ...debt, remaining: debt.remaining - txAmount, paid: debt.paid + 1 })
       }
     }
     onClose()
