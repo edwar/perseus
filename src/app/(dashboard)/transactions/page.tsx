@@ -525,8 +525,8 @@ function NewTransactionForm({ onClose }: { onClose: () => void }) {
               <p className="text-xs text-muted-foreground">Transacción recurrente — se registra como pago de este {type === "EXPENSE" ? "gasto" : "ingreso"} periódico.</p>
             )}
             <div className="flex md:justify-end">
-              <Button className="w-full md:w-auto md:end" onClick={handleSave}>
-                Guardar {type === "EXPENSE" ? "gasto" : "ingreso"}{isRecurring && " recurrente"}
+              <Button className="w-full md:w-auto md:end" onClick={handleSave} disabled={add.isPending}>
+                {add.isPending ? "Guardando..." : `Guardar ${type === "EXPENSE" ? "gasto" : "ingreso"}${isRecurring ? " recurrente" : ""}`}
               </Button>
             </div>
           </div>
@@ -611,8 +611,8 @@ function NewTransactionForm({ onClose }: { onClose: () => void }) {
                   </div>
                 )}
 
-                <Button className="w-full" onClick={handleSave}>
-                  Confirmar y guardar
+                <Button className="w-full" onClick={handleSave} disabled={add.isPending}>
+                  {add.isPending ? "Guardando..." : "Confirmar y guardar"}
                 </Button>
               </div>
             ) : (
