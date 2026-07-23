@@ -16,7 +16,7 @@ import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@
 import { useDebts, useDebtMutations, useBudgets } from "@/hooks/useData"
 
 export default function DebtsPage() {
-  const { data } = useDebts()
+  const { data, isLoading } = useDebts()
   const debts = data ?? []
   const { add: addDebt, update: updateDebt, remove: removeDebt } = useDebtMutations()
   const [showAddDebt, setShowAddDebt] = useState(false)
@@ -36,6 +36,38 @@ export default function DebtsPage() {
   }
 
   const editDebt = editDebtId ? debts.find((d) => d.id === editDebtId) : null
+
+  if (isLoading) {
+    return (
+      <div className="space-y-6">
+        <div className="flex items-center justify-between mt-10 md:hidden"><h1 className="text-2xl font-bold">Deudas</h1><div className="h-9 w-24 animate-pulse rounded-lg bg-muted" /></div>
+        <div className="grid gap-4 grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+          {[1, 2].map((i) => (
+            <Card key={i} className="rounded-2xl border-0 shadow-md transition-shadow hover:shadow-lg">
+              <CardContent className="flex flex-col">
+                <div className="flex items-start justify-between">
+                  <div>
+                    <div className="h-4 w-32 rounded bg-muted-foreground/20" />
+                    <div className="mt-1 h-3 w-24 rounded bg-muted-foreground/20" />
+                  </div>
+                  <div className="h-7 w-16 rounded-lg bg-muted-foreground/20" />
+                </div>
+                <div className="mt-4 space-y-2">
+                  <div className="flex justify-between"><div className="h-3 w-16 rounded bg-muted-foreground/20" /><div className="h-3 w-24 rounded bg-muted-foreground/20" /></div>
+                  <div className="flex justify-between"><div className="h-3 w-24 rounded bg-muted-foreground/20" /><div className="h-3 w-20 rounded bg-muted-foreground/20" /></div>
+                  <div className="h-2.5 rounded-full bg-muted-foreground/20" />
+                </div>
+                <div className="mt-auto pt-4 flex gap-2">
+                  <div className="flex-1 h-9 rounded-lg bg-muted-foreground/20" />
+                  <div className="h-9 w-10 rounded-lg bg-muted-foreground/20" />
+                </div>
+              </CardContent>
+            </Card>
+          ))}
+        </div>
+      </div>
+    )
+  }
 
   return (
     <div className="space-y-6">
@@ -63,7 +95,7 @@ export default function DebtsPage() {
       {debts.length === 0 && !showAddDebt ? (
         <Empty icon={TrendingDown} title="No hay deudas" description="Registra tu primera deuda para hacer seguimiento" action={<Button size="sm" onClick={() => setShowAddDebt(true)}><Plus className="h-3 w-3" /> Crear</Button>} />
       ) : (
-        <div className="grid gap-4 sm:grid-cols-2">
+        <div className="grid gap-4 grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
           {debts.map((debt) => {
             const progress = debt.total > 0 ? ((debt.total - debt.remaining) / debt.total) * 100 : 0
             return (

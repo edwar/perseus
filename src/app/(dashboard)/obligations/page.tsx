@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { Plus, X, Pencil, Trash2, Check, ChevronLeft, ChevronRight } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -21,6 +21,15 @@ export default function ObligationsPage() {
   const [showForm, setShowForm] = useState(false)
   const [editId, setEditId] = useState<string | null>(null)
   const [deleteId, setDeleteId] = useState<string | null>(null)
+
+  useEffect(() => {
+    setHeaderAction(
+      <Button size="sm" className="gap-1" onClick={() => { setEditId(null); setShowForm(true) }}>
+        <Plus className="h-4 w-4" /> Crear
+      </Button>
+    )
+    return () => setHeaderAction(null)
+  }, [setHeaderAction])
 
   const monthName = (m: string) => {
     const [y, month] = m.split("-").map(Number)
