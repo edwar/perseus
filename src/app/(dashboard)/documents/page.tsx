@@ -151,7 +151,7 @@ export default function DocumentsPage() {
                   </h2>
                   <span className="text-xs text-muted-foreground">({items.length})</span>
                 </div>
-                <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 200px), 1fr))", gap: "16px" }}>
+                <div className="grid gap-4 grid-cols-[repeat(auto-fill,200px)]">
                   {items.map((doc, i) => (
                     <DocumentCard key={doc.id ?? doc.publicId ?? i} doc={doc} />
                   ))}
