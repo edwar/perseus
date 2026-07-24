@@ -4,6 +4,7 @@ import { useState, useCallback, useEffect, useRef } from "react"
 import { Check, ChevronDown, ChevronUp, Trash2 } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { Confetti } from "@/components/ui/confetti"
+import { ConfirmDialog } from "@/components/ui/confirm-dialog"
 import type { ObligationInstance, TaskInstance } from "@/hooks/use-obligations-v2"
 
 interface TaskCardProps {
@@ -15,6 +16,7 @@ interface TaskCardProps {
 export function TaskCard({ instance, onToggleTask, onDelete }: TaskCardProps) {
   const [expanded, setExpanded] = useState(instance.tasks.length === 0)
   const [showConfetti, setShowConfetti] = useState(false)
+  const [confirmDelete, setConfirmDelete] = useState(false)
   const prevCompletedRef = useRef(0)
 
   const completedCount = instance.tasks.filter(t => t.completed).length
@@ -81,7 +83,7 @@ export function TaskCard({ instance, onToggleTask, onDelete }: TaskCardProps) {
         </button>
 
         <button
-          onClick={() => onDelete(instance.id)}
+          onClick={() => setConfirmDelete(true)}
           className="p-2 mr-2 text-muted-foreground hover:text-red-500 transition-colors rounded-lg hover:bg-red-50"
         >
           <Trash2 className="h-4 w-4" />
@@ -96,6 +98,14 @@ export function TaskCard({ instance, onToggleTask, onDelete }: TaskCardProps) {
         </div>
       )}
     </div>
+
+    <ConfirmDialog
+      open={confirmDelete}
+      title="Eliminar obligación"
+      message={`¿Eliminar "${instance.templateName}" de este día?`}
+      onConfirm={() => { onDelete(instance.id); setConfirmDelete(false) }}
+      onCancel={() => setConfirmDelete(false)}
+    />
     </>
   )
 }
