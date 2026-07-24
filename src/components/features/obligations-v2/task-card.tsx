@@ -41,7 +41,7 @@ export function TaskCard({ instance, onToggleTask, onDelete }: TaskCardProps) {
     <>
       <Confetti trigger={showConfetti} onComplete={() => setShowConfetti(false)} />
       <div className={cn(
-        "rounded-2xl border-2 transition-all duration-300 overflow-hidden",
+        "relative rounded-2xl border-2 transition-all duration-300 overflow-hidden",
         allCompleted ? "border-emerald-500/30 bg-emerald-500/5" : "border-border",
         deleting && "opacity-0 scale-95 -translate-x-full max-h-0 mb-0 border-0 p-0"
       )}>
@@ -77,18 +77,24 @@ export function TaskCard({ instance, onToggleTask, onDelete }: TaskCardProps) {
             )}
           </div>
 
-          {totalCount > 0 && (
-            <div className="flex items-center gap-2">
-              <div className="h-2 w-20 rounded-full bg-muted overflow-hidden">
-                <div
-                  className="h-full bg-emerald-500 transition-all duration-500"
-                  style={{ width: `${(completedCount / totalCount) * 100}%` }}
-                />
-              </div>
-              {expanded ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
-            </div>
-          )}
+          <div className="flex items-center gap-2">
+            {expanded ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
+          </div>
         </button>
+
+        {totalCount > 0 && (
+          <div className="absolute bottom-2 left-4 flex items-center gap-2 z-10">
+            <div className="h-1.5 w-16 rounded-full bg-muted overflow-hidden">
+              <div
+                className="h-full bg-emerald-500 transition-all duration-500"
+                style={{ width: `${(completedCount / totalCount) * 100}%` }}
+              />
+            </div>
+            <span className="text-[10px] text-muted-foreground font-medium">
+              {Math.round((completedCount / totalCount) * 100)}%
+            </span>
+          </div>
+        )}
 
         <button
           onClick={() => setConfirmDelete(true)}
