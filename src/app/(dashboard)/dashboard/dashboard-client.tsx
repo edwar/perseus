@@ -56,27 +56,57 @@ export function DashboardClient({
     return (
       <div className="space-y-6">
         <h1 className="text-2xl font-bold mt-10 md:hidden">Dashboard</h1>
+
         <div className="grid gap-4 sm:grid-cols-3">
           {[1, 2, 3].map((i) => (
+            <div key={i} className="relative overflow-hidden rounded-2xl bg-muted p-5">
+              <div className="flex items-center gap-4">
+                <div className="h-12 w-12 animate-shimmer rounded-xl bg-muted-foreground/20" />
+                <div className="space-y-2">
+                  <div className="h-3 w-20 animate-shimmer rounded bg-muted-foreground/20" />
+                  <div className="h-6 w-28 animate-shimmer rounded bg-muted-foreground/20" />
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+
+        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+          {[1, 2, 3, 4].map((i) => (
             <Card key={i}>
-              <CardContent className="flex items-center gap-3">
-                <div className="h-10 w-10 animate-shimmer rounded-full bg-muted" />
-                <div className="flex-1 space-y-2">
-                  <div className="h-3 w-20 animate-shimmer rounded bg-muted" />
-                  <div className="h-5 w-32 animate-shimmer rounded bg-muted" />
+              <CardContent className="p-4">
+                <div className="flex items-center gap-3">
+                  <div className="h-10 w-10 animate-shimmer rounded-xl bg-muted" />
+                  <div className="space-y-2">
+                    <div className="h-3 w-16 animate-shimmer rounded bg-muted" />
+                    <div className="h-6 w-12 animate-shimmer rounded bg-muted" />
+                  </div>
                 </div>
               </CardContent>
             </Card>
           ))}
         </div>
-        <div className="grid gap-4 sm:grid-cols-2">
+
+        <Card>
+          <div className="border-b px-6 py-4">
+            <div className="h-4 w-36 animate-shimmer rounded bg-muted" />
+          </div>
+          <div className="p-5">
+            <div className="h-40 animate-shimmer rounded-lg bg-muted" />
+          </div>
+        </Card>
+
+        <div className="grid gap-5 sm:grid-cols-2">
           <Card><div className="border-b px-6 py-4"><div className="h-4 w-36 animate-shimmer rounded bg-muted" /></div><div className="p-5"><div className="h-52 animate-shimmer rounded-lg bg-muted" /></div></Card>
           <Card><div className="border-b px-6 py-4"><div className="h-4 w-36 animate-shimmer rounded bg-muted" /></div><div className="p-5"><div className="h-52 animate-shimmer rounded-lg bg-muted" /></div></Card>
         </div>
+
         <Card>
-          <div className="border-b px-6 py-4"><div className="h-4 w-40 animate-shimmer rounded bg-muted" /></div>
+          <div className="border-b px-6 py-4">
+            <div className="h-4 w-40 animate-shimmer rounded bg-muted" />
+          </div>
           <div className="divide-y">
-            {Array.from({ length: 14 }).map((_, i) => (
+            {Array.from({ length: 5 }).map((_, i) => (
               <div key={i} className="flex items-center gap-3 px-6 py-3">
                 <div className="h-9 w-9 animate-shimmer rounded-full bg-muted" />
                 <div className="flex-1 space-y-1.5">
