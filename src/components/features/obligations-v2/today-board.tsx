@@ -164,9 +164,8 @@ export function TodayBoard({ onOpenSettings }: { onOpenSettings: () => void }) {
       </div>
 
       {instances.length > 0 && (
-        <Card className="bg-gradient-to-br from-primary/5 to-primary/10 border-primary/20">
+        <Card className="relative bg-gradient-to-br from-primary/5 to-primary/10 border-primary/20">
           <CardContent className="flex items-center gap-6 p-6">
-            <ProgressRing progress={stats.progress} size={100} strokeWidth={8} />
             <div className="flex-1 space-y-2">
               <div className="flex items-center gap-3">
                 <StreakCounter streak={streak} />
@@ -183,6 +182,9 @@ export function TodayBoard({ onOpenSettings }: { onOpenSettings: () => void }) {
               </p>
             </div>
           </CardContent>
+          <div className="absolute bottom-3 left-4 z-10">
+            <ProgressRing progress={stats.progress} size={60} strokeWidth={5} />
+          </div>
         </Card>
       )}
 
