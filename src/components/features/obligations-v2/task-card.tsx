@@ -1,8 +1,9 @@
 "use client"
 
-import { useState, useCallback } from "react"
+import { useState, useCallback, useEffect } from "react"
 import { Check, ChevronDown, ChevronUp, Trash2 } from "lucide-react"
 import { cn } from "@/lib/utils"
+import { Confetti } from "@/components/ui/confetti"
 import type { ObligationInstance, TaskInstance } from "@/hooks/use-obligations-v2"
 
 interface TaskCardProps {
@@ -13,16 +14,25 @@ interface TaskCardProps {
 
 export function TaskCard({ instance, onToggleTask, onDelete }: TaskCardProps) {
   const [expanded, setExpanded] = useState(instance.tasks.length === 0)
+  const [showConfetti, setShowConfetti] = useState(false)
 
   const completedCount = instance.tasks.filter(t => t.completed).length
   const totalCount = instance.tasks.length
   const allCompleted = totalCount > 0 && completedCount === totalCount
 
+  useEffect(() => {
+    if (allCompleted && totalCount > 0) {
+      setShowConfetti(true)
+    }
+  }, [allCompleted, totalCount])
+
   return (
-    <div className={cn(
-      "rounded-2xl border-2 transition-all duration-300 overflow-hidden",
-      allCompleted ? "border-emerald-500/30 bg-emerald-500/5" : "border-border"
-    )}>
+    <>
+      <Confetti trigger={showConfetti} onComplete={() => setShowConfetti(false)} />
+      <div className={cn(
+        "rounded-2xl border-2 transition-all duration-300 overflow-hidden",
+        allCompleted ? "border-emerald-500/30 bg-emerald-500/5" : "border-border"
+      )}>
       <div className="flex items-center">
         <button
           onClick={() => setExpanded(!expanded)}
@@ -84,6 +94,7 @@ export function TaskCard({ instance, onToggleTask, onDelete }: TaskCardProps) {
         </div>
       )}
     </div>
+    </>
   )
 }
 
