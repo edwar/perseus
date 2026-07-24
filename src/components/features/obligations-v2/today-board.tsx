@@ -1,6 +1,6 @@
 "use client"
 
-import { useMemo, useCallback, useState, useEffect, useRef } from "react"
+import { useMemo, useState } from "react"
 import { Calendar, ChevronLeft, ChevronRight, Settings, Sparkles, Plus } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
@@ -27,47 +27,9 @@ export function TodayBoard({ onOpenSettings }: { onOpenSettings: () => void }) {
   const [selectedDate, setSelectedDate] = useState(today)
   const [showActivateMenu, setShowActivateMenu] = useState(false)
 
-  const { data: templates = [] } = useObligationTemplates()
-  const { data: instances = [] } = useObligationInstances(selectedDate)
+  const { data: templates = [], isLoading: templatesLoading } = useObligationTemplates()
+  const { data: instances = [], isLoading: instancesLoading } = useObligationInstances(selectedDate)
   const { createInstances, toggleTask, deleteInstance } = useObligationMutations()
-  const ensuredRef = useRef<string>("")
-
-  const ensureInstances = useCallback(async () => {
-    if (templates.length === 0) return
-    const key = `${selectedDate}-${templates.map(t => t.id).join(",")}`
-    if (ensuredRef.current === key) return
-    ensuredRef.current = key
-
-    const dayOfWeek = new Date(selectedDate + "T12:00:00").getDay()
-
-    for (const template of templates) {
-      let shouldCreate = false
-
-      if (template.frequency === "daily") {
-        shouldCreate = true
-      } else if (template.frequency === "weekly" && template.daysOfWeek) {
-        shouldCreate = template.daysOfWeek.includes(dayOfWeek)
-      } else if (template.frequency === "monthly" && template.createdAt) {
-        const templateDay = new Date(template.createdAt).getDate()
-        const selectedDay = new Date(selectedDate + "T12:00:00").getDate()
-        shouldCreate = templateDay === selectedDay
-      } else if (template.frequency === "once" && template.createdAt) {
-        shouldCreate = template.createdAt.split("T")[0] === selectedDate
-      }
-
-      if (shouldCreate) {
-        try {
-          await createInstances.mutateAsync({ templateId: template.id, date: selectedDate })
-        } catch {
-          // ignore errors
-        }
-      }
-    }
-  }, [templates, selectedDate, createInstances])
-
-  useEffect(() => {
-    ensureInstances()
-  }, [ensureInstances])
 
   const stats = useMemo(() => {
     let total = 0
@@ -224,7 +186,22 @@ export function TodayBoard({ onOpenSettings }: { onOpenSettings: () => void }) {
         </Card>
       )}
 
-      {instances.length === 0 && templates.length === 0 ? (
+      {templatesLoading || instancesLoading ? (
+        <div className="space-y-3">
+          {[1, 2, 3].map((i) => (
+            <div key={i} className="rounded-2xl border-2 border-border p-4">
+              <div className="flex items-center gap-4">
+                <div className="h-10 w-10 rounded-xl bg-muted animate-shimmer" />
+                <div className="flex-1 space-y-2">
+                  <div className="h-4 w-32 rounded bg-muted animate-shimmer" />
+                  <div className="h-3 w-20 rounded bg-muted animate-shimmer" />
+                </div>
+                <div className="h-2 w-20 rounded-full bg-muted animate-shimmer" />
+              </div>
+            </div>
+          ))}
+        </div>
+      ) : instances.length === 0 && templates.length === 0 ? (
         <Card className="border-dashed">
           <CardContent className="flex flex-col items-center justify-center py-12 text-center">
             <Sparkles className="h-12 w-12 text-amber-400 mb-4" />
