@@ -164,28 +164,25 @@ export function TodayBoard({ onOpenSettings }: { onOpenSettings: () => void }) {
       </div>
 
       {instances.length > 0 && (
-        <Card className="relative bg-gradient-to-br from-primary/5 to-primary/10 border-primary/20">
-          <CardContent className="flex items-center gap-6 p-6">
-            <div className="flex-1 space-y-2">
-              <div className="flex items-center gap-3">
-                <StreakCounter streak={streak} />
-              </div>
-              <p className="text-sm text-muted-foreground">
-                {stats.progress === 100
-                  ? "🎉 ¡Felicitaciones! Completaste todo hoy"
-                  : stats.progress >= 70
-                  ? "💪 ¡Muy bien! Ya casi lo logras"
-                  : stats.progress >= 40
-                  ? "⚡ Sigue así, vas por buen camino"
-                  : "🚀 ¡Tú puedes! Completa tus tareas"
-                }
-              </p>
-            </div>
-          </CardContent>
-          <div className="absolute bottom-3 left-4 z-10">
-            <ProgressRing progress={stats.progress} size={60} strokeWidth={5} />
-          </div>
-        </Card>
+        <div className="flex items-center gap-3">
+          <StreakCounter streak={streak} />
+          <p className="text-sm text-muted-foreground">
+            {stats.progress === 100
+              ? "🎉 ¡Felicitaciones! Completaste todo hoy"
+              : stats.progress >= 70
+              ? "💪 ¡Muy bien! Ya casi lo logras"
+              : stats.progress >= 40
+              ? "⚡ Sigue así, vas por buen camino"
+              : "🚀 ¡Tú puedes! Completa tus tareas"
+            }
+          </p>
+        </div>
+      )}
+
+      {instances.length > 0 && (
+        <div className="fixed bottom-6 right-6 z-50">
+          <ProgressRing progress={stats.progress} size={70} strokeWidth={6} />
+        </div>
       )}
 
       {templatesLoading || instancesLoading ? (
