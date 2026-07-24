@@ -13,7 +13,13 @@ export async function GET(req: NextRequest) {
 
     const instances = await prisma.appObligationInstance.findMany({
       where,
-      include: { template: true },
+      include: {
+        template: true,
+        taskInstances: {
+          include: { task: true },
+          orderBy: { task: { sortOrder: "asc" } },
+        },
+      },
       orderBy: { createdAt: "asc" },
     })
 
@@ -25,8 +31,14 @@ export async function GET(req: NextRequest) {
       templateCategory: i.template.category,
       date: i.date,
       instanceNumber: i.instanceNumber,
-      completed: i.completed,
-      completedAt: i.completedAt,
+      tasks: i.taskInstances.map(ti => ({
+        id: ti.id,
+        taskId: ti.taskId,
+        taskName: ti.task.name,
+        taskEmoji: ti.task.emoji,
+        completed: ti.completed,
+        completedAt: ti.completedAt,
+      })),
     })))
   } catch {
     return NextResponse.json([])
@@ -45,6 +57,7 @@ export async function POST(req: NextRequest) {
 
     const template = await prisma.appObligationTemplate.findFirst({
       where: { id: templateId, userId: session.user.id },
+      include: { tasks: true },
     })
 
     if (!template) {
@@ -67,6 +80,14 @@ export async function POST(req: NextRequest) {
           templateId,
           date,
           instanceNumber: i,
+          taskInstances: {
+            create: template.tasks.map(task => ({
+              taskId: task.id,
+            })),
+          },
+        },
+        include: {
+          taskInstances: { include: { task: true } },
         },
       })
       newInstances.push(instance)
@@ -89,8 +110,8 @@ export async function PATCH(req: NextRequest) {
       return NextResponse.json({ error: "id required" }, { status: 400 })
     }
 
-    await prisma.appObligationInstance.updateMany({
-      where: { id, userId: session.user.id },
+    await prisma.appObligationTaskInstance.updateMany({
+      where: { id },
       data: {
         completed,
         completedAt: completed ? new Date() : null,

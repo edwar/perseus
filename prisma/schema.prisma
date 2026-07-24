@@ -238,10 +238,26 @@ model AppObligationTemplate {
   timesPerDay Int      @default(1)
   createdAt   DateTime @default(now())
 
+  tasks       AppObligationTask[]
   instances   AppObligationInstance[]
 
   @@index([userId])
   @@map("app_obligation_templates")
+}
+
+model AppObligationTask {
+  id          String   @id @default(cuid())
+  templateId  String
+  template    AppObligationTemplate @relation(fields: [templateId], references: [id], onDelete: Cascade)
+  name        String
+  emoji       String   @default("✓")
+  sortOrder   Int      @default(0)
+  createdAt   DateTime @default(now())
+
+  taskInstances AppObligationTaskInstance[]
+
+  @@index([templateId])
+  @@map("app_obligation_tasks")
 }
 
 model AppObligationInstance {
@@ -252,11 +268,26 @@ model AppObligationInstance {
   template       AppObligationTemplate @relation(fields: [templateId], references: [id], onDelete: Cascade)
   date           String    // "2026-08-15"
   instanceNumber Int       @default(1)
-  completed      Boolean   @default(false)
-  completedAt    DateTime?
   createdAt      DateTime  @default(now())
+
+  taskInstances  AppObligationTaskInstance[]
 
   @@unique([userId, templateId, date, instanceNumber])
   @@index([userId, date])
   @@map("app_obligation_instances")
+}
+
+model AppObligationTaskInstance {
+  id           String    @id @default(cuid())
+  instanceId   String
+  instance     AppObligationInstance @relation(fields: [instanceId], references: [id], onDelete: Cascade)
+  taskId       String
+  task         AppObligationTask @relation(fields: [taskId], references: [id], onDelete: Cascade)
+  completed    Boolean   @default(false)
+  completedAt  DateTime?
+  createdAt    DateTime  @default(now())
+
+  @@unique([instanceId, taskId])
+  @@index([instanceId])
+  @@map("app_obligation_task_instances")
 }

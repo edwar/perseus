@@ -11,6 +11,13 @@ async function apiFetch<T>(url: string, init?: RequestInit): Promise<T> {
   }
 }
 
+export interface ObligationTask {
+  id: string
+  name: string
+  emoji: string
+  sortOrder: number
+}
+
 export interface ObligationTemplate {
   id: string
   name: string
@@ -20,6 +27,16 @@ export interface ObligationTemplate {
   daysOfWeek: number[] | null
   timesPerDay: number
   createdAt?: string
+  tasks: ObligationTask[]
+}
+
+export interface TaskInstance {
+  id: string
+  taskId: string
+  taskName: string
+  taskEmoji: string
+  completed: boolean
+  completedAt: string | null
 }
 
 export interface ObligationInstance {
@@ -30,8 +47,7 @@ export interface ObligationInstance {
   templateCategory: string | null
   date: string
   instanceNumber: number
-  completed: boolean
-  completedAt: string | null
+  tasks: TaskInstance[]
 }
 
 export function useObligationTemplates() {
@@ -56,7 +72,7 @@ export function useObligationMutations() {
   const invalidateInstances = useCallback(() => qc.invalidateQueries({ queryKey: ["obligation-instances"] }), [qc])
 
   const addTemplate = useMutation({
-    mutationFn: (t: Omit<ObligationTemplate, "id">) =>
+    mutationFn: (t: Omit<ObligationTemplate, "id" | "tasks"> & { tasks?: { name: string; emoji?: string }[] }) =>
       apiFetch("/api/obligation-templates", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -90,7 +106,7 @@ export function useObligationMutations() {
     onSuccess: invalidateInstances,
   })
 
-  const toggleInstance = useMutation({
+  const toggleTask = useMutation({
     mutationFn: (params: { id: string; completed: boolean }) =>
       apiFetch("/api/obligation-instances", {
         method: "PATCH",
@@ -100,5 +116,5 @@ export function useObligationMutations() {
     onSuccess: invalidateInstances,
   })
 
-  return { addTemplate, updateTemplate, deleteTemplate, createInstances, toggleInstance }
+  return { addTemplate, updateTemplate, deleteTemplate, createInstances, toggleTask }
 }

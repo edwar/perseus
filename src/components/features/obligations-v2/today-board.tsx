@@ -28,7 +28,7 @@ export function TodayBoard({ onOpenSettings }: { onOpenSettings: () => void }) {
 
   const { data: templates = [] } = useObligationTemplates()
   const { data: instances = [] } = useObligationInstances(selectedDate)
-  const { createInstances, toggleInstance } = useObligationMutations()
+  const { createInstances, toggleTask } = useObligationMutations()
 
   const ensureInstances = useCallback(async () => {
     if (templates.length === 0) return
@@ -54,7 +54,7 @@ export function TodayBoard({ onOpenSettings }: { onOpenSettings: () => void }) {
         try {
           await createInstances.mutateAsync({ templateId: template.id, date: selectedDate })
         } catch {
-          // ignore errors to prevent crash loop
+          // ignore errors
         }
       }
     }
@@ -65,8 +65,19 @@ export function TodayBoard({ onOpenSettings }: { onOpenSettings: () => void }) {
   }, [ensureInstances])
 
   const stats = useMemo(() => {
-    const total = instances.length
-    const completed = instances.filter(i => i.completed).length
+    let total = 0
+    let completed = 0
+
+    for (const instance of instances) {
+      if (instance.tasks.length > 0) {
+        total += instance.tasks.length
+        completed += instance.tasks.filter(t => t.completed).length
+      } else {
+        total += 1
+        completed += 1
+      }
+    }
+
     const progress = total > 0 ? (completed / total) * 100 : 0
     return { total, completed, progress }
   }, [instances])
@@ -77,10 +88,16 @@ export function TodayBoard({ onOpenSettings }: { onOpenSettings: () => void }) {
 
     for (let i = 0; i < 365; i++) {
       const dateStr = formatDate(checkDate)
-      const dayInstances = instances.filter(i => i.date === dateStr)
+      const dayInstances = instances.filter(inst => inst.date === dateStr)
 
       if (dayInstances.length === 0 && i > 0) break
-      if (dayInstances.length > 0 && dayInstances.every(i => i.completed)) {
+
+      const allDone = dayInstances.every(inst => {
+        if (inst.tasks.length === 0) return true
+        return inst.tasks.every(t => t.completed)
+      })
+
+      if (dayInstances.length > 0 && allDone) {
         count++
       } else if (i > 0) {
         break
@@ -106,7 +123,7 @@ export function TodayBoard({ onOpenSettings }: { onOpenSettings: () => void }) {
             {isToday(selectedDate) ? "Hoy" : formatDisplayDate(selectedDate)}
           </h1>
           <p className="text-sm text-muted-foreground">
-            {stats.completed} de {stats.total} completadas
+            {stats.completed} de {stats.total} tareas completadas
           </p>
         </div>
         <Button variant="ghost" size="icon" onClick={onOpenSettings}>
@@ -167,7 +184,7 @@ export function TodayBoard({ onOpenSettings }: { onOpenSettings: () => void }) {
             <Sparkles className="h-12 w-12 text-amber-400 mb-4" />
             <h3 className="font-semibold mb-2">Sin tareas para hoy</h3>
             <p className="text-sm text-muted-foreground mb-4">
-              Crea plantillas para generar tareas automáticamente
+              Crea plantillas con tareas para generar automáticamente cada día
             </p>
             <Button onClick={onOpenSettings}>
               <Settings className="h-4 w-4 mr-2" /> Configurar plantillas
@@ -180,7 +197,9 @@ export function TodayBoard({ onOpenSettings }: { onOpenSettings: () => void }) {
             <TaskCard
               key={instance.id}
               instance={instance}
-              onToggle={(id, completed) => toggleInstance.mutate({ id, completed })}
+              onToggleTask={(taskInstanceId, completed) =>
+                toggleTask.mutate({ id: taskInstanceId, completed })
+              }
             />
           ))}
         </div>
