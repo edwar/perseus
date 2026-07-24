@@ -241,8 +241,8 @@ function TemplateForm({ initial, onSave, onClose, isPending }: {
                     type="button"
                     onClick={() => toggleDay(d.value)}
                     className={`h-10 w-10 rounded-lg text-xs font-medium transition-all ${daysOfWeek.includes(d.value)
-                      ? "bg-primary text-primary-foreground"
-                      : "bg-muted text-muted-foreground hover:bg-muted/80"
+                        ? "bg-primary text-primary-foreground"
+                        : "bg-muted text-muted-foreground hover:bg-muted/80"
                       }`}
                   >
                     {d.label}
@@ -252,14 +252,9 @@ function TemplateForm({ initial, onSave, onClose, isPending }: {
             </div>
           )}
 
-          <div className="block gap-2">
-            <Button type="button" variant="outline" className="w-full" onClick={onClose}>
-              Cancelar
-            </Button>
-            <Button type="submit" className="w-full" disabled={!name || isPending}>
-              {isPending ? "Guardando..." : initial ? "Guardar cambios" : "Crear plantilla"}
-            </Button>
-          </div>
+          <Button type="submit" className="w-full md:w-auto md:ml-auto" disabled={!name || isPending}>
+            {isPending ? "Guardando..." : initial ? "Guardar cambios" : "Crear plantilla"}
+          </Button>
         </form>
       </CardContent>
     </Card>
