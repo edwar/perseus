@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect, useState, useRef } from "react"
+import { useEffect, useRef } from "react"
 
 interface ConfettiProps {
   trigger: boolean
@@ -8,7 +8,6 @@ interface ConfettiProps {
 }
 
 interface Particle {
-  id: number
   x: number
   y: number
   vx: number
@@ -33,7 +32,6 @@ export function Confetti({ trigger, onComplete }: ConfettiProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const animationRef = useRef<number>(0)
   const particlesRef = useRef<Particle[]>([])
-  const [isActive, setIsActive] = useState(false)
 
   useEffect(() => {
     if (!trigger) return
@@ -50,13 +48,11 @@ export function Confetti({ trigger, onComplete }: ConfettiProps) {
     const centerX = canvas.width / 2
     const centerY = canvas.height / 3
 
-    particlesRef.current = Array.from({ length: 200 }, (_, i) => {
+    particlesRef.current = Array.from({ length: 200 }, () => {
       const angle = random(0, Math.PI * 2)
       const velocity = random(8, 25)
-      const hue = random(0, 360)
 
       return {
-        id: i,
         x: centerX + random(-50, 50),
         y: centerY + random(-30, 30),
         vx: Math.cos(angle) * velocity + random(-3, 3),
@@ -72,17 +68,17 @@ export function Confetti({ trigger, onComplete }: ConfettiProps) {
       }
     })
 
-    setIsActive(true)
-    let startTime = Date.now()
+    const startTime = Date.now()
+    let running = true
 
     function animate() {
-      if (!ctx || !canvas) return
+      if (!running || !ctx || !canvas) return
 
       ctx.clearRect(0, 0, canvas.width, canvas.height)
 
       const elapsed = Date.now() - startTime
       if (elapsed > 3000) {
-        setIsActive(false)
+        ctx.clearRect(0, 0, canvas.width, canvas.height)
         onComplete?.()
         return
       }
@@ -125,18 +121,18 @@ export function Confetti({ trigger, onComplete }: ConfettiProps) {
     animationRef.current = requestAnimationFrame(animate)
 
     return () => {
+      running = false
       if (animationRef.current) {
         cancelAnimationFrame(animationRef.current)
       }
     }
   }, [trigger, onComplete])
 
-  if (!isActive) return null
-
   return (
     <canvas
       ref={canvasRef}
       className="fixed inset-0 pointer-events-none z-50"
+      style={{ display: trigger ? "block" : "none" }}
     />
   )
 }
