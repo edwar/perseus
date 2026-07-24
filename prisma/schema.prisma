@@ -27,6 +27,8 @@ model User {
   investments      AppInvestment[]
   obligations      AppObligation[]
   obligationChecks AppObligationCheck[]
+  obligationTemplates AppObligationTemplate[]
+  obligationInstances AppObligationInstance[]
   categoryPatterns AppCategoryPattern[]
 
   @@map("user")
@@ -220,4 +222,41 @@ model AppCategoryPattern {
   @@unique([userId, pattern, category])
   @@index([userId])
   @@map("app_category_patterns")
+}
+
+// ─── Gamified Obligations (v2) ─────────────────────────────────────
+
+model AppObligationTemplate {
+  id          String   @id @default(cuid())
+  userId      String
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  name        String
+  emoji       String   @default("📋")
+  category    String?
+  frequency   String   @default("daily") // daily | weekly | monthly | once
+  daysOfWeek  Json?    // [1,3,5] → Lun, Mié, Vie (0=Dom, 6=Sáb)
+  timesPerDay Int      @default(1)
+  createdAt   DateTime @default(now())
+
+  instances   AppObligationInstance[]
+
+  @@index([userId])
+  @@map("app_obligation_templates")
+}
+
+model AppObligationInstance {
+  id             String    @id @default(cuid())
+  userId         String
+  user           User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  templateId     String
+  template       AppObligationTemplate @relation(fields: [templateId], references: [id], onDelete: Cascade)
+  date           String    // "2026-08-15"
+  instanceNumber Int       @default(1)
+  completed      Boolean   @default(false)
+  completedAt    DateTime?
+  createdAt      DateTime  @default(now())
+
+  @@unique([userId, templateId, date, instanceNumber])
+  @@index([userId, date])
+  @@map("app_obligation_instances")
 }
