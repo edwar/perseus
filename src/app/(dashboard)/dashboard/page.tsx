@@ -51,7 +51,7 @@ export default function DashboardPage() {
       .map(([month, d]) => ({ month, ...d }))
   }, [transactions])
 
-  const recentTransactions = useMemo(
+  const allTransactions = useMemo(
     () => [...transactions]
       .sort((a, b) => b.date.localeCompare(a.date))
       .map((t) => ({
@@ -66,11 +66,14 @@ export default function DashboardPage() {
     [transactions]
   )
 
+  const recentTransactions = allTransactions.slice(0, 20)
+
   return (
     <DashboardClient
       totalBalance={totalBalance}
       monthlyIncome={monthlyIncome}
       monthlyExpenses={monthlyExpenses}
+      allTransactions={allTransactions}
       recentTransactions={recentTransactions}
       spendingByCategory={spendingByCategory}
       monthlyChart={monthlyChart}

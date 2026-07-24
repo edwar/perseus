@@ -15,11 +15,22 @@ import { GamificationStats } from "@/components/features/dashboard/gamification-
 
 const SpendingPie = dynamic(() => import("./charts").then((m) => m.SpendingPie), { ssr: false })
 const IncomeBar = dynamic(() => import("./charts").then((m) => m.IncomeBar), { ssr: false })
+const DailyExpensesChart = dynamic(() => import("./charts").then((m) => m.DailyExpensesChart), { ssr: false })
+const TopExpensesChart = dynamic(() => import("./charts").then((m) => m.TopExpensesChart), { ssr: false })
 
 interface DashboardClientProps {
   totalBalance: number
   monthlyIncome: number
   monthlyExpenses: number
+  allTransactions: Array<{
+    id: string
+    amount: number
+    description: string
+    type: string
+    date: string
+    category: string | null
+    categoryColor: string | null
+  }>
   recentTransactions: Array<{
     id: string
     amount: number
@@ -37,6 +48,7 @@ export function DashboardClient({
   totalBalance,
   monthlyIncome,
   monthlyExpenses,
+  allTransactions,
   recentTransactions,
   spendingByCategory,
   monthlyChart,
@@ -171,12 +183,15 @@ export function DashboardClient({
 
       <GamificationStats />
 
-      {spendingByCategory.length > 0 && (
-        <div className="grid gap-5 sm:grid-cols-2">
-          <SpendingPie data={spendingByCategory} />
-          <IncomeBar data={monthlyChart} />
-        </div>
-      )}
+      <div className="grid gap-5 sm:grid-cols-2">
+        <SpendingPie data={spendingByCategory} />
+        <IncomeBar data={monthlyChart} />
+      </div>
+
+      <div className="grid gap-5 sm:grid-cols-2">
+        <DailyExpensesChart transactions={allTransactions} />
+        <TopExpensesChart transactions={allTransactions} />
+      </div>
 
       <Card className="overflow-hidden rounded-2xl border-0 shadow-lg">
         <div className="border-b px-6 py-4">
