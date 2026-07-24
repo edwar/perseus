@@ -1,6 +1,6 @@
 "use client"
 
-import { useMemo, useCallback, useState } from "react"
+import { useMemo, useCallback, useState, useEffect } from "react"
 import { Calendar, ChevronLeft, ChevronRight, Settings, Sparkles } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
@@ -31,6 +31,8 @@ export function TodayBoard({ onOpenSettings }: { onOpenSettings: () => void }) {
   const { createInstances, toggleInstance } = useObligationMutations()
 
   const ensureInstances = useCallback(async () => {
+    if (templates.length === 0) return
+
     const dayOfWeek = new Date(selectedDate + "T12:00:00").getDay()
 
     for (const template of templates) {
@@ -49,15 +51,14 @@ export function TodayBoard({ onOpenSettings }: { onOpenSettings: () => void }) {
       }
 
       if (shouldCreate) {
-        const hasInstances = instances.some(i => i.templateId === template.id)
-        if (!hasInstances) {
-          await createInstances.mutateAsync({ templateId: template.id, date: selectedDate })
-        }
+        await createInstances.mutateAsync({ templateId: template.id, date: selectedDate })
       }
     }
-  }, [templates, instances, selectedDate, createInstances])
+  }, [templates, selectedDate, createInstances])
 
-  useMemo(() => { ensureInstances() }, [ensureInstances])
+  useEffect(() => {
+    ensureInstances()
+  }, [ensureInstances])
 
   const stats = useMemo(() => {
     const total = instances.length
