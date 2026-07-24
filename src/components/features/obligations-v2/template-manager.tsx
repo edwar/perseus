@@ -193,7 +193,7 @@ function TemplateForm({ initial, onSave, onClose, isPending }: {
             <div className="space-y-1">
               <Label>Categoría</Label>
               <Select value={category} onValueChange={(v) => setCategory(v ?? "")}>
-                <SelectTrigger>
+                <SelectTrigger className="w-full">
                   <SelectValue placeholder="Opcional" />
                 </SelectTrigger>
                 <SelectContent>
@@ -209,7 +209,7 @@ function TemplateForm({ initial, onSave, onClose, isPending }: {
             <div className="space-y-1">
               <Label>Frecuencia</Label>
               <Select value={frequency} onValueChange={(v) => setFrequency(v as ObligationTemplate["frequency"])}>
-                <SelectTrigger>
+                <SelectTrigger className="w-full">
                   <SelectValue>{(v) => OBLIGATION_FREQ_LABELS[v] ?? v}</SelectValue>
                 </SelectTrigger>
                 <SelectContent>
@@ -223,7 +223,7 @@ function TemplateForm({ initial, onSave, onClose, isPending }: {
             <div className="space-y-1">
               <Label>Veces por día</Label>
               <Select value={String(timesPerDay)} onValueChange={(v) => setTimesPerDay(Number(v))}>
-                <SelectTrigger>
+                <SelectTrigger className="w-full">
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
