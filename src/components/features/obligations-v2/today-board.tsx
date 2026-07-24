@@ -116,8 +116,27 @@ export function TodayBoard({ onOpenSettings }: { onOpenSettings: () => void }) {
 
   const availableTemplates = useMemo(() => {
     const activeIds = new Set(instances.map(i => i.templateId))
-    return templates.filter(t => !activeIds.has(t.id))
-  }, [templates, instances])
+    const dayOfWeek = new Date(selectedDate + "T12:00:00").getDay()
+    const selectedDay = new Date(selectedDate + "T12:00:00").getDate()
+
+    return templates
+      .filter(t => !activeIds.has(t.id))
+      .map(t => {
+        let recommended = false
+        if (t.frequency === "daily") {
+          recommended = true
+        } else if (t.frequency === "weekly" && t.daysOfWeek) {
+          recommended = t.daysOfWeek.includes(dayOfWeek)
+        } else if (t.frequency === "monthly" && t.createdAt) {
+          const templateDay = new Date(t.createdAt).getDate()
+          recommended = templateDay === selectedDay
+        } else if (t.frequency === "once" && t.createdAt) {
+          recommended = t.createdAt.split("T")[0] === selectedDate
+        }
+        return { ...t, recommended }
+      })
+      .sort((a, b) => (b.recommended ? 1 : 0) - (a.recommended ? 1 : 0))
+  }, [templates, instances, selectedDate])
 
   const navigateDate = (delta: number) => {
     const date = new Date(selectedDate + "T12:00:00")
@@ -253,7 +272,14 @@ export function TodayBoard({ onOpenSettings }: { onOpenSettings: () => void }) {
                       >
                         <span className="text-xl">{template.emoji}</span>
                         <div className="flex-1">
-                          <p className="font-medium text-sm">{template.name}</p>
+                          <div className="flex items-center gap-2">
+                            <p className="font-medium text-sm">{template.name}</p>
+                            {template.recommended && (
+                              <span className="text-[10px] font-medium bg-primary/10 text-primary px-1.5 py-0.5 rounded-full">
+                                Recomendado
+                              </span>
+                            )}
+                          </div>
                           <p className="text-xs text-muted-foreground">
                             {template.tasks.length} tareas
                           </p>
