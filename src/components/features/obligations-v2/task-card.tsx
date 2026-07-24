@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useCallback, useEffect } from "react"
+import { useState, useCallback, useEffect, useRef } from "react"
 import { Check, ChevronDown, ChevronUp, Trash2 } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { Confetti } from "@/components/ui/confetti"
@@ -15,16 +15,18 @@ interface TaskCardProps {
 export function TaskCard({ instance, onToggleTask, onDelete }: TaskCardProps) {
   const [expanded, setExpanded] = useState(instance.tasks.length === 0)
   const [showConfetti, setShowConfetti] = useState(false)
+  const prevCompletedRef = useRef(0)
 
   const completedCount = instance.tasks.filter(t => t.completed).length
   const totalCount = instance.tasks.length
   const allCompleted = totalCount > 0 && completedCount === totalCount
 
   useEffect(() => {
-    if (allCompleted && totalCount > 0) {
+    if (completedCount === totalCount && totalCount > 0 && prevCompletedRef.current < totalCount) {
       setShowConfetti(true)
     }
-  }, [allCompleted, totalCount])
+    prevCompletedRef.current = completedCount
+  }, [completedCount, totalCount])
 
   return (
     <>
