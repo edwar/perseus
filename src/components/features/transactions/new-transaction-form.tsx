@@ -1,5 +1,5 @@
 import { useState, Suspense, lazy } from "react"
-import { ArrowLeft, ArrowUp, ArrowDown, ScanLine, PenLine, Repeat, Plus, X } from "lucide-react"
+import { ArrowLeft, ArrowUp, ArrowDown, ScanLine, PenLine, Repeat, Plus, X, Sparkles } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { FREQ_LABELS } from "@/lib/constants"
 import { Button } from "@/components/ui/button"
@@ -9,6 +9,7 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@/components/ui/select"
 import { useTransactionMutations, useBudgets, useRecurring, useDebts, useDebtMutations } from "@/hooks/useData"
+import { useCategorySuggestion } from "@/hooks/use-category-suggestion"
 import type { ReceiptData } from "@/lib/ia"
 
 const Scanner = lazy(() => import("@/components/scanner").then((m) => ({ default: m.Scanner })) as Promise<{ default: React.ComponentType<{ mode: "receipt"; onResult: (data: ReceiptData) => void }> }>)
@@ -36,6 +37,8 @@ export function NewTransactionForm({ onClose }: NewTransactionFormProps) {
   const [dayOfMonth, setDayOfMonth] = useState("")
   const [debtId, setDebtId] = useState("")
 
+  const { suggestions } = useCategorySuggestion(description)
+
   async function handleSave() {
     const txAmount = Number(amount) || 0
     await add.mutateAsync({
@@ -45,6 +48,15 @@ export function NewTransactionForm({ onClose }: NewTransactionFormProps) {
       category,
       date: new Date().toISOString().split("T")[0],
     })
+
+    if (category && description) {
+      fetch("/api/category-patterns", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ pattern: description, category }),
+      }).catch(() => {})
+    }
+
     if (debtId) {
       const debt = (debts ?? []).find((d) => d.id === debtId)
       if (debt) {
@@ -289,6 +301,27 @@ export function NewTransactionForm({ onClose }: NewTransactionFormProps) {
                     ))}
                   </SelectContent>
                 </Select>
+
+                {suggestions.length > 0 && !category && (
+                  <div className="flex flex-wrap gap-1.5">
+                    <span className="text-[10px] text-muted-foreground flex items-center gap-1">
+                      <Sparkles className="h-3 w-3" /> Sugerido:
+                    </span>
+                    {suggestions.map((s) => (
+                      <button
+                        key={s.category}
+                        type="button"
+                        onClick={() => setCategory(s.category)}
+                        className="inline-flex items-center gap-1 rounded-full border border-primary/30 bg-primary/5 px-2 py-0.5 text-xs text-primary transition-colors hover:bg-primary/10"
+                      >
+                        {s.category}
+                        <span className="text-[9px] text-muted-foreground">
+                          {Math.round(s.confidence * 100)}%
+                        </span>
+                      </button>
+                    ))}
+                  </div>
+                )}
               </div>
             )}
 

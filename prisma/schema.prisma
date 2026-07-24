@@ -27,6 +27,7 @@ model User {
   investments      AppInvestment[]
   obligations      AppObligation[]
   obligationChecks AppObligationCheck[]
+  categoryPatterns AppCategoryPattern[]
 
   @@map("user")
 }
@@ -203,4 +204,20 @@ model AppObligationCheck {
 
   @@unique([userId, month, obligationId])
   @@map("app_obligation_checks")
+}
+
+model AppCategoryPattern {
+  id         String   @id @default(cuid())
+  userId     String
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  pattern    String   // keyword or description fragment
+  category   String
+  confidence Float    @default(0.5) // 0-1, increases with usage
+  count      Int      @default(1)   // how many times this pattern matched
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  @@unique([userId, pattern, category])
+  @@index([userId])
+  @@map("app_category_patterns")
 }
