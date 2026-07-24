@@ -1,7 +1,7 @@
 "use client"
 
 import { useMemo, useCallback, useState, useEffect, useRef } from "react"
-import { Calendar, ChevronLeft, ChevronRight, Settings, Sparkles } from "lucide-react"
+import { Calendar, ChevronLeft, ChevronRight, Settings, Sparkles, Plus } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { ProgressRing } from "./progress-ring"
@@ -25,10 +25,11 @@ function isToday(dateStr: string): boolean {
 export function TodayBoard({ onOpenSettings }: { onOpenSettings: () => void }) {
   const today = useMemo(() => formatDate(new Date()), [])
   const [selectedDate, setSelectedDate] = useState(today)
+  const [showActivateMenu, setShowActivateMenu] = useState(false)
 
   const { data: templates = [] } = useObligationTemplates()
   const { data: instances = [] } = useObligationInstances(selectedDate)
-  const { createInstances, toggleTask } = useObligationMutations()
+  const { createInstances, toggleTask, deleteInstance } = useObligationMutations()
   const ensuredRef = useRef<string>("")
 
   const ensureInstances = useCallback(async () => {
@@ -113,10 +114,32 @@ export function TodayBoard({ onOpenSettings }: { onOpenSettings: () => void }) {
     return count
   }, [instances])
 
+  const availableTemplates = useMemo(() => {
+    const activeIds = new Set(instances.map(i => i.templateId))
+    return templates.filter(t => !activeIds.has(t.id))
+  }, [templates, instances])
+
   const navigateDate = (delta: number) => {
     const date = new Date(selectedDate + "T12:00:00")
     date.setDate(date.getDate() + delta)
     setSelectedDate(formatDate(date))
+  }
+
+  async function activateTemplate(templateId: string) {
+    try {
+      await createInstances.mutateAsync({ templateId, date: selectedDate })
+    } catch {
+      // ignore
+    }
+    setShowActivateMenu(false)
+  }
+
+  async function deleteInstanceById(instanceId: string) {
+    try {
+      await deleteInstance.mutateAsync(instanceId)
+    } catch {
+      // ignore
+    }
   }
 
   return (
@@ -182,7 +205,7 @@ export function TodayBoard({ onOpenSettings }: { onOpenSettings: () => void }) {
         </Card>
       )}
 
-      {instances.length === 0 ? (
+      {instances.length === 0 && templates.length === 0 ? (
         <Card className="border-dashed">
           <CardContent className="flex flex-col items-center justify-center py-12 text-center">
             <Sparkles className="h-12 w-12 text-amber-400 mb-4" />
@@ -204,8 +227,44 @@ export function TodayBoard({ onOpenSettings }: { onOpenSettings: () => void }) {
               onToggleTask={(taskInstanceId, completed) =>
                 toggleTask.mutate({ id: taskInstanceId, completed })
               }
+              onDelete={deleteInstanceById}
             />
           ))}
+
+          {availableTemplates.length > 0 && (
+            <div className="relative">
+              <Button
+                variant="outline"
+                className="w-full border-dashed"
+                onClick={() => setShowActivateMenu(!showActivateMenu)}
+              >
+                <Plus className="h-4 w-4 mr-2" />
+                Activar plantilla
+              </Button>
+
+              {showActivateMenu && (
+                <Card className="absolute top-full left-0 right-0 mt-2 z-10 shadow-lg">
+                  <CardContent className="p-2">
+                    {availableTemplates.map((template) => (
+                      <button
+                        key={template.id}
+                        onClick={() => activateTemplate(template.id)}
+                        className="w-full flex items-center gap-3 p-3 rounded-lg text-left hover:bg-muted transition-colors"
+                      >
+                        <span className="text-xl">{template.emoji}</span>
+                        <div className="flex-1">
+                          <p className="font-medium text-sm">{template.name}</p>
+                          <p className="text-xs text-muted-foreground">
+                            {template.tasks.length} tareas
+                          </p>
+                        </div>
+                      </button>
+                    ))}
+                  </CardContent>
+                </Card>
+              )}
+            </div>
+          )}
         </div>
       )}
     </div>

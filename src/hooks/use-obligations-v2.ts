@@ -116,5 +116,10 @@ export function useObligationMutations() {
     onSuccess: invalidateInstances,
   })
 
-  return { addTemplate, updateTemplate, deleteTemplate, createInstances, toggleTask }
+  const deleteInstance = useMutation({
+    mutationFn: (id: string) => apiFetch(`/api/obligation-instances?id=${id}`, { method: "DELETE" }),
+    onSuccess: invalidateInstances,
+  })
+
+  return { addTemplate, updateTemplate, deleteTemplate, createInstances, toggleTask, deleteInstance }
 }

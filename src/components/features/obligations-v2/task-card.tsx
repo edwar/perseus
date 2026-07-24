@@ -1,16 +1,17 @@
 "use client"
 
 import { useState, useCallback } from "react"
-import { Check, ChevronDown, ChevronUp } from "lucide-react"
+import { Check, ChevronDown, ChevronUp, Trash2 } from "lucide-react"
 import { cn } from "@/lib/utils"
 import type { ObligationInstance, TaskInstance } from "@/hooks/use-obligations-v2"
 
 interface TaskCardProps {
   instance: ObligationInstance
   onToggleTask: (taskInstanceId: string, completed: boolean) => void
+  onDelete: (instanceId: string) => void
 }
 
-export function TaskCard({ instance, onToggleTask }: TaskCardProps) {
+export function TaskCard({ instance, onToggleTask, onDelete }: TaskCardProps) {
   const [expanded, setExpanded] = useState(instance.tasks.length === 0)
 
   const completedCount = instance.tasks.filter(t => t.completed).length
@@ -22,49 +23,58 @@ export function TaskCard({ instance, onToggleTask }: TaskCardProps) {
       "rounded-2xl border-2 transition-all duration-300 overflow-hidden",
       allCompleted ? "border-emerald-500/30 bg-emerald-500/5" : "border-border"
     )}>
-      <button
-        onClick={() => setExpanded(!expanded)}
-        className="w-full flex items-center gap-4 p-4 text-left"
-      >
-        <div className={cn(
-          "flex h-10 w-10 shrink-0 items-center justify-center rounded-xl transition-all duration-300",
-          allCompleted
-            ? "bg-emerald-500 text-white shadow-lg shadow-emerald-500/25"
-            : "bg-muted"
-        )}>
-          {allCompleted ? (
-            <Check className="h-5 w-5" />
-          ) : (
-            <span className="text-lg">{instance.templateEmoji}</span>
-          )}
-        </div>
-
-        <div className="flex-1 min-w-0">
-          <p className={cn(
-            "font-medium",
-            allCompleted && "text-muted-foreground line-through"
+      <div className="flex items-center">
+        <button
+          onClick={() => setExpanded(!expanded)}
+          className="flex-1 flex items-center gap-4 p-4 text-left"
+        >
+          <div className={cn(
+            "flex h-10 w-10 shrink-0 items-center justify-center rounded-xl transition-all duration-300",
+            allCompleted
+              ? "bg-emerald-500 text-white shadow-lg shadow-emerald-500/25"
+              : "bg-muted"
           )}>
-            {instance.templateName}
-          </p>
-          {totalCount > 0 && (
-            <p className="text-xs text-muted-foreground">
-              {completedCount}/{totalCount} tareas
-            </p>
-          )}
-        </div>
-
-        {totalCount > 0 && (
-          <div className="flex items-center gap-2">
-            <div className="h-2 w-20 rounded-full bg-muted overflow-hidden">
-              <div
-                className="h-full bg-emerald-500 transition-all duration-500"
-                style={{ width: `${(completedCount / totalCount) * 100}%` }}
-              />
-            </div>
-            {expanded ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
+            {allCompleted ? (
+              <Check className="h-5 w-5" />
+            ) : (
+              <span className="text-lg">{instance.templateEmoji}</span>
+            )}
           </div>
-        )}
-      </button>
+
+          <div className="flex-1 min-w-0">
+            <p className={cn(
+              "font-medium",
+              allCompleted && "text-muted-foreground line-through"
+            )}>
+              {instance.templateName}
+            </p>
+            {totalCount > 0 && (
+              <p className="text-xs text-muted-foreground">
+                {completedCount}/{totalCount} tareas
+              </p>
+            )}
+          </div>
+
+          {totalCount > 0 && (
+            <div className="flex items-center gap-2">
+              <div className="h-2 w-20 rounded-full bg-muted overflow-hidden">
+                <div
+                  className="h-full bg-emerald-500 transition-all duration-500"
+                  style={{ width: `${(completedCount / totalCount) * 100}%` }}
+                />
+              </div>
+              {expanded ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
+            </div>
+          )}
+        </button>
+
+        <button
+          onClick={() => onDelete(instance.id)}
+          className="p-2 mr-2 text-muted-foreground hover:text-red-500 transition-colors rounded-lg hover:bg-red-50"
+        >
+          <Trash2 className="h-4 w-4" />
+        </button>
+      </div>
 
       {expanded && instance.tasks.length > 0 && (
         <div className="border-t border-border/50 px-4 pb-4 space-y-2">
