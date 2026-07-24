@@ -1,6 +1,5 @@
 "use client"
 
-import dynamic from "next/dynamic"
 import { useEffect, useState } from "react"
 import { cn, formatCurrency } from "@/lib/utils"
 import { ArrowUpRight, ArrowDownRight, ArrowLeftRight, Pencil, Trash2, Wallet, ChevronLeft, ChevronRight } from "lucide-react"
@@ -12,11 +11,7 @@ import { Input } from "@/components/ui/input"
 import { useTransactionStore } from "@/store/transaction-store"
 import { ConfirmDialog } from "@/components/ui/confirm-dialog"
 import { GamificationStats } from "@/components/features/dashboard/gamification-stats"
-
-const SpendingPie = dynamic(() => import("./charts").then((m) => m.SpendingPie), { ssr: false })
-const IncomeBar = dynamic(() => import("./charts").then((m) => m.IncomeBar), { ssr: false })
-const DailyExpensesChart = dynamic(() => import("./charts").then((m) => m.DailyExpensesChart), { ssr: false })
-const TopExpensesChart = dynamic(() => import("./charts").then((m) => m.TopExpensesChart), { ssr: false })
+import { SpendingPie, IncomeBar, DailyExpensesChart, TopExpensesChart } from "./charts"
 
 interface DashboardClientProps {
   totalBalance: number
