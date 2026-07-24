@@ -170,17 +170,17 @@ export function TodayBoard({ onOpenSettings }: { onOpenSettings: () => void }) {
             {stats.progress === 100
               ? "🎉 ¡Felicitaciones! Completaste todo hoy"
               : stats.progress >= 70
-              ? "💪 ¡Muy bien! Ya casi lo logras"
-              : stats.progress >= 40
-              ? "⚡ Sigue así, vas por buen camino"
-              : "🚀 ¡Tú puedes! Completa tus tareas"
+                ? "💪 ¡Muy bien! Ya casi lo logras"
+                : stats.progress >= 40
+                  ? "⚡ Sigue así, vas por buen camino"
+                  : "🚀 ¡Tú puedes! Completa tus tareas"
             }
           </p>
         </div>
       )}
 
       {instances.length > 0 && (
-        <div className="fixed bottom-6 right-6 z-50">
+        <div className="fixed -bottom-5 right-2 z-50">
           <ProgressRing progress={stats.progress} size={70} strokeWidth={6} />
         </div>
       )}

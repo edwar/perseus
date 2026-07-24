@@ -64,16 +64,31 @@ export function TaskCard({ instance, onToggleTask, onDelete }: TaskCardProps) {
           </div>
 
           <div className="flex-1 min-w-0">
-            <p className={cn(
-              "font-medium",
-              allCompleted && "text-muted-foreground line-through"
-            )}>
-              {instance.templateName}
-            </p>
-            {totalCount > 0 && (
-              <p className="text-xs text-muted-foreground">
-                {completedCount}/{totalCount} tareas
+            <div className="flex items-center gap-2">
+              <p className={cn(
+                "font-medium",
+                allCompleted && "text-muted-foreground line-through"
+              )}>
+                {instance.templateName}
               </p>
+              {totalCount > 0 && (
+                <span className="text-xs text-muted-foreground font-medium">
+                  {Math.round((completedCount / totalCount) * 100)}%
+                </span>
+              )}
+            </div>
+            {totalCount > 0 && (
+              <div className="flex items-center gap-2 mt-1">
+                <p className="text-xs text-muted-foreground">
+                  {completedCount}/{totalCount} tareas
+                </p>
+                <div className="h-1.5 flex-1 max-w-[100px] rounded-full bg-muted overflow-hidden">
+                  <div
+                    className="h-full bg-emerald-500 transition-all duration-500"
+                    style={{ width: `${(completedCount / totalCount) * 100}%` }}
+                  />
+                </div>
+              </div>
             )}
           </div>
 
@@ -81,20 +96,6 @@ export function TaskCard({ instance, onToggleTask, onDelete }: TaskCardProps) {
             {expanded ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
           </div>
         </button>
-
-        {totalCount > 0 && (
-          <div className="absolute bottom-2 left-4 flex items-center gap-2 z-10">
-            <div className="h-1.5 w-16 rounded-full bg-muted overflow-hidden">
-              <div
-                className="h-full bg-emerald-500 transition-all duration-500"
-                style={{ width: `${(completedCount / totalCount) * 100}%` }}
-              />
-            </div>
-            <span className="text-[10px] text-muted-foreground font-medium">
-              {Math.round((completedCount / totalCount) * 100)}%
-            </span>
-          </div>
-        )}
 
         <button
           onClick={() => setConfirmDelete(true)}
