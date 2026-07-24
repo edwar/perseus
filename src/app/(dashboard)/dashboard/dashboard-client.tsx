@@ -11,6 +11,7 @@ import { CurrencyInput } from "@/components/ui/currency-input"
 import { Input } from "@/components/ui/input"
 import { useTransactionStore } from "@/store/transaction-store"
 import { ConfirmDialog } from "@/components/ui/confirm-dialog"
+import { GamificationStats } from "@/components/features/dashboard/gamification-stats"
 
 const SpendingPie = dynamic(() => import("./charts").then((m) => m.SpendingPie), { ssr: false })
 const IncomeBar = dynamic(() => import("./charts").then((m) => m.IncomeBar), { ssr: false })
@@ -137,6 +138,8 @@ export function DashboardClient({
           </div>
         </div>
       </div>
+
+      <GamificationStats />
 
       {spendingByCategory.length > 0 && (
         <div className="grid gap-5 sm:grid-cols-2">
