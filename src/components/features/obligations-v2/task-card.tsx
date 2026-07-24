@@ -17,6 +17,7 @@ export function TaskCard({ instance, onToggleTask, onDelete }: TaskCardProps) {
   const [expanded, setExpanded] = useState(instance.tasks.length === 0)
   const [showConfetti, setShowConfetti] = useState(false)
   const [confirmDelete, setConfirmDelete] = useState(false)
+  const [deleting, setDeleting] = useState(false)
   const prevCompletedRef = useRef(0)
 
   const completedCount = instance.tasks.filter(t => t.completed).length
@@ -30,12 +31,19 @@ export function TaskCard({ instance, onToggleTask, onDelete }: TaskCardProps) {
     prevCompletedRef.current = completedCount
   }, [completedCount, totalCount])
 
+  function handleConfirmDelete() {
+    setConfirmDelete(false)
+    setDeleting(true)
+    setTimeout(() => onDelete(instance.id), 500)
+  }
+
   return (
     <>
       <Confetti trigger={showConfetti} onComplete={() => setShowConfetti(false)} />
       <div className={cn(
         "rounded-2xl border-2 transition-all duration-300 overflow-hidden",
-        allCompleted ? "border-emerald-500/30 bg-emerald-500/5" : "border-border"
+        allCompleted ? "border-emerald-500/30 bg-emerald-500/5" : "border-border",
+        deleting && "opacity-0 scale-95 -translate-x-full max-h-0 mb-0 border-0 p-0"
       )}>
       <div className="flex items-center">
         <button
@@ -103,7 +111,7 @@ export function TaskCard({ instance, onToggleTask, onDelete }: TaskCardProps) {
       open={confirmDelete}
       title="Eliminar obligación"
       message={`¿Eliminar "${instance.templateName}" de este día?`}
-      onConfirm={() => { onDelete(instance.id); setConfirmDelete(false) }}
+      onConfirm={handleConfirmDelete}
       onCancel={() => setConfirmDelete(false)}
     />
     </>
