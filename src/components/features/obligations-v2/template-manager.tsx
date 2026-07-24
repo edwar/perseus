@@ -210,7 +210,7 @@ function TemplateForm({ initial, onSave, onClose, isPending }: {
               <Label>Frecuencia</Label>
               <Select value={frequency} onValueChange={(v) => setFrequency(v as ObligationTemplate["frequency"])}>
                 <SelectTrigger>
-                  <SelectValue />
+                  <SelectValue>{(v) => OBLIGATION_FREQ_LABELS[v] ?? v}</SelectValue>
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="daily">Diario</SelectItem>
