@@ -57,11 +57,11 @@ export function Sidebar() {
         onClick={() => setSidebarOpen(false)}
       />
 
-      {/* Sidebar: mobile=overlay, desktop=fixed */}
+      {/* Sidebar: mobile=overlay, desktop=sticky */}
       <aside
         className={cn(
           "fixed left-0 top-0 z-40 flex h-screen flex-col border-r border-border/50 bg-sidebar-background transition-all duration-300",
-          "md:static md:z-auto md:translate-x-0",
+          "md:sticky md:z-auto md:translate-x-0",
           sidebarOpen
             ? "w-64 translate-x-0"
             : "-translate-x-full md:w-16"
