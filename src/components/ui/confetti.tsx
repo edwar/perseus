@@ -15,7 +15,7 @@ export function Confetti({ trigger, onComplete }: ConfettiProps) {
   useEffect(() => {
     if (!trigger) return
 
-    const newPieces = Array.from({ length: 30 }, (_, i) => ({
+    const newPieces = Array.from({ length: 80 }, (_, i) => ({
       id: Date.now() + i,
       x: Math.random() * 100,
       color: COLORS[Math.floor(Math.random() * COLORS.length)],
@@ -28,7 +28,7 @@ export function Confetti({ trigger, onComplete }: ConfettiProps) {
     const timer = setTimeout(() => {
       setPieces([])
       onComplete?.()
-    }, 1500)
+    }, 2000)
 
     return () => clearTimeout(timer)
   }, [trigger, onComplete])
