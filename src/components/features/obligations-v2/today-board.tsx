@@ -51,7 +51,11 @@ export function TodayBoard({ onOpenSettings }: { onOpenSettings: () => void }) {
       }
 
       if (shouldCreate) {
-        await createInstances.mutateAsync({ templateId: template.id, date: selectedDate })
+        try {
+          await createInstances.mutateAsync({ templateId: template.id, date: selectedDate })
+        } catch {
+          // ignore errors to prevent crash loop
+        }
       }
     }
   }, [templates, selectedDate, createInstances])

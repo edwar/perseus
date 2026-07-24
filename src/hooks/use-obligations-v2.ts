@@ -2,9 +2,13 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query"
 import { useCallback } from "react"
 
 async function apiFetch<T>(url: string, init?: RequestInit): Promise<T> {
-  const res = await fetch(url, init)
-  if (!res.ok) throw new Error(`HTTP ${res.status}`)
-  return res.json()
+  try {
+    const res = await fetch(url, init)
+    if (!res.ok) throw new Error(`HTTP ${res.status}`)
+    return res.json()
+  } catch {
+    throw new Error("Network error")
+  }
 }
 
 export interface ObligationTemplate {
