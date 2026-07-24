@@ -2,6 +2,7 @@
 
 import { useState } from "react"
 import { Plus, X, Pencil, Trash2, Dumbbell, BookOpen, ShoppingBag, Home, Heart, Briefcase, Sparkles } from "lucide-react"
+import { OBLIGATION_FREQ_LABELS } from "@/lib/constants"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
@@ -84,7 +85,7 @@ export function TemplateManager({ onClose }: TemplateManagerProps) {
               <div className="flex-1 min-w-0">
                 <p className="font-medium">{t.name}</p>
                 <p className="text-xs text-muted-foreground">
-                  {t.frequency === "daily" ? "Diario" : t.frequency === "weekly" ? "Semanal" : t.frequency === "monthly" ? "Mensual" : "Una vez"}
+                  {OBLIGATION_FREQ_LABELS[t.frequency] ?? t.frequency}
                   {t.timesPerDay > 1 && ` · ${t.timesPerDay}x/día`}
                 </p>
               </div>

@@ -7,6 +7,13 @@ export const FREQ_LABELS: Record<string, string> = {
   YEARLY: "Anual",
 }
 
+export const OBLIGATION_FREQ_LABELS: Record<string, string> = {
+  daily: "Diario",
+  weekly: "Semanal",
+  monthly: "Mensual",
+  once: "Una vez",
+}
+
 export const BUDGET_COLORS = [
   "#f59e0b",
   "#3b82f6",
