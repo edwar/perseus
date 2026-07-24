@@ -1,6 +1,6 @@
 "use client"
 
-import { useMemo, useCallback, useState, useEffect } from "react"
+import { useMemo, useCallback, useState, useEffect, useRef } from "react"
 import { Calendar, ChevronLeft, ChevronRight, Settings, Sparkles } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
@@ -29,9 +29,13 @@ export function TodayBoard({ onOpenSettings }: { onOpenSettings: () => void }) {
   const { data: templates = [] } = useObligationTemplates()
   const { data: instances = [] } = useObligationInstances(selectedDate)
   const { createInstances, toggleTask } = useObligationMutations()
+  const ensuredRef = useRef<string>("")
 
   const ensureInstances = useCallback(async () => {
     if (templates.length === 0) return
+    const key = `${selectedDate}-${templates.map(t => t.id).join(",")}`
+    if (ensuredRef.current === key) return
+    ensuredRef.current = key
 
     const dayOfWeek = new Date(selectedDate + "T12:00:00").getDay()
 
