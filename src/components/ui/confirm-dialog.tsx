@@ -1,5 +1,6 @@
 "use client"
 
+import { createPortal } from "react-dom"
 import { Button } from "@/components/ui/button"
 import { X } from "lucide-react"
 
@@ -14,10 +15,10 @@ export function ConfirmDialog({ open, title, message, confirmLabel = "Eliminar",
 }) {
   if (!open) return null
 
-  return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center">
+  return createPortal(
+    <div className="fixed inset-0 z-[200] flex items-center justify-center">
       <div className="fixed inset-0 bg-black/50 backdrop-blur-sm" onClick={onCancel} />
-      <div className="relative z-50 w-[90vw] max-w-sm rounded-2xl bg-popover p-6 shadow-2xl animate-stagger-in" style={{ animationDuration: "0.2s" }}>
+      <div className="relative z-[200] w-[90vw] max-w-sm rounded-2xl bg-popover p-6 shadow-2xl animate-stagger-in" style={{ animationDuration: "0.2s" }}>
         <div className="mb-2 flex items-center justify-between">
           <h3 className="text-lg font-semibold">{title}</h3>
           <Button variant="ghost" size="icon" onClick={onCancel}>
@@ -32,6 +33,7 @@ export function ConfirmDialog({ open, title, message, confirmLabel = "Eliminar",
           </Button>
         </div>
       </div>
-    </div>
+    </div>,
+    document.body
   )
 }
