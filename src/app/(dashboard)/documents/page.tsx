@@ -260,9 +260,9 @@ export default function DocumentsPage() {
                 </div>
                 <div className="grid gap-4 grid-cols-[repeat(auto-fill,200px)]">
                   {items.map((doc, i) => (
-                    <div key={doc.id ?? doc.publicId ?? i} className="animate-stagger-in" style={{ animationDelay: `${i * 40}ms` }}>
-                      <DocumentCard doc={doc} onDelete={() => { }} />
-                    </div>
+                      <div key={doc.id ?? doc.publicId ?? i} className="animate-stagger-in" style={{ animationDelay: `${i * 40}ms` }}>
+                        <DocumentCard doc={doc} />
+                      </div>
                   ))}
                 </div>
               </div>

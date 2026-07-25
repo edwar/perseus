@@ -7,32 +7,24 @@ import { FileText, Trash2, X, Receipt, FileCheck, Calendar } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { formatDateLong } from "@/lib/formats"
 import { FIELD_LABELS } from "@/lib/constants"
+import { useDocumentMutations } from "@/hooks/useDocuments"
 import type { ScannedDoc } from "@/hooks/useDocuments"
 
 interface DocumentCardProps {
   doc: ScannedDoc
-  onDelete?: () => void
 }
 
-export function DocumentCard({ doc, onDelete }: DocumentCardProps) {
+export function DocumentCard({ doc }: DocumentCardProps) {
   const [open, setOpen] = useState(false)
   const [deleteConfirm, setDeleteConfirm] = useState(false)
-  const [deleting, setDeleting] = useState(false)
+  const { remove } = useDocumentMutations()
   const isPDF = doc.url.endsWith(".pdf")
   const isReceipt = doc.type === "receipt"
 
   async function handleDelete() {
-    setDeleting(true)
-    try {
-      await fetch(`/api/documents?publicId=${encodeURIComponent(doc.publicId)}`, { method: "DELETE" })
-      onDelete?.()
-      setOpen(false)
-    } catch {
-      console.error("Error al eliminar de Cloudinary")
-    } finally {
-      setDeleting(false)
-      setDeleteConfirm(false)
-    }
+    await remove.mutateAsync(doc.publicId)
+    setOpen(false)
+    setDeleteConfirm(false)
   }
 
   return (
@@ -176,7 +168,7 @@ export function DocumentCard({ doc, onDelete }: DocumentCardProps) {
         message={`¿Eliminar este ${isReceipt ? "recibo" : "factura"}? Se borrará de la nube y del sistema.`}
         onConfirm={handleDelete}
         onCancel={() => setDeleteConfirm(false)}
-        loading={deleting}
+        loading={remove.isPending}
       />
     </>
   )
