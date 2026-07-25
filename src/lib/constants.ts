@@ -15,14 +15,14 @@ export const OBLIGATION_FREQ_LABELS: Record<string, string> = {
 }
 
 export const BUDGET_COLORS = [
-  "#f59e0b",
-  "#3b82f6",
-  "#8b5cf6",
-  "#ef4444",
-  "#10b981",
-  "#ec4899",
-  "#14b8a6",
-  "#f97316",
+  "#FF8A34",
+  "#2563FF",
+  "#7C3AED",
+  "#FF5A5F",
+  "#16C784",
+  "#FF5A5F",
+  "#00B884",
+  "#FF7A00",
 ]
 
 export const MONTHS = [

@@ -24,7 +24,7 @@ export function StreakCounter({ streak, className }: StreakCounterProps) {
 
   return (
     <div className={cn(
-      "flex items-center gap-2 rounded-full bg-gradient-to-r from-orange-500 to-red-500 px-4 py-2 text-white shadow-lg shadow-orange-500/25",
+      "flex items-center gap-2 rounded-full bg-gradient-to-r from-energy to-danger px-4 py-2 text-white shadow-lg shadow-energy/25",
       animated && "animate-bounce",
       className
     )}>

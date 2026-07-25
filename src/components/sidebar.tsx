@@ -119,7 +119,7 @@ export function Sidebar() {
               router.push("/")
             }}
             className={cn(
-              "flex w-full items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors text-red-500 hover:bg-red-600 hover:text-white dark:text-red-400 dark:hover:bg-red-600 dark:hover:text-white",
+              "flex w-full items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors text-danger hover:bg-danger hover:text-white dark:text-coral-400 dark:hover:bg-danger dark:hover:text-white",
               !sidebarOpen && "justify-center"
             )}
           >

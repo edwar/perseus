@@ -19,7 +19,7 @@ export function ObligationItem({ obligation, isPaid, onTogglePaid, onEdit, onDel
           onClick={() => onTogglePaid(obligation.id)}
           className={cn(
             "flex h-7 w-7 shrink-0 items-center justify-center rounded-full border-2 transition-colors",
-            isPaid ? "border-emerald-500 bg-emerald-500 text-white" : "border-muted-foreground/30 hover:border-primary"
+            isPaid ? "border-success bg-success text-white" : "border-muted-foreground/30 hover:border-primary"
           )}
         >
           {isPaid && <Check className="h-3.5 w-3.5" />}
@@ -30,7 +30,7 @@ export function ObligationItem({ obligation, isPaid, onTogglePaid, onEdit, onDel
         <Button variant="ghost" size="icon-xs" onClick={() => onEdit(obligation.id)}>
           <Pencil className="h-3 w-3" />
         </Button>
-        <Button variant="ghost" size="icon-xs" onClick={() => onDelete(obligation.id)} className="text-red-500">
+        <Button variant="ghost" size="icon-xs" onClick={() => onDelete(obligation.id)} className="text-danger">
           <Trash2 className="h-3 w-3" />
         </Button>
       </CardContent>

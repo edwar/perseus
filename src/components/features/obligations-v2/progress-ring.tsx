@@ -1,6 +1,7 @@
 "use client"
 
 import { useEffect, useState } from "react"
+import { cn } from "@/lib/utils"
 
 interface ProgressRingProps {
   progress: number // 0-100
@@ -21,15 +22,26 @@ export function ProgressRing({ progress, size = 120, strokeWidth = 8, className 
   }, [progress])
 
   const getColor = (p: number) => {
-    if (p >= 100) return "#10b981" // emerald-500
-    if (p >= 70) return "#3b82f6"  // blue-500
-    if (p >= 40) return "#f59e0b"  // amber-500
-    return "#ef4444"               // red-500
+    if (p >= 100) return "#16C784" // success
+    if (p >= 70) return "#2563FF"  // primary
+    if (p >= 40) return "#FF8A34"  // warning
+    return "#FF5A5F"               // danger
   }
 
+  const color = getColor(animatedProgress)
+  const isComplete = animatedProgress >= 100
+
   return (
-    <div className={`relative inline-flex items-center justify-center ${className}`}>
-      <svg width={size} height={size} className="-rotate-90">
+    <div className={cn(
+      "relative inline-flex items-center justify-center rounded-full",
+      isComplete && "animate-pulse-glow",
+      className
+    )}>
+      {/* Glass background */}
+      <div className="absolute inset-0 rounded-full bg-card/80 backdrop-blur-md border border-border/30 shadow-lg" />
+
+      <svg width={size} height={size} className="-rotate-90 relative z-10">
+        {/* Background track */}
         <circle
           cx={size / 2}
           cy={size / 2}
@@ -37,25 +49,37 @@ export function ProgressRing({ progress, size = 120, strokeWidth = 8, className 
           fill="none"
           stroke="currentColor"
           strokeWidth={strokeWidth}
-          className="text-muted/50"
+          className="text-muted/30"
         />
+        {/* Progress arc */}
         <circle
           cx={size / 2}
           cy={size / 2}
           r={radius}
           fill="none"
-          stroke={getColor(animatedProgress)}
+          stroke={color}
           strokeWidth={strokeWidth}
           strokeDasharray={circumference}
           strokeDashoffset={offset}
           strokeLinecap="round"
           className="transition-all duration-1000 ease-out"
-          style={{ filter: `drop-shadow(0 0 6px ${getColor(animatedProgress)}40)` }}
+          style={{ filter: `drop-shadow(0 0 8px ${color}50)` }}
         />
       </svg>
-      <div className="absolute flex flex-col items-center">
-        <span className="text-3xl font-bold tabular-nums" style={{ color: getColor(animatedProgress) }}>
-          {Math.round(animatedProgress)}%
+
+      {/* Center content */}
+      <div className="absolute flex flex-col items-center justify-center z-20">
+        <span
+          className="text-2xl font-extrabold tabular-nums tracking-tight leading-none"
+          style={{ color }}
+        >
+          {Math.round(animatedProgress)}
+        </span>
+        <span
+          className="text-[9px] font-bold uppercase tracking-widest leading-none mt-0.5"
+          style={{ color: `${color}99` }}
+        >
+          %
         </span>
       </div>
     </div>

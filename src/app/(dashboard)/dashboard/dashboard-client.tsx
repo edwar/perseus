@@ -61,116 +61,136 @@ export function DashboardClient({
   useEffect(() => { const t = setTimeout(() => setReady(true), 100); return () => clearTimeout(t) }, [])
   if (!ready) {
     return (
-      <div className="space-y-6">
+      <div className="space-y-6 min-h-screen">
         <h1 className="text-2xl font-bold mt-10 md:hidden">Dashboard</h1>
 
+        {/* Hero Cards Skeleton */}
         <div className="grid gap-4 sm:grid-cols-3">
           {[1, 2, 3].map((i) => (
-            <div key={i} className="relative overflow-hidden rounded-2xl bg-muted p-5">
-              <div className="flex items-center gap-4">
-                <div className="h-12 w-12 animate-shimmer rounded-xl bg-muted-foreground/20" />
-                <div className="space-y-2">
-                  <div className="h-3 w-20 animate-shimmer rounded bg-muted-foreground/20" />
-                  <div className="h-6 w-28 animate-shimmer rounded bg-muted-foreground/20" />
+            <div key={i} className="rounded-2xl bg-card border border-border/50 p-6 overflow-hidden">
+              <div className="h-11 w-11 shrink-0 animate-shimmer rounded-2xl bg-muted-foreground/15 mb-4" />
+              <div className="space-y-2">
+                <div className="h-4 w-24 animate-shimmer rounded bg-muted-foreground/15" />
+                <div className="h-8 w-32 animate-shimmer rounded bg-muted-foreground/15" />
+              </div>
+            </div>
+          ))}
+        </div>
+
+        {/* Gamification Stats Skeleton */}
+        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+          {[1, 2, 3, 4].map((i) => (
+            <div key={i} className="rounded-2xl bg-card border border-border/50 p-5">
+              <div className="flex items-center gap-3">
+                <div className="h-12 w-12 shrink-0 animate-shimmer rounded-2xl bg-muted-foreground/15" />
+                <div className="space-y-1.5 flex-1">
+                  <div className="h-3 w-16 animate-shimmer rounded bg-muted-foreground/15" />
+                  <div className="h-6 w-12 animate-shimmer rounded bg-muted-foreground/15" />
+                  <div className="h-2.5 w-20 animate-shimmer rounded bg-muted-foreground/10" />
                 </div>
               </div>
             </div>
           ))}
         </div>
 
-        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-          {[1, 2, 3, 4].map((i) => (
-            <Card key={i}>
-              <CardContent className="p-4">
-                <div className="flex items-center gap-3">
-                  <div className="h-10 w-10 animate-shimmer rounded-xl bg-muted" />
-                  <div className="space-y-2">
-                    <div className="h-3 w-16 animate-shimmer rounded bg-muted" />
-                    <div className="h-6 w-12 animate-shimmer rounded bg-muted" />
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
+        {/* Charts Skeleton */}
+        <div className="grid gap-5 sm:grid-cols-2">
+          {[1, 2].map((i) => (
+            <div key={i} className="rounded-2xl bg-card border border-border/50 overflow-hidden">
+              <div className="border-b px-6 py-4">
+                <div className="h-4 w-36 animate-shimmer rounded bg-muted-foreground/15" />
+              </div>
+              <div className="p-5">
+                <div className="h-52 animate-shimmer rounded-lg bg-muted-foreground/10" />
+              </div>
+            </div>
           ))}
         </div>
 
-        <Card>
-          <div className="border-b px-6 py-4">
-            <div className="h-4 w-36 animate-shimmer rounded bg-muted" />
-          </div>
-          <div className="p-5">
-            <div className="h-40 animate-shimmer rounded-lg bg-muted" />
-          </div>
-        </Card>
-
         <div className="grid gap-5 sm:grid-cols-2">
-          <Card><div className="border-b px-6 py-4"><div className="h-4 w-36 animate-shimmer rounded bg-muted" /></div><div className="p-5"><div className="h-52 animate-shimmer rounded-lg bg-muted" /></div></Card>
-          <Card><div className="border-b px-6 py-4"><div className="h-4 w-36 animate-shimmer rounded bg-muted" /></div><div className="p-5"><div className="h-52 animate-shimmer rounded-lg bg-muted" /></div></Card>
+          {[1, 2].map((i) => (
+            <div key={i} className="rounded-2xl bg-card border border-border/50 overflow-hidden">
+              <div className="border-b px-6 py-4">
+                <div className="h-4 w-36 animate-shimmer rounded bg-muted-foreground/15" />
+              </div>
+              <div className="p-5">
+                <div className="h-52 animate-shimmer rounded-lg bg-muted-foreground/10" />
+              </div>
+            </div>
+          ))}
         </div>
 
-        <Card>
-          <div className="border-b px-6 py-4">
-            <div className="h-4 w-40 animate-shimmer rounded bg-muted" />
+        {/* Transactions Skeleton */}
+        <div className="rounded-2xl bg-card border border-border/50 overflow-hidden">
+          <div className="border-b px-6 py-4 bg-gradient-to-r from-muted/50 to-transparent">
+            <div className="h-4 w-40 animate-shimmer rounded bg-muted-foreground/15" />
           </div>
-          <div className="divide-y">
+          <div>
             {Array.from({ length: 5 }).map((_, i) => (
-              <div key={i} className="flex items-center gap-3 px-6 py-3">
-                <div className="h-9 w-9 animate-shimmer rounded-full bg-muted" />
-                <div className="flex-1 space-y-1.5">
-                  <div className="h-3 w-40 animate-shimmer rounded bg-muted" />
-                  <div className="h-2.5 w-24 animate-shimmer rounded bg-muted" />
+              <div key={i} className="flex items-center justify-between px-5 py-4 border-b border-border/50 last:border-b-0">
+                <div className="flex items-center gap-3.5 pl-2">
+                  <div className="h-10 w-10 shrink-0 animate-shimmer rounded-xl bg-muted-foreground/15" />
+                  <div className="space-y-2">
+                    <div className="h-4 w-32 animate-shimmer rounded bg-muted-foreground/20" />
+                    <div className="flex items-center gap-2">
+                      <div className="h-4 w-16 animate-shimmer rounded-md bg-muted-foreground/15" />
+                      <div className="h-3 w-20 animate-shimmer rounded bg-muted-foreground/15" />
+                    </div>
+                  </div>
                 </div>
-                <div className="h-4 w-20 animate-shimmer rounded bg-muted" />
+                <div className="h-4 w-24 animate-shimmer rounded bg-muted-foreground/15" />
               </div>
             ))}
           </div>
-        </Card>
+        </div>
       </div>
     )
   }
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 min-h-screen">
       <h1 className="text-2xl font-bold mt-10 md:hidden">Dashboard</h1>
 
-      <div className="grid gap-5 sm:grid-cols-3">
-        <div className="group relative overflow-hidden rounded-2xl bg-linear-to-br from-blue-500 to-blue-700 p-5 text-white shadow-lg shadow-blue-500/20 transition-all duration-200 hover:-translate-y-0.5 hover:shadow-xl hover:shadow-blue-500/30">
-          <div className="absolute -right-4 -top-4 h-24 w-24 rounded-full bg-white/10" />
-          <div className="absolute -bottom-6 -right-6 h-20 w-20 rounded-full bg-white/5" />
-          <div className="relative flex items-center gap-4">
-            <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-white/20 backdrop-blur-sm">
-              <Wallet className="h-6 w-6" />
-            </div>
-            <div>
-              <p className="text-sm font-medium text-blue-100">Balance total</p>
-              <p className="text-2xl font-bold">{formatCurrency(totalBalance)}</p>
-            </div>
-          </div>
-        </div>
-
-        <div className="group relative overflow-hidden rounded-2xl bg-linear-to-br from-emerald-500 to-emerald-700 p-5 text-white shadow-lg shadow-emerald-500/20 transition-all duration-200 hover:-translate-y-0.5 hover:shadow-xl hover:shadow-emerald-500/30">
-          <div className="absolute -right-4 -top-4 h-24 w-24 rounded-full bg-white/10" />
-          <div className="absolute -bottom-6 -right-6 h-20 w-20 rounded-full bg-white/5" />
-          <div className="relative flex items-center gap-4">
-            <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-white/20 backdrop-blur-sm">
-              <ArrowUpRight className="h-6 w-6" />
-            </div>
-            <div>
-              <p className="text-sm font-medium text-emerald-100">Ingresos del mes</p>
-              <p className="text-2xl font-bold">{formatCurrency(monthlyIncome)}</p>
+      {/* Hero Cards — Balance */}
+      <div className="relative">
+        <div className="absolute -top-20 -right-20 h-64 w-64 rounded-full bg-primary/5 blur-3xl animate-float-orb pointer-events-none" />
+        <div className="absolute -bottom-10 -left-10 h-48 w-48 rounded-full bg-success/5 blur-3xl animate-float-orb pointer-events-none" style={{ animationDelay: "2s" }} />
+        <div className="grid gap-4 sm:grid-cols-3 relative">
+          <div className="group hero-card relative overflow-hidden rounded-2xl bg-linear-to-br from-blue-500 via-blue-600 to-blue-800 p-6 text-white shadow-xl shadow-primary/25 transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl hover:shadow-primary/35 animate-stagger-in" style={{ animationDelay: "0ms" }}>
+            <div className="absolute inset-0 bg-linear-to-br from-white/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+            <div className="absolute -right-6 -top-6 h-32 w-32 rounded-full bg-white/10 animate-pulse-glow" />
+            <div className="absolute -bottom-8 -right-8 h-24 w-24 rounded-full bg-white/5" />
+            <div className="relative">
+              <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-white/15 backdrop-blur-sm mb-4 ring-1 ring-white/20">
+                <Wallet className="h-5 w-5" />
+              </div>
+              <p className="text-sm font-medium text-blue-100/80">Balance total</p>
+              <p className="stat-number mt-1 drop-shadow-lg">{formatCurrency(totalBalance)}</p>
             </div>
           </div>
-        </div>
 
-        <div className="group relative overflow-hidden rounded-2xl bg-linear-to-br from-rose-500 to-rose-700 p-5 text-white shadow-lg shadow-rose-500/20 transition-all duration-200 hover:-translate-y-0.5 hover:shadow-xl hover:shadow-rose-500/30">
-          <div className="absolute -right-4 -top-4 h-24 w-24 rounded-full bg-white/10" />
-          <div className="absolute -bottom-6 -right-6 h-20 w-20 rounded-full bg-white/5" />
-          <div className="relative flex items-center gap-4">
-            <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-white/20 backdrop-blur-sm">
-              <ArrowDownRight className="h-6 w-6" />
+          <div className="group hero-card relative overflow-hidden rounded-2xl bg-linear-to-br from-emerald-400 via-emerald-500 to-emerald-700 p-6 text-white shadow-xl shadow-success/25 transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl hover:shadow-success/35 animate-stagger-in" style={{ animationDelay: "60ms" }}>
+            <div className="absolute inset-0 bg-linear-to-br from-white/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+            <div className="absolute -right-6 -top-6 h-32 w-32 rounded-full bg-white/10 animate-pulse-glow" style={{ animationDelay: "1s" }} />
+            <div className="absolute -bottom-8 -right-8 h-24 w-24 rounded-full bg-white/5" />
+            <div className="relative">
+              <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-white/15 backdrop-blur-sm mb-4 ring-1 ring-white/20">
+                <ArrowUpRight className="h-5 w-5" />
+              </div>
+              <p className="text-sm font-medium text-emerald-100/80">Ingresos del mes</p>
+              <p className="stat-number mt-1 drop-shadow-lg">{formatCurrency(monthlyIncome)}</p>
             </div>
-            <div>
-              <p className="text-sm font-medium text-rose-100">Gastos del mes</p>
-              <p className="text-2xl font-bold">{formatCurrency(monthlyExpenses)}</p>
+          </div>
+
+          <div className="group hero-card relative overflow-hidden rounded-2xl bg-linear-to-br from-coral-300 via-coral-400 to-coral-600 p-6 text-white shadow-xl shadow-danger/25 transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl hover:shadow-danger/35 animate-stagger-in" style={{ animationDelay: "120ms" }}>
+            <div className="absolute inset-0 bg-linear-to-br from-white/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+            <div className="absolute -right-6 -top-6 h-32 w-32 rounded-full bg-white/10 animate-pulse-glow" style={{ animationDelay: "2s" }} />
+            <div className="absolute -bottom-8 -right-8 h-24 w-24 rounded-full bg-white/5" />
+            <div className="relative">
+              <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-white/15 backdrop-blur-sm mb-4 ring-1 ring-white/20">
+                <ArrowDownRight className="h-5 w-5" />
+              </div>
+              <p className="text-sm font-medium text-coral-100/80">Gastos del mes</p>
+              <p className="stat-number mt-1 drop-shadow-lg">{formatCurrency(monthlyExpenses)}</p>
             </div>
           </div>
         </div>
@@ -179,18 +199,18 @@ export function DashboardClient({
       <GamificationStats />
 
       <div className="grid gap-5 sm:grid-cols-2">
-        <SpendingPie data={spendingByCategory} />
-        <IncomeBar data={monthlyChart} />
+        <div className="animate-stagger-in" style={{ animationDelay: "480ms" }}><SpendingPie data={spendingByCategory} /></div>
+        <div className="animate-stagger-in" style={{ animationDelay: "540ms" }}><IncomeBar data={monthlyChart} /></div>
       </div>
 
       <div className="grid gap-5 sm:grid-cols-2">
-        <DailyExpensesChart transactions={allTransactions} />
-        <TopExpensesChart transactions={allTransactions} />
+        <div className="animate-stagger-in" style={{ animationDelay: "600ms" }}><DailyExpensesChart transactions={allTransactions} /></div>
+        <div className="animate-stagger-in" style={{ animationDelay: "660ms" }}><TopExpensesChart transactions={allTransactions} /></div>
       </div>
 
-      <Card className="overflow-hidden rounded-2xl border-0 shadow-lg">
-        <div className="border-b px-6 py-4">
-          <p className="font-semibold">Transacciones recientes</p>
+      <Card className="overflow-hidden rounded-2xl border-0 shadow-lg animate-stagger-in" style={{ animationDelay: "720ms" }}>
+        <div className="border-b px-6 py-4 bg-gradient-to-r from-muted/50 to-transparent">
+          <p className="font-semibold text-sm">Transacciones recientes</p>
         </div>
         <div className="divide-y">
           {paginatedTxs.map((tx) => (
@@ -198,25 +218,25 @@ export function DashboardClient({
               {editTx === tx.id ? (
                 <DashboardInlineEdit tx={tx} onSave={(d) => { updateTransaction(tx.id, d); setEditTx(null) }} onCancel={() => setEditTx(null)} />
               ) : (
-                <div className="flex items-center justify-between px-6 py-3 transition-colors hover:bg-muted/50">
+                <div className="flex items-center justify-between px-6 py-3.5 transition-all duration-200 hover:bg-muted/40 hover:pl-7">
                   <div className="flex items-center gap-3">
-                    <div className={cn("flex h-9 w-9 items-center justify-center rounded-full", tx.type === "INCOME" ? "bg-emerald-100" : "bg-red-100")}>
-                      {tx.type === "INCOME" ? <ArrowUpRight className="h-4 w-4 text-emerald-600" /> : <ArrowDownRight className="h-4 w-4 text-red-600" />}
+                    <div className={cn("flex h-9 w-9 items-center justify-center rounded-xl transition-transform duration-200 hover:scale-110", tx.type === "INCOME" ? "bg-emerald-100" : "bg-coral-100")}>
+                      {tx.type === "INCOME" ? <ArrowUpRight className="h-4 w-4 text-emerald-600" /> : <ArrowDownRight className="h-4 w-4 text-danger" />}
                     </div>
                     <div>
                       <p className="text-sm font-medium">{tx.description}</p>
-                      <p className={cn("text-xs", tx.category ? "text-muted-foreground" : tx.type === "INCOME" ? "text-emerald-600 font-medium" : "text-red-600 font-medium")}>{tx.category ?? (tx.type === "INCOME" ? "Ingreso" : "Gasto")}</p>
+                      <p className={cn("text-xs", tx.category ? "text-muted-foreground" : tx.type === "INCOME" ? "text-emerald-600 font-medium" : "text-danger font-medium")}>{tx.category ?? (tx.type === "INCOME" ? "Ingreso" : "Gasto")}</p>
                     </div>
                   </div>
                   <div className="flex items-center gap-2">
-                    <span className={`text-sm font-semibold ${tx.type === "INCOME" ? "text-emerald-600" : "text-red-600"}`}>
+                    <span className={`text-sm font-semibold ${tx.type === "INCOME" ? "text-emerald-600" : "text-danger"}`}>
                       {tx.type === "INCOME" ? "+" : "-"}
                       {formatCurrency(tx.amount)}
                     </span>
                     <Button variant="ghost" size="icon-xs" onClick={() => setEditTx(tx.id)}>
                       <Pencil className="h-3 w-3" />
                     </Button>
-                    <Button variant="ghost" size="icon-xs" onClick={() => setDeleteTx(tx.id)} className="text-red-500 hover:text-red-700">
+                    <Button variant="ghost" size="icon-xs" onClick={() => setDeleteTx(tx.id)} className="text-danger hover:text-danger-hover">
                       <Trash2 className="h-3 w-3" />
                     </Button>
                   </div>
@@ -225,13 +245,16 @@ export function DashboardClient({
             </div>
           ))}
           {recentTransactions.length === 0 && (
-            <div className="flex flex-col items-center justify-center py-16 text-center">
-              <div className="mb-4 flex h-16 w-16 items-center justify-center rounded-2xl bg-linear-to-br from-blue-50 to-blue-100/50">
-                <ArrowLeftRight className="h-8 w-8 text-blue-500" />
+            <div className="flex flex-col items-center justify-center py-20 text-center">
+              <div className="relative mb-6">
+                <div className="absolute inset-0 rounded-2xl bg-primary/5 blur-xl animate-pulse-glow" />
+                <div className="relative flex h-16 w-16 items-center justify-center rounded-2xl bg-linear-to-br from-blue-50 to-cyan-50 ring-1 ring-blue-100/50">
+                  <ArrowLeftRight className="h-8 w-8 text-primary" />
+                </div>
               </div>
-              <h3 className="mb-1 text-base font-semibold text-foreground">No hay transacciones</h3>
-              <p className="mb-4 max-w-xs text-sm text-muted-foreground">Registra tu primera transacción para ver tu actividad aquí</p>
-              <Button size="sm" className="gap-1.5" onClick={() => window.location.href = "/transactions"}>
+              <h3 className="mb-1.5 text-base font-bold text-foreground">Tu journey financiero empieza aquí</h3>
+              <p className="mb-5 max-w-xs text-sm text-muted-foreground leading-relaxed">Registra tu primera transacción y empieza a construir hábitos financieros saludables</p>
+              <Button size="sm" className="gap-1.5 rounded-xl shadow-md shadow-primary/20" onClick={() => window.location.href = "/transactions"}>
                 <ArrowUpRight className="h-3.5 w-3.5" /> Ir a Transacciones
               </Button>
             </div>

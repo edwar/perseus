@@ -58,7 +58,7 @@ export default function BudgetsPage() {
   if (isLoading) return <BudgetsLoadingSkeleton />
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 min-h-screen">
       <div className="flex items-center justify-between mt-10 md:hidden">
         <h1 className="text-2xl font-bold">Presupuestos</h1>
         <Button className="gap-2" onClick={() => { setEditing(null); setShowForm(true) }}>
@@ -78,19 +78,30 @@ export default function BudgetsPage() {
 
       {budgets.length > 0 && <BudgetSummary budgets={budgets} />}
 
+      {/* Header */}
+      {budgets.length > 0 && (
+        <div className="flex items-center justify-between animate-stagger-in" style={{ animationDelay: "100ms" }}>
+          <h2 className="text-xl font-bold">Presupuestos</h2>
+          <Button className="gap-2" onClick={() => { setEditing(null); setShowForm(true) }}>
+            <Plus className="h-4 w-4" /> Crear
+          </Button>
+        </div>
+      )}
+
       {budgets.length === 0 ? (
         <Empty icon={PiggyBank} title="No hay presupuestos" description="Crea tu primer presupuesto para controlar tus gastos" action={<Button size="sm" onClick={() => { setEditing(null); setShowForm(true) }}><Plus className="h-3 w-3" /> Crear</Button>} />
       ) : (
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-          {budgets.map((budget) => (
-            <BudgetCard
-              key={budget.id}
-              budget={budget}
-              spent={spentByCategory[budget.category] ?? 0}
-              onEdit={(id) => { setEditing(id); setShowForm(true) }}
-              onDelete={setDeleteConfirm}
-              onViewActivities={setViewActivities}
-            />
+          {budgets.map((budget, i) => (
+            <div key={budget.id} className="animate-stagger-in" style={{ animationDelay: `${150 + i * 50}ms` }}>
+              <BudgetCard
+                budget={budget}
+                spent={spentByCategory[budget.category] ?? 0}
+                onEdit={(id) => { setEditing(id); setShowForm(true) }}
+                onDelete={setDeleteConfirm}
+                onViewActivities={setViewActivities}
+              />
+            </div>
           ))}
         </div>
       )}

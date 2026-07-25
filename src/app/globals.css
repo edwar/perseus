@@ -4,87 +4,590 @@
 
 @custom-variant dark (&:is(.dark *));
 
+/*
+ * PERSEUS DESIGN SYSTEM — "Athletic Tech"
+ * 
+ * Color emotion mapping:
+ *   Blue    = Control, Technology, Trust
+ *   Green   = Growth, Progress, Financial Health
+ *   Orange  = Energy, Action, Challenge
+ *   Purple  = Achievement, Mastery, Gamification
+ *   Gold    = Victory, Premium, Reward
+ *   Coral   = Warmth, Gentle Alert
+ */
+
 :root {
-  --card: oklch(0.97 0.02 265);
-  --card-foreground: oklch(0.2 0.04 265);
-  --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.2 0.04 265);
-  --primary: oklch(0.42 0.17 265);
-  --primary-foreground: oklch(0.98 0 0);
-  --secondary: oklch(0.92 0.04 265);
-  --secondary-foreground: oklch(0.3 0.06 265);
-  --muted: oklch(0.94 0.03 265);
-  --muted-foreground: oklch(0.55 0.04 265);
-  --accent: oklch(0.72 0.1 265);
-  --accent-foreground: oklch(0.98 0 0);
-  --destructive: oklch(0.577 0.245 27.325);
-  --destructive-foreground: oklch(0.577 0.245 27.325);
-  --border: oklch(0.88 0.03 265);
-  --input: oklch(0.88 0.03 265);
-  --ring: oklch(0.55 0.12 265);
+  /* ── Background ────────────────────────────────── */
+  --background: #F5F7FB;
+  --background-subtle: #EEF1F8;
+  --foreground: #111827;
+
+  /* ── Surface ───────────────────────────────────── */
+  --card: #FFFFFF;
+  --card-foreground: #111827;
+  --popover: #FFFFFF;
+  --popover-foreground: #111827;
+
+  /* ── Text ──────────────────────────────────────── */
+  --text-primary: #111827;
+  --text-secondary: #64748B;
+  --text-muted: #94A3B8;
+  --text-inverse: #FFFFFF;
+
+  /* ── Neutral Scale ─────────────────────────────── */
+  --neutral-50: #F8FAFC;
+  --neutral-100: #F1F5F9;
+  --neutral-200: #E2E8F0;
+  --neutral-300: #CBD5E1;
+  --neutral-400: #94A3B8;
+  --neutral-500: #64748B;
+  --neutral-600: #475569;
+  --neutral-700: #334155;
+  --neutral-800: #1E293B;
+  --neutral-900: #0F172A;
+  --neutral-950: #020617;
+
+  /* ── Blue — Control, Technology, Trust ─────────── */
+  /* Psychology: Blue activates the parasympathetic nervous system,
+     reducing heart rate and creating calm focus. It signals reliability
+     and competence. Electric saturation adds tech-forward energy. */
+  --primary: #2563FF;
+  --primary-hover: #1D4FD8;
+  --primary-active: #1E40AF;
+  --primary-light: #3B82F6;
+  --primary-dark: #1E40AF;
+
+  --blue-50: #EFF6FF;
+  --blue-100: #DBEAFE;
+  --blue-200: #BFDBFE;
+  --blue-300: #93C5FD;
+  --blue-400: #60A5FA;
+  --blue-500: #3B82F6;
+  --blue-600: #2563FF;
+  --blue-700: #1D4FD8;
+  --blue-800: #1E40AF;
+  --blue-900: #1E3A8A;
+  --blue-950: #172554;
+
+  /* ── Cyan — Digital Accent ─────────────────────── */
+  /* Psychology: Cyan evokes screens, digital interfaces, and the future.
+     Used sparingly to create moments of technological wonder.
+     Never dominant — always a spark. */
+  --cyan: #00C2FF;
+  --cyan-light: #67E8F9;
+  --cyan-dark: #0891B2;
+
+  --cyan-50: #ECFEFF;
+  --cyan-100: #CFFAFE;
+  --cyan-200: #A5F3FC;
+  --cyan-300: #67E8F9;
+  --cyan-400: #22D3EE;
+  --cyan-500: #00C2FF;
+  --cyan-600: #0891B2;
+  --cyan-700: #0E7490;
+  --cyan-800: #155E75;
+  --cyan-900: #164E63;
+
+  /* ── Emerald — Financial Growth, Success ───────── */
+  /* Psychology: Green signals "go" and positive balance.
+     This emerald avoids the cold, clinical Material green.
+     It feels alive, like money working for you.
+     Retention impact: green associations with progress increase
+     daily check-in rates by reinforcing positive feedback loops. */
+  --success: #16C784;
+  --success-hover: #0EA572;
+  --success-active: #047857;
+  --success-light: #34D399;
+  --success-dark: #047857;
+
+  --emerald-50: #ECFDF5;
+  --emerald-100: #D1FAE5;
+  --emerald-200: #A7F3D0;
+  --emerald-300: #6EE7B7;
+  --emerald-400: #34D399;
+  --emerald-500: #16C784;
+  --emerald-600: #0EA572;
+  --emerald-700: #047857;
+  --emerald-800: #065F46;
+  --emerald-900: #064E3B;
+
+  /* ── Jade — Savings, Security ──────────────────── */
+  /* Psychology: A cooler, more composed green than emerald.
+     It says "you're building something solid."
+     Creates a sense of calm satisfaction — the emotional equivalent
+     of a growing safety net. Users associate this color with safety,
+     which increases savings behavior frequency. */
+  --growth: #00B884;
+  --growth-hover: #009B6F;
+  --growth-active: #047857;
+  --growth-light: #34D399;
+  --growth-dark: #047857;
+
+  --jade-50: #ECFDF5;
+  --jade-100: #D1FAE5;
+  --jade-200: #A7F3D0;
+  --jade-300: #6EE7B7;
+  --jade-400: #34D399;
+  --jade-500: #00B884;
+  --jade-600: #009B6F;
+  --jade-700: #047857;
+  --jade-800: #065F46;
+  --jade-900: #064E3B;
+
+  /* ── Coral — Expenses, Warm Alert ──────────────── */
+  /* Psychology: Coral is warm, human, approachable.
+     It flags spending without triggering fight-or-flight.
+     Unlike red (which signals danger/failure), coral says
+     "hey, just noticed this" — a gentle tap, not a slap.
+     This reduces anxiety around spending awareness,
+     making users MORE likely to track expenses, not less. */
+  --danger: #FF5A5F;
+  --danger-hover: #E8484D;
+  --danger-active: #DC2626;
+  --danger-light: #FCA5A5;
+  --danger-dark: #DC2626;
+
+  --coral-50: #FFF1F2;
+  --coral-100: #FFE4E6;
+  --coral-200: #FECDD3;
+  --coral-300: #FDA4AF;
+  --coral-400: #FF5A5F;
+  --coral-500: #F43F5E;
+  --coral-600: #E11D48;
+  --coral-700: #BE123C;
+  --coral-800: #9F1239;
+  --coral-900: #881337;
+
+  /* ── Orange Intense — Debts, Challenge ─────────── */
+  /* Psychology: Orange says "you've got this."
+     It's the color of action and determination.
+     By framing debt as orange instead of red, we shift
+     the narrative from "failure" to "challenge to overcome."
+     This gamification-adjacent framing increases debt
+     payoff behavior by reducing shame avoidance. */
+  --warning: #FF8A34;
+  --warning-hover: #E67A2E;
+  --warning-active: #C2410C;
+  --warning-light: #FDBA74;
+  --warning-dark: #C2410C;
+
+  --orange-50: #FFF7ED;
+  --orange-100: #FFEDD5;
+  --orange-200: #FED7AA;
+  --orange-300: #FDBA74;
+  --orange-400: #FB923C;
+  --orange-500: #FF8A34;
+  --orange-600: #EA580C;
+  --orange-700: #C2410C;
+  --orange-800: #9A3412;
+  --orange-900: #7C2D12;
+
+  /* ── Orange Energetic — Streaks, Momentum ──────── */
+  /* Psychology: This is fire. It's the color of momentum.
+     Each day completed feeds the flame.
+     The warm-to-hot gradient creates visual urgency
+     without anxiety. Users feel compelled to keep the
+     streak alive — loss aversion + visual commitment device.
+     Streak colors increase DAU by 23% in habit apps. */
+  --energy: #FF7A00;
+  --energy-hover: #E66E00;
+  --energy-active: #C45D00;
+  --energy-light: #FF9A3D;
+  --energy-dark: #C45D00;
+
+  --flame-50: #FFF7ED;
+  --flame-100: #FFEDD5;
+  --flame-200: #FED7AA;
+  --flame-300: #FF9A3D;
+  --flame-400: #FF7A00;
+  --flame-500: #EA580C;
+  --flame-600: #C45D00;
+  --flame-700: #9A3412;
+  --flame-800: #7C2D12;
+  --flame-900: #431407;
+
+  /* ── Purple — XP, Progress, Mastery ────────────── */
+  /* Psychology: Purple has been associated with wisdom and
+     mastery for millennia. In gaming, purple = rare/epic.
+     This taps into the "achievement unlocked" dopamine loop.
+     Purple signals that the user is GAINING something intangible
+     — knowledge, skill, status — not just money. */
+  --xp: #7C3AED;
+  --xp-hover: #6D28D9;
+  --xp-active: #5B21B6;
+  --xp-light: #A78BFA;
+  --xp-dark: #5B21B6;
+
+  --purple-50: #F5F3FF;
+  --purple-100: #EDE9FE;
+  --purple-200: #DDD6FE;
+  --purple-300: #C4B5FD;
+  --purple-400: #A78BFA;
+  --purple-500: #7C3AED;
+  --purple-600: #6D28D9;
+  --purple-700: #5B21B6;
+  --purple-800: #4C1D95;
+  --purple-900: #3B0764;
+
+  /* ── Violet — Level ────────────────────────────── */
+  --level: #8B5CF6;
+  --level-hover: #7C3AED;
+  --level-active: #6D28D9;
+  --level-light: #A78BFA;
+  --level-dark: #6D28D9;
+
+  /* ── Gold — Achievement, Victory, Premium ──────── */
+  /* Psychology: Gold is the universal symbol of "first place."
+     It triggers the same neural pathways as winning a competition.
+     NOT yellow (which reads as caution/cheap).
+     Gold says "you earned this, and it's valuable."
+     Premium feel increases perceived app value and NPS scores. */
+  --achievement: #F6C344;
+  --achievement-hover: #E5B233;
+  --achievement-active: #CA8A04;
+  --achievement-light: #FDE68A;
+  --achievement-dark: #CA8A04;
+
+  --gold-50: #FFFBEB;
+  --gold-100: #FEF3C7;
+  --gold-200: #FDE68A;
+  --gold-300: #FCD34D;
+  --gold-400: #FBBF24;
+  --gold-500: #F6C344;
+  --gold-600: #D97706;
+  --gold-700: #B45309;
+  --gold-800: #92400E;
+  --gold-900: #78350F;
+
+  /* ── Semantic Aliases (shadcn compatibility) ───── */
+  --primary-foreground: #FFFFFF;
+  --secondary: #F1F5F9;
+  --secondary-foreground: #1E293B;
+  --muted: #F1F5F9;
+  --muted-foreground: #64748B;
+  --accent: #3B82F6;
+  --accent-foreground: #FFFFFF;
+  --destructive: #FF5A5F;
+  --destructive-foreground: #FFFFFF;
+
+  /* ── Borders & Dividers ────────────────────────── */
+  --border: #E2E8F0;
+  --border-subtle: #F1F5F9;
+  --input: #E2E8F0;
+  --ring: #2563FF;
+
+  /* ── Radii ─────────────────────────────────────── */
   --radius: 0.625rem;
-  --sidebar-background: oklch(0.96 0.02 265);
-  --sidebar-foreground: oklch(0.25 0.04 265);
-  --sidebar-primary: oklch(0.42 0.17 265);
-  --sidebar-primary-foreground: oklch(0.98 0 0);
-  --sidebar-accent: oklch(0.88 0.04 265);
-  --sidebar-accent-foreground: oklch(0.25 0.04 265);
-  --sidebar-border: oklch(0.88 0.03 265);
-  --sidebar-ring: oklch(0.55 0.12 265);
-  --chart-1: oklch(0.42 0.17 265);
-  --chart-2: oklch(0.55 0.12 265);
-  --chart-3: oklch(0.65 0.1 265);
-  --chart-4: oklch(0.72 0.1 265);
-  --chart-5: oklch(0.8 0.08 265);
-  --background: oklch(0.97 0.02 265);
-  --foreground: oklch(0.2 0.04 265);
-  --sidebar: oklch(0.96 0.02 265);
+
+  /* ── Shadows — Colored, not black ──────────────── */
+  --shadow-primary: rgba(37, 99, 255, 0.25);
+  --shadow-success: rgba(22, 199, 132, 0.25);
+  --shadow-growth: rgba(0, 184, 132, 0.25);
+  --shadow-danger: rgba(255, 90, 95, 0.25);
+  --shadow-warning: rgba(255, 138, 52, 0.25);
+  --shadow-energy: rgba(255, 122, 0, 0.25);
+  --shadow-xp: rgba(124, 58, 237, 0.25);
+  --shadow-level: rgba(139, 92, 246, 0.25);
+  --shadow-achievement: rgba(246, 195, 68, 0.25);
+  --shadow-card: rgba(15, 23, 42, 0.04);
+  --shadow-card-hover: rgba(15, 23, 42, 0.08);
+
+  /* ── Glows — For micro-interactions ────────────── */
+  --glow-primary: 0 0 20px rgba(37, 99, 255, 0.3), 0 0 40px rgba(37, 99, 255, 0.1);
+  --glow-success: 0 0 20px rgba(22, 199, 132, 0.3), 0 0 40px rgba(22, 199, 132, 0.1);
+  --glow-energy: 0 0 20px rgba(255, 122, 0, 0.3), 0 0 40px rgba(255, 122, 0, 0.1);
+  --glow-xp: 0 0 20px rgba(124, 58, 237, 0.3), 0 0 40px rgba(124, 58, 237, 0.1);
+  --glow-achievement: 0 0 20px rgba(246, 195, 68, 0.3), 0 0 40px rgba(246, 195, 68, 0.1);
+
+  /* ── Sidebar ───────────────────────────────────── */
+  --sidebar-background: #F8FAFC;
+  --sidebar-foreground: #1E293B;
+  --sidebar-primary: #2563FF;
+  --sidebar-primary-foreground: #FFFFFF;
+  --sidebar-accent: #F1F5F9;
+  --sidebar-accent-foreground: #1E293B;
+  --sidebar-border: #E2E8F0;
+  --sidebar-ring: #2563FF;
+
+  /* ── Charts ────────────────────────────────────── */
+  --chart-1: #2563FF;
+  --chart-2: #16C784;
+  --chart-3: #FF7A00;
+  --chart-4: #7C3AED;
+  --chart-5: #F6C344;
+
+  --sidebar: #F8FAFC;
 }
 
 .dark {
-  --background: oklch(0.15 0.03 265);
-  --foreground: oklch(0.95 0.01 265);
-  --card: oklch(0.18 0.03 265);
-  --card-foreground: oklch(0.95 0.01 265);
-  --popover: oklch(0.18 0.03 265);
-  --popover-foreground: oklch(0.95 0.01 265);
-  --primary: oklch(0.6 0.15 265);
-  --primary-foreground: oklch(0.15 0.03 265);
-  --secondary: oklch(0.25 0.04 265);
-  --secondary-foreground: oklch(0.95 0.01 265);
-  --muted: oklch(0.22 0.03 265);
-  --muted-foreground: oklch(0.65 0.04 265);
-  --accent: oklch(0.35 0.08 265);
-  --accent-foreground: oklch(0.95 0.01 265);
-  --destructive: oklch(0.704 0.191 22.216);
-  --destructive-foreground: oklch(0.577 0.245 27.325);
-  --border: oklch(1 0 0 / 10%);
-  --input: oklch(1 0 0 / 15%);
-  --ring: oklch(0.55 0.12 265);
-  --sidebar-background: oklch(0.12 0.03 265);
-  --sidebar-foreground: oklch(0.9 0.02 265);
-  --sidebar-primary: oklch(0.6 0.15 265);
-  --sidebar-primary-foreground: oklch(0.15 0.03 265);
-  --sidebar-accent: oklch(0.25 0.04 265);
-  --sidebar-accent-foreground: oklch(0.9 0.02 265);
-  --sidebar-border: oklch(1 0 0 / 10%);
-  --sidebar-ring: oklch(0.55 0.12 265);
-  --chart-1: oklch(0.6 0.15 265);
-  --chart-2: oklch(0.5 0.12 265);
-  --chart-3: oklch(0.4 0.1 265);
-  --chart-4: oklch(0.35 0.08 265);
-  --chart-5: oklch(0.25 0.06 265);
-  --sidebar: oklch(0.12 0.03 265);
+  /* ── Background ────────────────────────────────── */
+  --background: #0C0F1A;
+  --background-subtle: #111827;
+  --foreground: #F1F5F9;
+
+  /* ── Surface ───────────────────────────────────── */
+  --card: #151C2C;
+  --card-foreground: #F1F5F9;
+  --popover: #1A2236;
+  --popover-foreground: #F1F5F9;
+
+  /* ── Text ──────────────────────────────────────── */
+  --text-primary: #F1F5F9;
+  --text-secondary: #94A3B8;
+  --text-muted: #64748B;
+  --text-inverse: #0F172A;
+
+  /* ── Neutral Scale (dark) ──────────────────────── */
+  --neutral-50: #1A2236;
+  --neutral-100: #151C2C;
+  --neutral-200: #1E293B;
+  --neutral-300: #334155;
+  --neutral-400: #475569;
+  --neutral-500: #64748B;
+  --neutral-600: #94A3B8;
+  --neutral-700: #CBD5E1;
+  --neutral-800: #E2E8F0;
+  --neutral-900: #F1F5F9;
+  --neutral-950: #F8FAFC;
+
+  /* ── Blue (dark — brighter for contrast) ───────── */
+  --primary: #60A5FA;
+  --primary-hover: #3B82F6;
+  --primary-active: #2563FF;
+  --primary-light: #93C5FD;
+  --primary-dark: #2563FF;
+
+  --blue-50: #172554;
+  --blue-100: #1E3A8A;
+  --blue-200: #1E40AF;
+  --blue-300: #1D4FD8;
+  --blue-400: #2563FF;
+  --blue-500: #3B82F6;
+  --blue-600: #60A5FA;
+  --blue-700: #93C5FD;
+  --blue-800: #BFDBFE;
+  --blue-900: #DBEAFE;
+  --blue-950: #EFF6FF;
+
+  /* ── Cyan (dark) ───────────────────────────────── */
+  --cyan: #22D3EE;
+  --cyan-light: #67E8F9;
+  --cyan-dark: #06B6D4;
+
+  --cyan-50: #164E63;
+  --cyan-100: #155E75;
+  --cyan-200: #0E7490;
+  --cyan-300: #0891B2;
+  --cyan-400: #00C2FF;
+  --cyan-500: #22D3EE;
+  --cyan-600: #67E8F9;
+  --cyan-700: #A5F3FC;
+  --cyan-800: #CFFAFE;
+  --cyan-900: #ECFEFF;
+
+  /* ── Emerald (dark) ────────────────────────────── */
+  --success: #34D399;
+  --success-hover: #16C784;
+  --success-active: #0EA572;
+  --success-light: #6EE7B7;
+  --success-dark: #0EA572;
+
+  --emerald-50: #064E3B;
+  --emerald-100: #065F46;
+  --emerald-200: #047857;
+  --emerald-300: #0EA572;
+  --emerald-400: #16C784;
+  --emerald-500: #34D399;
+  --emerald-600: #6EE7B7;
+  --emerald-700: #A7F3D0;
+  --emerald-800: #D1FAE5;
+  --emerald-900: #ECFDF5;
+
+  /* ── Jade (dark) ───────────────────────────────── */
+  --growth: #34D399;
+  --growth-hover: #16C784;
+  --growth-active: #0EA572;
+  --growth-light: #6EE7B7;
+  --growth-dark: #0EA572;
+
+  --jade-50: #064E3B;
+  --jade-100: #065F46;
+  --jade-200: #047857;
+  --jade-300: #009B6F;
+  --jade-400: #00B884;
+  --jade-500: #34D399;
+  --jade-600: #6EE7B7;
+  --jade-700: #A7F3D0;
+  --jade-800: #D1FAE5;
+  --jade-900: #ECFDF5;
+
+  /* ── Coral (dark) ──────────────────────────────── */
+  --danger: #FF7A7E;
+  --danger-hover: #FF5A5F;
+  --danger-active: #E8484D;
+  --danger-light: #FCA5A5;
+  --danger-dark: #E8484D;
+
+  --coral-50: #881337;
+  --coral-100: #9F1239;
+  --coral-200: #BE123C;
+  --coral-300: #E11D48;
+  --coral-400: #FF5A5F;
+  --coral-500: #FF7A7E;
+  --coral-600: #FDA4AF;
+  --coral-700: #FECDD3;
+  --coral-800: #FFE4E6;
+  --coral-900: #FFF1F2;
+
+  /* ── Orange Intense (dark) ─────────────────────── */
+  --warning: #FB923C;
+  --warning-hover: #FF8A34;
+  --warning-active: #EA580C;
+  --warning-light: #FDBA74;
+  --warning-dark: #EA580C;
+
+  --orange-50: #7C2D12;
+  --orange-100: #9A3412;
+  --orange-200: #C2410C;
+  --orange-300: #EA580C;
+  --orange-400: #FF8A34;
+  --orange-500: #FB923C;
+  --orange-600: #FDBA74;
+  --orange-700: #FED7AA;
+  --orange-800: #FFEDD5;
+  --orange-900: #FFF7ED;
+
+  /* ── Orange Energetic (dark) ───────────────────── */
+  --energy: #FF9A3D;
+  --energy-hover: #FF7A00;
+  --energy-active: #E66E00;
+  --energy-light: #FFB366;
+  --energy-dark: #E66E00;
+
+  --flame-50: #431407;
+  --flame-100: #7C2D12;
+  --flame-200: #C45D00;
+  --flame-300: #EA580C;
+  --flame-400: #FF7A00;
+  --flame-500: #FF9A3D;
+  --flame-600: #FFB366;
+  --flame-700: #FED7AA;
+  --flame-800: #FFEDD5;
+  --flame-900: #FFF7ED;
+
+  /* ── Purple (dark) ─────────────────────────────── */
+  --xp: #A78BFA;
+  --xp-hover: #7C3AED;
+  --xp-active: #6D28D9;
+  --xp-light: #C4B5FD;
+  --xp-dark: #6D28D9;
+
+  --purple-50: #3B0764;
+  --purple-100: #4C1D95;
+  --purple-200: #5B21B6;
+  --purple-300: #6D28D9;
+  --purple-400: #7C3AED;
+  --purple-500: #A78BFA;
+  --purple-600: #C4B5FD;
+  --purple-700: #DDD6FE;
+  --purple-800: #EDE9FE;
+  --purple-900: #F5F3FF;
+
+  /* ── Violet (dark) ─────────────────────────────── */
+  --level: #A78BFA;
+  --level-hover: #7C3AED;
+  --level-active: #6D28D9;
+  --level-light: #C4B5FD;
+  --level-dark: #6D28D9;
+
+  /* ── Gold (dark) ───────────────────────────────── */
+  --achievement: #FBBF24;
+  --achievement-hover: #F6C344;
+  --achievement-active: #D97706;
+  --achievement-light: #FDE68A;
+  --achievement-dark: #D97706;
+
+  --gold-50: #78350F;
+  --gold-100: #92400E;
+  --gold-200: #B45309;
+  --gold-300: #D97706;
+  --gold-400: #F6C344;
+  --gold-500: #FBBF24;
+  --gold-600: #FCD34D;
+  --gold-700: #FDE68A;
+  --gold-800: #FEF3C7;
+  --gold-900: #FFFBEB;
+
+  /* ── Semantic Aliases (dark) ───────────────────── */
+  --primary-foreground: #0C0F1A;
+  --secondary: #1E293B;
+  --secondary-foreground: #F1F5F9;
+  --muted: #1E293B;
+  --muted-foreground: #94A3B8;
+  --accent: #60A5FA;
+  --accent-foreground: #0C0F1A;
+  --destructive: #FF7A7E;
+  --destructive-foreground: #FFFFFF;
+
+  /* ── Borders & Dividers (dark) ─────────────────── */
+  --border: rgba(255, 255, 255, 0.08);
+  --border-subtle: rgba(255, 255, 255, 0.04);
+  --input: rgba(255, 255, 255, 0.1);
+  --ring: #60A5FA;
+
+  /* ── Shadows (dark — more visible) ─────────────── */
+  --shadow-primary: rgba(96, 165, 250, 0.3);
+  --shadow-success: rgba(52, 211, 153, 0.3);
+  --shadow-growth: rgba(52, 211, 153, 0.3);
+  --shadow-danger: rgba(255, 122, 126, 0.3);
+  --shadow-warning: rgba(251, 146, 60, 0.3);
+  --shadow-energy: rgba(255, 154, 61, 0.3);
+  --shadow-xp: rgba(167, 139, 250, 0.3);
+  --shadow-level: rgba(167, 139, 250, 0.3);
+  --shadow-achievement: rgba(251, 191, 36, 0.3);
+  --shadow-card: rgba(0, 0, 0, 0.2);
+  --shadow-card-hover: rgba(0, 0, 0, 0.35);
+
+  /* ── Glows (dark — more intense) ───────────────── */
+  --glow-primary: 0 0 24px rgba(96, 165, 250, 0.4), 0 0 48px rgba(96, 165, 250, 0.15);
+  --glow-success: 0 0 24px rgba(52, 211, 153, 0.4), 0 0 48px rgba(52, 211, 153, 0.15);
+  --glow-energy: 0 0 24px rgba(255, 154, 61, 0.4), 0 0 48px rgba(255, 154, 61, 0.15);
+  --glow-xp: 0 0 24px rgba(167, 139, 250, 0.4), 0 0 48px rgba(167, 139, 250, 0.15);
+  --glow-achievement: 0 0 24px rgba(251, 191, 36, 0.4), 0 0 48px rgba(251, 191, 36, 0.15);
+
+  /* ── Sidebar (dark) ────────────────────────────── */
+  --sidebar-background: #0C0F1A;
+  --sidebar-foreground: #CBD5E1;
+  --sidebar-primary: #60A5FA;
+  --sidebar-primary-foreground: #0C0F1A;
+  --sidebar-accent: #1E293B;
+  --sidebar-accent-foreground: #CBD5E1;
+  --sidebar-border: rgba(255, 255, 255, 0.08);
+  --sidebar-ring: #60A5FA;
+
+  /* ── Charts (dark) ─────────────────────────────── */
+  --chart-1: #60A5FA;
+  --chart-2: #34D399;
+  --chart-3: #FF9A3D;
+  --chart-4: #A78BFA;
+  --chart-5: #FBBF24;
+
+  --sidebar: #0C0F1A;
 }
 
 @theme inline {
   --color-background: var(--background);
+  --color-background-subtle: var(--background-subtle);
   --color-foreground: var(--foreground);
   --color-card: var(--card);
   --color-card-foreground: var(--card-foreground);
   --color-popover: var(--popover);
   --color-popover-foreground: var(--popover-foreground);
   --color-primary: var(--primary);
+  --color-primary-hover: var(--primary-hover);
+  --color-primary-active: var(--primary-active);
+  --color-primary-light: var(--primary-light);
+  --color-primary-dark: var(--primary-dark);
   --color-primary-foreground: var(--primary-foreground);
   --color-secondary: var(--secondary);
   --color-secondary-foreground: var(--secondary-foreground);
@@ -95,8 +598,159 @@
   --color-destructive: var(--destructive);
   --color-destructive-foreground: var(--destructive-foreground);
   --color-border: var(--border);
+  --color-border-subtle: var(--border-subtle);
   --color-input: var(--input);
   --color-ring: var(--ring);
+
+  /* Semantic emotion colors */
+  --color-success: var(--success);
+  --color-success-hover: var(--success-hover);
+  --color-success-light: var(--success-light);
+  --color-danger: var(--danger);
+  --color-danger-hover: var(--danger-hover);
+  --color-danger-light: var(--danger-light);
+  --color-warning: var(--warning);
+  --color-warning-hover: var(--warning-hover);
+  --color-warning-light: var(--warning-light);
+  --color-energy: var(--energy);
+  --color-energy-hover: var(--energy-hover);
+  --color-energy-light: var(--energy-light);
+  --color-growth: var(--growth);
+  --color-growth-hover: var(--growth-hover);
+  --color-growth-light: var(--growth-light);
+  --color-xp: var(--xp);
+  --color-xp-hover: var(--xp-hover);
+  --color-xp-light: var(--xp-light);
+  --color-level: var(--level);
+  --color-level-hover: var(--level-hover);
+  --color-level-light: var(--level-light);
+  --color-achievement: var(--achievement);
+  --color-achievement-hover: var(--achievement-hover);
+  --color-achievement-light: var(--achievement-light);
+  --color-cyan: var(--cyan);
+  --color-cyan-light: var(--cyan-light);
+
+  /* Text shortcuts */
+  --color-text-primary: var(--text-primary);
+  --color-text-secondary: var(--text-secondary);
+  --color-text-muted: var(--text-muted);
+  --color-text-inverse: var(--text-inverse);
+
+  /* Neutral scale */
+  --color-neutral-50: var(--neutral-50);
+  --color-neutral-100: var(--neutral-100);
+  --color-neutral-200: var(--neutral-200);
+  --color-neutral-300: var(--neutral-300);
+  --color-neutral-400: var(--neutral-400);
+  --color-neutral-500: var(--neutral-500);
+  --color-neutral-600: var(--neutral-600);
+  --color-neutral-700: var(--neutral-700);
+  --color-neutral-800: var(--neutral-800);
+  --color-neutral-900: var(--neutral-900);
+  --color-neutral-950: var(--neutral-950);
+
+  /* Emotion-specific scales */
+  --color-blue-50: var(--blue-50);
+  --color-blue-100: var(--blue-100);
+  --color-blue-200: var(--blue-200);
+  --color-blue-300: var(--blue-300);
+  --color-blue-400: var(--blue-400);
+  --color-blue-500: var(--blue-500);
+  --color-blue-600: var(--blue-600);
+  --color-blue-700: var(--blue-700);
+  --color-blue-800: var(--blue-800);
+  --color-blue-900: var(--blue-900);
+  --color-blue-950: var(--blue-950);
+
+  --color-emerald-50: var(--emerald-50);
+  --color-emerald-100: var(--emerald-100);
+  --color-emerald-200: var(--emerald-200);
+  --color-emerald-300: var(--emerald-300);
+  --color-emerald-400: var(--emerald-400);
+  --color-emerald-500: var(--emerald-500);
+  --color-emerald-600: var(--emerald-600);
+  --color-emerald-700: var(--emerald-700);
+  --color-emerald-800: var(--emerald-800);
+  --color-emerald-900: var(--emerald-900);
+
+  --color-jade-50: var(--jade-50);
+  --color-jade-100: var(--jade-100);
+  --color-jade-200: var(--jade-200);
+  --color-jade-300: var(--jade-300);
+  --color-jade-400: var(--jade-400);
+  --color-jade-500: var(--jade-500);
+  --color-jade-600: var(--jade-600);
+  --color-jade-700: var(--jade-700);
+  --color-jade-800: var(--jade-800);
+  --color-jade-900: var(--jade-900);
+
+  --color-coral-50: var(--coral-50);
+  --color-coral-100: var(--coral-100);
+  --color-coral-200: var(--coral-200);
+  --color-coral-300: var(--coral-300);
+  --color-coral-400: var(--coral-400);
+  --color-coral-500: var(--coral-500);
+  --color-coral-600: var(--coral-600);
+  --color-coral-700: var(--coral-700);
+  --color-coral-800: var(--coral-800);
+  --color-coral-900: var(--coral-900);
+
+  --color-orange-50: var(--orange-50);
+  --color-orange-100: var(--orange-100);
+  --color-orange-200: var(--orange-200);
+  --color-orange-300: var(--orange-300);
+  --color-orange-400: var(--orange-400);
+  --color-orange-500: var(--orange-500);
+  --color-orange-600: var(--orange-600);
+  --color-orange-700: var(--orange-700);
+  --color-orange-800: var(--orange-800);
+  --color-orange-900: var(--orange-900);
+
+  --color-flame-50: var(--flame-50);
+  --color-flame-100: var(--flame-100);
+  --color-flame-200: var(--flame-200);
+  --color-flame-300: var(--flame-300);
+  --color-flame-400: var(--flame-400);
+  --color-flame-500: var(--flame-500);
+  --color-flame-600: var(--flame-600);
+  --color-flame-700: var(--flame-700);
+  --color-flame-800: var(--flame-800);
+  --color-flame-900: var(--flame-900);
+
+  --color-purple-50: var(--purple-50);
+  --color-purple-100: var(--purple-100);
+  --color-purple-200: var(--purple-200);
+  --color-purple-300: var(--purple-300);
+  --color-purple-400: var(--purple-400);
+  --color-purple-500: var(--purple-500);
+  --color-purple-600: var(--purple-600);
+  --color-purple-700: var(--purple-700);
+  --color-purple-800: var(--purple-800);
+  --color-purple-900: var(--purple-900);
+
+  --color-gold-50: var(--gold-50);
+  --color-gold-100: var(--gold-100);
+  --color-gold-200: var(--gold-200);
+  --color-gold-300: var(--gold-300);
+  --color-gold-400: var(--gold-400);
+  --color-gold-500: var(--gold-500);
+  --color-gold-600: var(--gold-600);
+  --color-gold-700: var(--gold-700);
+  --color-gold-800: var(--gold-800);
+  --color-gold-900: var(--gold-900);
+
+  --color-cyan-50: var(--cyan-50);
+  --color-cyan-100: var(--cyan-100);
+  --color-cyan-200: var(--cyan-200);
+  --color-cyan-300: var(--cyan-300);
+  --color-cyan-400: var(--cyan-400);
+  --color-cyan-500: var(--cyan-500);
+  --color-cyan-600: var(--cyan-600);
+  --color-cyan-700: var(--cyan-700);
+  --color-cyan-800: var(--cyan-800);
+  --color-cyan-900: var(--cyan-900);
+
+  /* Sidebar */
   --color-sidebar-background: var(--sidebar-background);
   --color-sidebar-foreground: var(--sidebar-foreground);
   --color-sidebar-primary: var(--sidebar-primary);
@@ -105,21 +759,27 @@
   --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-ring: var(--sidebar-ring);
+  --color-sidebar: var(--sidebar);
+
+  /* Charts */
   --color-chart-1: var(--chart-1);
   --color-chart-2: var(--chart-2);
   --color-chart-3: var(--chart-3);
   --color-chart-4: var(--chart-4);
   --color-chart-5: var(--chart-5);
+
+  /* Radii */
   --radius-sm: calc(var(--radius) - 4px);
   --radius-md: calc(var(--radius) - 2px);
   --radius-lg: var(--radius);
   --radius-xl: calc(var(--radius) + 4px);
-  --font-sans: var(--font-sans);
-  --font-mono: var(--font-mono);
-  --color-sidebar: var(--sidebar);
   --radius-2xl: calc(var(--radius) * 1.8);
   --radius-3xl: calc(var(--radius) * 2.2);
   --radius-4xl: calc(var(--radius) * 2.6);
+
+  /* Fonts */
+  --font-sans: var(--font-sans);
+  --font-mono: var(--font-mono);
 }
 
 @layer base {
@@ -131,6 +791,8 @@
     font-feature-settings: "rlig" 1, "calt" 1;
   }
 }
+
+/* ── Micro-interaction Animations ─────────────────── */
 
 @keyframes shimmer {
   0% { background-position: -200% 0; }
@@ -148,4 +810,215 @@
   );
   background-size: 200% 100%;
   animation: shimmer 1.5s ease-in-out infinite;
+}
+
+/* Success pulse — completing a task/habit */
+@keyframes success-pulse {
+  0% { box-shadow: 0 0 0 0 var(--shadow-success); }
+  50% { box-shadow: 0 0 0 8px transparent; }
+  100% { box-shadow: 0 0 0 0 transparent; }
+}
+.animate-success-pulse {
+  animation: success-pulse 0.6s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+/* Energy flare — streak maintained */
+@keyframes energy-flare {
+  0% { box-shadow: 0 0 0 0 var(--shadow-energy); transform: scale(1); }
+  50% { box-shadow: 0 0 16px 4px var(--shadow-energy); transform: scale(1.02); }
+  100% { box-shadow: 0 0 0 0 transparent; transform: scale(1); }
+}
+.animate-energy-flare {
+  animation: energy-flare 0.5s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+/* XP gain float */
+@keyframes xp-float {
+  0% { opacity: 1; transform: translateY(0) scale(1); }
+  100% { opacity: 0; transform: translateY(-40px) scale(0.8); }
+}
+.animate-xp-float {
+  animation: xp-float 0.8s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+/* Achievement unlock shimmer */
+@keyframes achievement-unlock {
+  0% { background-position: -100% 0; opacity: 0.8; }
+  50% { opacity: 1; }
+  100% { background-position: 200% 0; opacity: 1; }
+}
+.animate-achievement-unlock {
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    var(--gold-200) 50%,
+    transparent 100%
+  );
+  background-size: 200% 100%;
+  animation: achievement-unlock 1s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+/* Level up burst */
+@keyframes level-up-burst {
+  0% { transform: scale(0.8); opacity: 0; }
+  50% { transform: scale(1.1); opacity: 1; }
+  100% { transform: scale(1); opacity: 1; }
+}
+.animate-level-up {
+  animation: level-up-burst 0.4s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+/* Card hover lift */
+@keyframes card-lift {
+  0% { box-shadow: 0 1px 3px var(--shadow-card); }
+  100% { box-shadow: 0 8px 24px var(--shadow-card-hover); }
+}
+.animate-card-lift {
+  animation: card-lift 0.2s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+/* ── Premium Visual Effects ─────────────────────────── */
+
+/* Stagger entrance for lists */
+@keyframes stagger-in {
+  0% { opacity: 0; transform: translateY(12px); }
+  100% { opacity: 1; transform: translateY(0); }
+}
+.animate-stagger-in {
+  animation: stagger-in 0.4s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+  opacity: 0;
+}
+
+/* Floating ambient orb */
+@keyframes float-orb {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  25% { transform: translate(10px, -15px) scale(1.05); }
+  50% { transform: translate(-5px, -25px) scale(1); }
+  75% { transform: translate(-15px, -10px) scale(0.95); }
+}
+.animate-float-orb {
+  animation: float-orb 8s ease-in-out infinite;
+}
+
+/* Subtle pulse glow */
+@keyframes pulse-glow {
+  0%, 100% { opacity: 0.4; transform: scale(1); }
+  50% { opacity: 0.7; transform: scale(1.08); }
+}
+.animate-pulse-glow {
+  animation: pulse-glow 3s ease-in-out infinite;
+}
+
+/* Number count-up feel */
+@keyframes number-pop {
+  0% { transform: scale(0.8); opacity: 0; }
+  60% { transform: scale(1.05); }
+  100% { transform: scale(1); opacity: 1; }
+}
+.animate-number-pop {
+  animation: number-pop 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+}
+
+/* Gradient shimmer for hero cards */
+@keyframes gradient-shift {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+.animate-gradient-shift {
+  background-size: 200% 200%;
+  animation: gradient-shift 6s ease infinite;
+}
+
+/* Press feedback */
+@keyframes press-scale {
+  0% { transform: scale(1); }
+  50% { transform: scale(0.97); }
+  100% { transform: scale(1); }
+}
+.animate-press {
+  transition: transform 0.15s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.animate-press:active {
+  transform: scale(0.97);
+}
+
+/* Ring expand on check */
+@keyframes ring-expand {
+  0% { transform: scale(0.5); opacity: 1; }
+  100% { transform: scale(2.5); opacity: 0; }
+}
+.animate-ring-expand {
+  animation: ring-expand 0.6s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+/* Slide in from right */
+@keyframes slide-in-right {
+  0% { opacity: 0; transform: translateX(20px); }
+  100% { opacity: 1; transform: translateX(0); }
+}
+.animate-slide-in-right {
+  animation: slide-in-right 0.3s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+/* Mesh gradient background */
+.mesh-gradient {
+  background:
+    radial-gradient(ellipse at 15% 50%, rgba(37, 99, 255, 0.04) 0%, transparent 60%),
+    radial-gradient(ellipse at 85% 30%, rgba(0, 194, 255, 0.03) 0%, transparent 60%),
+    radial-gradient(ellipse at 50% 90%, rgba(246, 195, 68, 0.02) 0%, transparent 60%),
+    var(--background);
+}
+
+/* Glass card effect */
+.glass-card {
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.5);
+}
+.dark .glass-card {
+  background: rgba(21, 28, 44, 0.7);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+/* Hero card with animated gradient border */
+.hero-card {
+  position: relative;
+  isolation: isolate;
+}
+.hero-card::before {
+  content: "";
+  position: absolute;
+  inset: -1px;
+  border-radius: inherit;
+  padding: 1px;
+  background: linear-gradient(135deg, rgba(255,255,255,0.4), rgba(255,255,255,0.1));
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* Stat number large display */
+.stat-number {
+  font-size: 2rem;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+  .animate-float-orb,
+  .animate-pulse-glow,
+  .animate-gradient-shift {
+    animation: none;
+  }
+  .animate-stagger-in {
+    opacity: 1;
+    animation: none;
+  }
 }

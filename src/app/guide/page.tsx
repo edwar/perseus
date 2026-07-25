@@ -48,9 +48,9 @@ const steps = [
     icon: Wallet,
     title: "Configura tus presupuestos",
     desc: "Define categorías como 'Mercado', 'Transporte', 'Arriendo', etc. Asigna un monto límite mensual a cada una. Esto le da contexto a tus gastos.",
-    color: "text-amber-600",
-    bg: "bg-amber-100",
-    border: "border-amber-200",
+    color: "text-warning",
+    bg: "bg-orange-100",
+    border: "border-orange-200",
     tip: "Empieza con 3-5 categorías básicas. Puedes agregar más después.",
   },
   {
@@ -58,7 +58,7 @@ const steps = [
     icon: Receipt,
     title: "Registra tus transacciones",
     desc: "Hay dos formas: (a) Manual: ingresa el monto, descripción y categoría. (b) Escaneo: sube un screenshot de tu Nequi, Daviplata o banco y la IA extrae los datos automáticamente.",
-    color: "text-emerald-600",
+    color: "text-success",
     bg: "bg-emerald-100",
     border: "border-emerald-200",
     tip: "El escaneo con IA es ideal para recibos de compras diarias. Ahorra minutos cada vez.",
@@ -78,9 +78,9 @@ const steps = [
     icon: TrendingDown,
     title: "Registra tus deudas",
     desc: "Ingresa cada deuda con su saldo total, tasa de interés, cuota mensual y cuotas restantes. Puedes escanear la factura del banco para auto-completar los datos.",
-    color: "text-red-600",
-    bg: "bg-red-100",
-    border: "border-red-200",
+    color: "text-danger",
+    bg: "bg-coral-100",
+    border: "border-coral-200",
     tip: "Escanea tu factura ICETEX, Tarjeta de Crédito o préstamo bancario y los campos se llenan solos.",
   },
   {
@@ -88,9 +88,9 @@ const steps = [
     icon: PiggyBank,
     title: "Define metas de ahorro",
     desc: "Crea metas con un monto objetivo y una fecha límite. Ej: 'Viaje a la playa: $2.000.000 para Diciembre'. El progreso se actualiza automáticamente.",
-    color: "text-violet-600",
-    bg: "bg-violet-100",
-    border: "border-violet-200",
+    color: "text-xp",
+    bg: "bg-purple-100",
+    border: "border-purple-200",
     tip: "Usa metas pequeñas al principio para crear el hábito.",
   },
   {
@@ -98,9 +98,9 @@ const steps = [
     icon: ScanLine,
     title: "Sube documentos",
     desc: "Al escanear un recibo o factura, el documento se guarda automáticamente en la sección Documentos. Puedes ver el PDF original en un visor integrado.",
-    color: "text-orange-600",
-    bg: "bg-orange-100",
-    border: "border-orange-200",
+    color: "text-energy",
+    bg: "bg-flame-100",
+    border: "border-flame-200",
     tip: "Los documentos se organizan por año y mes para que encuentres rápido cualquier factura.",
   },
   {
@@ -108,9 +108,9 @@ const steps = [
     icon: LayoutDashboard,
     title: "Revisa tu Dashboard",
     desc: "El dashboard te muestra un resumen completo: tu balance actual, ingresos vs gastos del mes, transacciones recientes y el progreso de tus presupuestos y ahorros.",
-    color: "text-indigo-600",
-    bg: "bg-indigo-100",
-    border: "border-indigo-200",
+    color: "text-primary",
+    bg: "bg-blue-100",
+    border: "border-blue-200",
     tip: "Revisa el dashboard cada semana para mantener el control de tus finanzas.",
   },
 ]
@@ -135,7 +135,7 @@ export default function GuidePage() {
         <header className="flex items-center justify-between">
           <Link href="/" className="flex items-center gap-3">
             <Logo className="h-8 w-8" />
-            <span className="text-lg font-bold text-gray-900">Perseus</span>
+            <span className="text-lg font-bold text-neutral-900">Perseus</span>
           </Link>
           <div className="flex items-center gap-3">
             <Link href="/login">
@@ -153,10 +153,10 @@ export default function GuidePage() {
           <div className="mx-auto mb-6 flex h-20 w-20 items-center justify-center rounded-[1.5rem] bg-linear-to-br from-white/60 to-white/20 p-4 shadow-2xl shadow-blue-900/10 ring-1 ring-white/40 backdrop-blur-sm">
             <Logo className="h-full w-full drop-shadow-lg" />
           </div>
-          <h1 className="text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">
+          <h1 className="text-3xl font-bold tracking-tight text-neutral-900 sm:text-4xl">
             Cómo usar Perseus
           </h1>
-          <p className="mx-auto mt-4 max-w-lg text-base leading-relaxed text-gray-500">
+          <p className="mx-auto mt-4 max-w-lg text-base leading-relaxed text-neutral-500">
             Sigue estos pasos para configurar tu cuenta y empezar a controlar tus finanzas personales en minutos.
           </p>
         </section>
@@ -178,9 +178,9 @@ export default function GuidePage() {
                       <span className={`flex h-6 w-6 items-center justify-center rounded-full text-xs font-bold text-white ${s.color.replace("text-", "bg-")}`}>
                         {s.number}
                       </span>
-                      <h3 className="text-lg font-semibold text-gray-900">{s.title}</h3>
+                      <h3 className="text-lg font-semibold text-neutral-900">{s.title}</h3>
                     </div>
-                    <p className="mt-2 text-sm leading-relaxed text-gray-600">{s.desc}</p>
+                    <p className="mt-2 text-sm leading-relaxed text-neutral-600">{s.desc}</p>
                     <div className="mt-3 flex items-start gap-2 rounded-lg bg-blue-50/80 px-3 py-2">
                       <CheckCircle className="mt-0.5 h-3.5 w-3.5 shrink-0 text-blue-500" />
                       <p className="text-xs text-blue-700">{s.tip}</p>
@@ -207,7 +207,7 @@ export default function GuidePage() {
           </Link>
         </section>
 
-        <footer className="mt-16 border-t border-gray-200/60 py-8 text-center text-xs text-gray-400">
+        <footer className="mt-16 border-t border-neutral-200/60 py-8 text-center text-xs text-neutral-400">
           <p>&copy; {new Date().getFullYear()} Perseus. Hecho en Colombia.</p>
         </footer>
       </div>

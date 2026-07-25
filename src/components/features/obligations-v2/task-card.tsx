@@ -18,11 +18,10 @@ export function TaskCard({ instance, onToggleTask, onDelete }: TaskCardProps) {
   const [showConfetti, setShowConfetti] = useState(false)
   const [confirmDelete, setConfirmDelete] = useState(false)
   const [deleting, setDeleting] = useState(false)
-  const prevCompletedRef = useRef(0)
-
   const completedCount = instance.tasks.filter(t => t.completed).length
   const totalCount = instance.tasks.length
   const allCompleted = totalCount > 0 && completedCount === totalCount
+  const prevCompletedRef = useRef(completedCount)
 
   useEffect(() => {
     if (completedCount === totalCount && totalCount > 0 && prevCompletedRef.current < totalCount) {
@@ -53,7 +52,7 @@ export function TaskCard({ instance, onToggleTask, onDelete }: TaskCardProps) {
           <div className={cn(
             "flex h-10 w-10 shrink-0 items-center justify-center rounded-xl transition-all duration-300",
             allCompleted
-              ? "bg-emerald-500 text-white shadow-lg shadow-emerald-500/25"
+              ? "bg-success text-white shadow-lg shadow-success/25"
               : "bg-muted"
           )}>
             {allCompleted ? (
@@ -84,7 +83,7 @@ export function TaskCard({ instance, onToggleTask, onDelete }: TaskCardProps) {
                 </p>
                 <div className="h-1.5 flex-1 max-w-[100px] rounded-full bg-muted overflow-hidden">
                   <div
-                    className="h-full bg-emerald-500 transition-all duration-500"
+                    className="h-full bg-success transition-all duration-500"
                     style={{ width: `${(completedCount / totalCount) * 100}%` }}
                   />
                 </div>
@@ -99,7 +98,7 @@ export function TaskCard({ instance, onToggleTask, onDelete }: TaskCardProps) {
 
         <button
           onClick={() => setConfirmDelete(true)}
-          className="p-2 mr-2 text-muted-foreground hover:text-red-500 transition-colors rounded-lg hover:bg-red-50"
+          className="p-2 mr-2 text-muted-foreground hover:text-danger transition-colors rounded-lg hover:bg-coral-50"
         >
           <Trash2 className="h-4 w-4" />
         </button>
@@ -127,11 +126,14 @@ export function TaskCard({ instance, onToggleTask, onDelete }: TaskCardProps) {
 
 function TaskItem({ task, onToggle }: { task: TaskInstance; onToggle: (id: string, completed: boolean) => void }) {
   const [isAnimating, setIsAnimating] = useState(false)
+  const [showRing, setShowRing] = useState(false)
 
   const handleToggle = useCallback(() => {
     if (!task.completed) {
       setIsAnimating(true)
+      setShowRing(true)
       setTimeout(() => setIsAnimating(false), 400)
+      setTimeout(() => setShowRing(false), 600)
     }
     onToggle(task.id, !task.completed)
   }, [task.id, task.completed, onToggle])
@@ -140,23 +142,30 @@ function TaskItem({ task, onToggle }: { task: TaskInstance; onToggle: (id: strin
     <button
       onClick={handleToggle}
       className={cn(
-        "w-full flex items-center gap-3 rounded-xl p-3 text-left transition-all duration-200",
+        "w-full flex items-center gap-3 rounded-xl p-3 text-left transition-all duration-200 group/task",
         task.completed
-          ? "bg-emerald-500/5"
+          ? "bg-success/5"
           : "hover:bg-muted/50",
         isAnimating && "scale-[1.02]"
       )}
     >
-      <div className={cn(
-        "flex h-7 w-7 shrink-0 items-center justify-center rounded-lg transition-all duration-300",
-        task.completed
-          ? "bg-emerald-500 text-white"
-          : "border-2 border-muted-foreground/30 bg-background"
-      )}>
-        {task.completed && <Check className="h-4 w-4" />}
+      <div className="relative">
+        <div className={cn(
+          "flex h-7 w-7 shrink-0 items-center justify-center rounded-lg transition-all duration-300",
+          task.completed
+            ? "bg-success text-white shadow-md shadow-success/25"
+            : "border-2 border-muted-foreground/25 bg-background group-hover/task:border-primary/40"
+        )}>
+          {task.completed && <Check className="h-4 w-4 animate-number-pop" />}
+        </div>
+        {showRing && (
+          <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+            <div className="h-7 w-7 rounded-lg border-2 border-success animate-ring-expand" />
+          </div>
+        )}
       </div>
 
-      <span className="text-sm">{task.taskEmoji}</span>
+      <span className="text-sm transition-transform duration-200 group-hover/task:scale-105">{task.taskEmoji}</span>
 
       <span className={cn(
         "flex-1 text-sm transition-all duration-300",
@@ -166,7 +175,7 @@ function TaskItem({ task, onToggle }: { task: TaskInstance; onToggle: (id: strin
       </span>
 
       {task.completed && (
-        <span className="text-xs text-emerald-600 font-medium">✓</span>
+        <span className="text-xs text-success font-medium animate-number-pop">✓</span>
       )}
     </button>
   )

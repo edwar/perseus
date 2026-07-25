@@ -38,7 +38,7 @@ export function DocumentCard({ doc, onDelete }: DocumentCardProps) {
     <>
       <Card className="relative overflow-hidden h-[200px] w-[200px] rounded-sm cursor-pointer" onClick={() => setOpen(true)}>
         <div className="absolute top-2 right-2 z-20">
-          <Button variant="ghost" size="icon" className="text-red-500 hover:text-white bg-white hover:bg-red-500 rounded-full" onClick={(e) => { e.stopPropagation(); setDeleteConfirm(true) }}>
+          <Button variant="ghost" size="icon" className="text-danger hover:text-white bg-white hover:bg-danger rounded-full" onClick={(e) => { e.stopPropagation(); setDeleteConfirm(true) }}>
             <Trash2 className="h-4 w-4" />
           </Button>
         </div>
@@ -90,7 +90,7 @@ export function DocumentCard({ doc, onDelete }: DocumentCardProps) {
                     </Button>
                   </a>
                 )}
-                <Button variant="ghost" size="icon" className="text-red-500 hover:text-red-700" onClick={(e) => { e.stopPropagation(); setDeleteConfirm(true) }}>
+                <Button variant="ghost" size="icon" className="text-danger hover:text-danger-hover" onClick={(e) => { e.stopPropagation(); setDeleteConfirm(true) }}>
                   <Trash2 className="h-4 w-4" />
                 </Button>
                 <Button variant="ghost" size="icon" onClick={() => setOpen(false)}>

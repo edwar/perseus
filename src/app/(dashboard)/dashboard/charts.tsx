@@ -4,7 +4,7 @@ import { useMemo } from "react"
 import { PieChart, Pie, Cell, ResponsiveContainer, BarChart, Bar, LineChart, Line, XAxis, YAxis, Tooltip, CartesianGrid, Legend } from "recharts"
 import { Card, CardContent } from "@/components/ui/card"
 
-const COLORS = ["#1D4ED8", "#3b82f6", "#60a5fa", "#93c5fd", "#bfdbfe", "#dbeafe", "#2563eb", "#6366f1"]
+const COLORS = ["#2563FF", "#3B82F6", "#60A5FA", "#93C5FD", "#BFDBFE", "#DBEAFE", "#1D4FD8", "#7C3AED"]
 
 export function SpendingPie({ data }: { data: Array<{ name: string; value: number }> }) {
   return (
@@ -47,8 +47,8 @@ export function IncomeBar({ data }: { data: Array<{ month: string; income: numbe
             <XAxis dataKey="month" tick={{ fontSize: 11 }} tickFormatter={(v: string) => v.slice(5)} />
             <YAxis tick={{ fontSize: 11 }} tickFormatter={(v: unknown) => `$${((v as number) / 1000).toFixed(0)}k`} />
             <Tooltip formatter={(v: unknown) => `$${(v as number).toLocaleString("es-CO")}`} />
-            <Bar dataKey="income" name="Ingresos" fill="#1D4ED8" radius={[4, 4, 0, 0]} />
-            <Bar dataKey="expenses" name="Gastos" fill="#ef4444" radius={[4, 4, 0, 0]} />
+            <Bar dataKey="income" name="Ingresos" fill="#2563FF" radius={[4, 4, 0, 0]} />
+            <Bar dataKey="expenses" name="Gastos" fill="#FF5A5F" radius={[4, 4, 0, 0]} />
           </BarChart>
         </ResponsiveContainer>
       </CardContent>
@@ -98,7 +98,7 @@ export function DailyExpensesChart({ transactions }: { transactions: Array<{ dat
         <p className="font-semibold">Gastos diarios</p>
         <div className="text-right">
           <p className="text-xs text-muted-foreground">Promedio diario</p>
-          <p className="text-sm font-bold text-red-600">${avgDaily.toLocaleString("es-CO")}</p>
+          <p className="text-sm font-bold text-danger">${avgDaily.toLocaleString("es-CO")}</p>
         </div>
       </div>
       <CardContent>
@@ -119,9 +119,9 @@ export function DailyExpensesChart({ transactions }: { transactions: Array<{ dat
               <Line
                 type="monotone"
                 dataKey="amount"
-                stroke="#ef4444"
+                stroke="#FF5A5F"
                 strokeWidth={2}
-                dot={{ fill: "#ef4444", r: 3 }}
+                dot={{ fill: "#FF5A5F", r: 3 }}
                 activeDot={{ r: 5 }}
               />
             </LineChart>
@@ -157,11 +157,11 @@ export function TopExpensesChart({ transactions }: { transactions: Array<{ descr
                 <div key={i} className="space-y-1">
                   <div className="flex items-center justify-between text-sm">
                     <span className="font-medium truncate max-w-[60%]">{tx.description}</span>
-                    <span className="font-bold text-red-600">${tx.amount.toLocaleString("es-CO")}</span>
+                    <span className="font-bold text-danger">${tx.amount.toLocaleString("es-CO")}</span>
                   </div>
                   <div className="h-2 rounded-full bg-muted overflow-hidden">
                     <div
-                      className="h-full bg-gradient-to-r from-red-400 to-red-600 transition-all duration-500"
+                      className="h-full bg-gradient-to-r from-coral-300 to-coral-500 transition-all duration-500"
                       style={{ width: `${percentage}%` }}
                     />
                   </div>

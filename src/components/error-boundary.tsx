@@ -38,7 +38,7 @@ export class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundarySt
       return (
         <Card className="m-4">
           <CardContent className="flex flex-col items-center justify-center py-12 text-center">
-            <AlertTriangle className="h-12 w-12 text-amber-500 mb-4" />
+            <AlertTriangle className="h-12 w-12 text-warning mb-4" />
             <h2 className="text-lg font-semibold mb-2">Algo salió mal</h2>
             <p className="text-sm text-muted-foreground mb-4 max-w-md">
               Ha ocurrido un error inesperado. Por favor, intenta de nuevo.

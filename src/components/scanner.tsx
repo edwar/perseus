@@ -177,7 +177,7 @@ export function Scanner<T extends ScanMode>({ mode, onResult, onClear, className
           )}
 
           {scanned && (
-            <div className="flex items-center gap-2 text-emerald-600 text-sm">
+            <div className="flex items-center gap-2 text-success text-sm">
               <Check className="h-4 w-4" />
               <span className="font-medium">Escaneado correctamente</span>
               <Button
@@ -197,14 +197,14 @@ export function Scanner<T extends ScanMode>({ mode, onResult, onClear, className
           )}
 
           {quotaExceeded && (
-            <div className="flex items-center gap-2 rounded-lg border border-amber-200 bg-amber-50 p-3 text-xs text-amber-700">
+            <div className="flex items-center gap-2 rounded-lg border border-orange-200 bg-orange-50 p-3 text-xs text-orange-700">
               <CloudOff className="h-4 w-4 shrink-0" />
               <span>Cuota de OCR en la nube agotada. Usando OCR local (Tesseract.js) — menor precisión.</span>
             </div>
           )}
 
           {!quotaExceeded && remaining < 50 && (
-            <p className="text-xs text-amber-600 text-center">
+            <p className="text-xs text-warning text-center">
               OCR en la nube: {remaining} de 1000 usos este mes
             </p>
           )}

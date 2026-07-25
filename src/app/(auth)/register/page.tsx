@@ -81,14 +81,14 @@ export default function RegisterPage() {
             </div>
           </div>
           <div className="mt-10 text-center">
-            <h1 className="text-4xl font-bold tracking-tight text-gray-900">Perseus</h1>
-            <p className="mt-2 text-base text-gray-500">Controla tus finanzas personales</p>
+            <h1 className="text-4xl font-bold tracking-tight text-neutral-900">Perseus</h1>
+            <p className="mt-2 text-base text-neutral-500">Controla tus finanzas personales</p>
           </div>
         </div>
 
         <div className="w-full px-16 pb-12">
           <blockquote className="border-l-2 border-blue-200 pl-5">
-            <p className="text-sm leading-relaxed text-gray-400 italic">
+            <p className="text-sm leading-relaxed text-neutral-400 italic">
               &ldquo;La libertad financiera no se trata de tener dinero ilimitado,
               sino de controlar el que tienes.&rdquo;
             </p>
@@ -107,7 +107,7 @@ export default function RegisterPage() {
           </div>
 
           <div className="mb-8">
-            <h2 className="text-xl font-semibold text-gray-900">Crear cuenta</h2>
+            <h2 className="text-xl font-semibold text-neutral-900">Crear cuenta</h2>
             <p className="mt-1 text-sm text-muted-foreground">
               ¿Ya tienes cuenta?{" "}
               <a href="/login" className="font-medium text-blue-600 hover:text-blue-700 dark:hover:text-blue-300">
@@ -118,7 +118,7 @@ export default function RegisterPage() {
 
           <form onSubmit={handleSubmit} className="space-y-5">
             <div className="space-y-1.5">
-              <Label htmlFor="name" className="text-xs font-medium text-gray-700">
+              <Label htmlFor="name" className="text-xs font-medium text-neutral-700">
                 Nombre
               </Label>
               <Input
@@ -134,7 +134,7 @@ export default function RegisterPage() {
             </div>
 
             <div className="space-y-1.5">
-              <Label htmlFor="email" className="text-xs font-medium text-gray-700">
+              <Label htmlFor="email" className="text-xs font-medium text-neutral-700">
                 Email
               </Label>
               <Input
@@ -150,7 +150,7 @@ export default function RegisterPage() {
             </div>
 
             <div className="space-y-1.5">
-              <Label htmlFor="password" className="text-xs font-medium text-gray-700">
+              <Label htmlFor="password" className="text-xs font-medium text-neutral-700">
                 Contraseña
               </Label>
               <div className="relative">
@@ -167,7 +167,7 @@ export default function RegisterPage() {
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-0 top-0 flex h-full w-11 items-center justify-center text-gray-400 hover:text-gray-600 dark:hover:text-gray-300"
+                  className="absolute right-0 top-0 flex h-full w-11 items-center justify-center text-neutral-400 hover:text-neutral-600 dark:hover:text-neutral-300"
                   tabIndex={-1}
                 >
                   {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
@@ -176,7 +176,7 @@ export default function RegisterPage() {
             </div>
 
             {error && (
-              <div className="flex items-center gap-2 rounded-xl border border-red-200 bg-red-50 px-4 py-2.5 text-sm text-red-600">
+              <div className="flex items-center gap-2 rounded-xl border border-coral-200 bg-coral-50 px-4 py-2.5 text-sm text-danger">
                 <svg className="h-4 w-4 shrink-0" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v3.75m9-.75a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9 3.75h.008v.008H12v-.008Z" />
                 </svg>
@@ -199,13 +199,13 @@ export default function RegisterPage() {
               <span className="w-full border-t border-gray-200" />
             </div>
             <div className="relative flex justify-center text-xs uppercase">
-              <span className="bg-amber-50 px-4 text-gray-400">O continúa con</span>
+              <span className="bg-orange-50 px-4 text-neutral-400">O continúa con</span>
             </div>
           </div>
 
           <button
             type="button"
-            className="flex h-11 w-full items-center justify-center gap-3 rounded-xl border border-gray-300 bg-white text-sm font-medium text-gray-700 shadow-sm transition-all hover:border-gray-400 hover:bg-gray-50 hover:shadow-md active:scale-[0.98] dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 dark:hover:bg-gray-800"
+            className="flex h-11 w-full items-center justify-center gap-3 rounded-xl border border-neutral-300 bg-white text-sm font-medium text-neutral-700 shadow-sm transition-all hover:border-neutral-400 hover:bg-neutral-50 hover:shadow-md active:scale-[0.98] dark:border-neutral-700 dark:bg-neutral-900 dark:text-neutral-300 dark:hover:bg-neutral-800"
             onClick={() => authClient.signIn.social({ provider: "google" })}
           >
             <svg viewBox="0 0 24 24" className="h-5 w-5 shrink-0">
@@ -217,7 +217,7 @@ export default function RegisterPage() {
             Continuar con Google
           </button>
 
-          <p className="mt-8 text-center text-xs text-gray-400">
+          <p className="mt-8 text-center text-xs text-neutral-400">
             Al registrarte aceptas nuestros{" "}
             <a href="#" className="underline hover:text-gray-600">términos</a>{" "}
             y{" "}

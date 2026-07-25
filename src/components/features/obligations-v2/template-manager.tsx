@@ -85,7 +85,7 @@ export function TemplateManager({ onClose }: TemplateManagerProps) {
                 <Button variant="ghost" size="icon" onClick={() => { setEditing(t); setShowForm(true) }}>
                   <Pencil className="h-4 w-4" />
                 </Button>
-                <Button variant="ghost" size="icon" onClick={() => setDeleteConfirm(t.id)} className="text-red-500">
+                <Button variant="ghost" size="icon" onClick={() => setDeleteConfirm(t.id)} className="text-danger">
                   <Trash2 className="h-4 w-4" />
                 </Button>
               </div>

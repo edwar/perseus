@@ -1,6 +1,5 @@
 import { Button } from "@/components/ui/button"
-import { Badge } from "@/components/ui/badge"
-import { Pencil, Trash2, Repeat, Calendar } from "lucide-react"
+import { Pencil, Trash2, Repeat, Calendar, TrendingUp, TrendingDown } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { formatCurrency } from "@/lib/formats"
 import type { Transaction } from "@/hooks/use-transactions"
@@ -12,47 +11,70 @@ interface TransactionItemProps {
 }
 
 export function TransactionItem({ tx, onEdit, onDelete }: TransactionItemProps) {
+  const isIncome = tx.type === "INCOME"
+
   return (
-    <div className={cn(
-      "flex items-center justify-between px-6 py-3.5 transition-colors duration-150 hover:bg-muted/40",
-      tx.type === "INCOME" ? "border-l-2 border-l-emerald-500/60" : "border-l-2 border-l-red-500/60"
-    )}>
-      <div className="flex items-center gap-3">
-        {tx.recurring && (
-          <div className="flex h-7 w-7 items-center justify-center rounded-full bg-amber-100">
-            <Repeat className="h-3.5 w-3.5 text-amber-600" />
-          </div>
-        )}
-        <div>
-          <p className="text-sm font-medium">{tx.description}</p>
-          <p className="flex items-center gap-2 text-xs text-muted-foreground">
-            <Badge variant="secondary" className="px-1.5 py-0 text-[10px] font-medium rounded-md">
-              {tx.category || (tx.type === "INCOME" ? "Ingreso" : "Gasto")}
-            </Badge>
-            <span>·</span>
-            <span>{tx.date}</span>
+    <div className="group relative flex items-center justify-between px-5 py-4 transition-all duration-200 hover:bg-muted/30 border-b border-border/50 last:border-b-0">
+      {/* Colored left accent — inner div */}
+      <div className={cn(
+        "absolute left-0 top-2 bottom-2 w-0.5 rounded-full",
+        isIncome ? "bg-success" : "bg-danger"
+      )} />
+
+      <div className="flex items-center gap-3.5 min-w-0 pl-2">
+        {/* Icon */}
+        <div className={cn(
+          "flex h-10 w-10 shrink-0 items-center justify-center rounded-xl transition-transform duration-200 group-hover:scale-110",
+          isIncome
+            ? "bg-linear-to-br from-success/15 to-success/5 text-success"
+            : "bg-linear-to-br from-danger/15 to-danger/5 text-danger"
+        )}>
+          {tx.recurring ? (
+            <Repeat className="h-4.5 w-4.5" />
+          ) : isIncome ? (
+            <TrendingUp className="h-4.5 w-4.5" />
+          ) : (
+            <TrendingDown className="h-4.5 w-4.5" />
+          )}
+        </div>
+
+        {/* Info */}
+        <div className="min-w-0">
+          <p className="text-sm font-semibold truncate">{tx.description}</p>
+          <div className="flex items-center gap-1.5 mt-0.5 flex-wrap">
+            <span className={cn(
+              "inline-flex items-center rounded-md px-1.5 py-0.5 text-[10px] font-semibold",
+              isIncome ? "bg-success/10 text-success" : "bg-danger/10 text-danger"
+            )}>
+              {tx.category || (isIncome ? "Ingreso" : "Gasto")}
+            </span>
+            <span className="text-[11px] text-muted-foreground">{tx.date}</span>
             {tx.recurring && tx.nextDate && (
-              <Badge variant="outline" className="flex items-center gap-0.5 border-amber-200 text-amber-600">
-                <Calendar className="h-3 w-3" />
-                Próximo: {tx.nextDate}
-              </Badge>
+              <span className="inline-flex items-center gap-0.5 rounded-md bg-orange-50 px-1.5 py-0.5 text-[10px] font-medium text-warning border border-orange-200/50">
+                <Calendar className="h-2.5 w-2.5" />
+                {tx.nextDate}
+              </span>
             )}
-          </p>
+          </div>
         </div>
       </div>
-      <div className="flex items-center gap-2">
+
+      {/* Amount + Actions */}
+      <div className="flex items-center gap-3 shrink-0 pl-3">
         <span className={cn(
-          "text-sm font-semibold tabular-nums",
-          tx.type === "INCOME" ? "text-emerald-600" : "text-red-600"
+          "text-sm font-bold tabular-nums tracking-tight",
+          isIncome ? "text-success" : "text-danger"
         )}>
-          {tx.type === "INCOME" ? "+" : "-"}{formatCurrency(tx.amount)}
+          {isIncome ? "+" : "-"}{formatCurrency(tx.amount)}
         </span>
-        <Button variant="ghost" size="icon-xs" onClick={() => onEdit(tx.id)}>
-          <Pencil className="h-3 w-3" />
-        </Button>
-        <Button variant="ghost" size="icon-xs" onClick={() => onDelete(tx.id)} className="text-red-500 hover:text-red-700">
-          <Trash2 className="h-3 w-3" />
-        </Button>
+        <div className="flex gap-0.5 md:opacity-0 md:group-hover:opacity-100 transition-opacity duration-200">
+          <Button variant="ghost" size="icon" onClick={() => onEdit(tx.id)} className="h-8 w-8">
+            <Pencil className="h-3.5 w-3.5" />
+          </Button>
+          <Button variant="ghost" size="icon" onClick={() => onDelete(tx.id)} className="h-8 w-8 text-danger hover:text-danger-hover hover:bg-coral-50">
+            <Trash2 className="h-3.5 w-3.5" />
+          </Button>
+        </div>
       </div>
     </div>
   )

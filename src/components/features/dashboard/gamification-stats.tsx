@@ -123,70 +123,82 @@ export function GamificationStats() {
   return (
     <div className="space-y-4">
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-        <Card className="relative overflow-hidden border-orange-200 bg-gradient-to-br from-orange-50 to-orange-100/50">
-          <CardContent className="p-4">
-            <div className="flex items-center gap-3">
-              <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-orange-500 text-white shadow-lg shadow-orange-500/25">
-                <Flame className="h-5 w-5" />
-              </div>
-              <div>
-                <p className="text-xs text-orange-600 font-medium">Racha</p>
-                <p className="text-2xl font-bold text-orange-700">{stats.streak}</p>
-                <p className="text-[10px] text-orange-500">días consecutivos</p>
-              </div>
+        {/* Streak Card — Fire energy */}
+        <div className="group relative overflow-hidden rounded-2xl border border-flame-200/60 bg-gradient-to-br from-flame-50 via-white to-flame-100/30 p-5 transition-all duration-300 hover:-translate-y-0.5 hover:shadow-lg hover:shadow-energy/15 animate-stagger-in" style={{ animationDelay: "180ms" }}>
+          <div className="absolute -right-4 -top-4 h-20 w-20 rounded-full bg-energy/5 animate-pulse-glow pointer-events-none" />
+          <div className="flex items-center gap-4">
+            <div className="relative flex h-12 w-12 items-center justify-center rounded-2xl bg-linear-to-br from-energy to-flame-600 text-white shadow-lg shadow-energy/30 transition-transform duration-300 group-hover:scale-110">
+              <Flame className="h-6 w-6" />
+              {stats.streak > 0 && (
+                <div className="absolute -right-1 -top-1 h-3 w-3 rounded-full bg-white ring-2 ring-energy animate-pulse-glow" />
+              )}
             </div>
-          </CardContent>
-        </Card>
+            <div>
+              <p className="text-xs font-semibold uppercase tracking-wider text-energy">Racha</p>
+              <p className="stat-number text-flame-700 mt-0.5">{stats.streak}</p>
+              <p className="text-[11px] font-medium text-flame-400">días consecutivos</p>
+            </div>
+          </div>
+        </div>
 
-        <Card className="relative overflow-hidden border-emerald-200 bg-gradient-to-br from-emerald-50 to-emerald-100/50">
-          <CardContent className="p-4">
-            <div className="flex items-center gap-3">
-              <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-emerald-500 text-white shadow-lg shadow-emerald-500/25">
-                <CheckCircle2 className="h-5 w-5" />
-              </div>
-              <div>
-                <p className="text-xs text-emerald-600 font-medium">Hoy</p>
-                <p className="text-2xl font-bold text-emerald-700">{completionRate}%</p>
-                <p className="text-[10px] text-emerald-500">{stats.completedToday}/{stats.totalToday} tareas</p>
-              </div>
+        {/* Today Card — Growth / Success */}
+        <div className="group relative overflow-hidden rounded-2xl border border-emerald-200/60 bg-gradient-to-br from-emerald-50 via-white to-emerald-100/30 p-5 transition-all duration-300 hover:-translate-y-0.5 hover:shadow-lg hover:shadow-success/15 animate-stagger-in" style={{ animationDelay: "240ms" }}>
+          <div className="absolute -right-4 -top-4 h-20 w-20 rounded-full bg-success/5 animate-pulse-glow pointer-events-none" style={{ animationDelay: "1s" }} />
+          <div className="flex items-center gap-4">
+            <div className="relative flex h-12 w-12 items-center justify-center rounded-2xl bg-linear-to-br from-success to-emerald-600 text-white shadow-lg shadow-success/30 transition-transform duration-300 group-hover:scale-110">
+              <CheckCircle2 className="h-6 w-6" />
+              {completionRate === 100 && stats.totalToday > 0 && (
+                <div className="absolute -right-1 -top-1 h-3 w-3 rounded-full bg-white ring-2 ring-achievement animate-pulse-glow" />
+              )}
             </div>
-          </CardContent>
-        </Card>
+            <div>
+              <p className="text-xs font-semibold uppercase tracking-wider text-success">Hoy</p>
+              <div className="flex items-baseline gap-1.5 mt-0.5">
+                <p className="stat-number text-emerald-700">{completionRate}</p>
+                <span className="text-lg font-bold text-emerald-400">%</span>
+              </div>
+              <p className="text-[11px] font-medium text-emerald-400">{stats.completedToday}/{stats.totalToday} tareas</p>
+            </div>
+          </div>
+        </div>
 
-        <Card className="relative overflow-hidden border-blue-200 bg-gradient-to-br from-blue-50 to-blue-100/50">
-          <CardContent className="p-4">
-            <div className="flex items-center gap-3">
-              <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-blue-500 text-white shadow-lg shadow-blue-500/25">
-                <Target className="h-5 w-5" />
-              </div>
-              <div>
-                <p className="text-xs text-blue-600 font-medium">Plantillas</p>
-                <p className="text-2xl font-bold text-blue-700">{templates.length}</p>
-                <p className="text-[10px] text-blue-500">activas</p>
-              </div>
+        {/* Templates Card — Control / Primary */}
+        <div className="group relative overflow-hidden rounded-2xl border border-blue-200/60 bg-gradient-to-br from-blue-50 via-white to-blue-100/30 p-5 transition-all duration-300 hover:-translate-y-0.5 hover:shadow-lg hover:shadow-primary/15 animate-stagger-in" style={{ animationDelay: "300ms" }}>
+          <div className="absolute -right-4 -top-4 h-20 w-20 rounded-full bg-primary/5 animate-pulse-glow pointer-events-none" style={{ animationDelay: "2s" }} />
+          <div className="flex items-center gap-4">
+            <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-linear-to-br from-primary to-blue-700 text-white shadow-lg shadow-primary/30 transition-transform duration-300 group-hover:scale-110">
+              <Target className="h-6 w-6" />
             </div>
-          </CardContent>
-        </Card>
+            <div>
+              <p className="text-xs font-semibold uppercase tracking-wider text-primary">Plantillas</p>
+              <p className="stat-number text-blue-700 mt-0.5">{templates.length}</p>
+              <p className="text-[11px] font-medium text-blue-400">activas</p>
+            </div>
+          </div>
+        </div>
 
-        <Card className="relative overflow-hidden border-violet-200 bg-gradient-to-br from-violet-50 to-violet-100/50">
-          <CardContent className="p-4">
-            <div className="flex items-center gap-3">
-              <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-violet-500 text-white shadow-lg shadow-violet-500/25">
-                <TrendingUp className="h-5 w-5" />
-              </div>
-              <div>
-                <p className="text-xs text-violet-600 font-medium">Promedio semanal</p>
-                <p className="text-2xl font-bold text-violet-700">{avgWeek}%</p>
-                <p className="text-[10px] text-violet-500">completado</p>
-              </div>
+        {/* Weekly Avg Card — XP / Mastery */}
+        <div className="group relative overflow-hidden rounded-2xl border border-purple-200/60 bg-gradient-to-br from-purple-50 via-white to-purple-100/30 p-5 transition-all duration-300 hover:-translate-y-0.5 hover:shadow-lg hover:shadow-xp/15 animate-stagger-in" style={{ animationDelay: "360ms" }}>
+          <div className="absolute -right-4 -top-4 h-20 w-20 rounded-full bg-xp/5 animate-pulse-glow pointer-events-none" style={{ animationDelay: "3s" }} />
+          <div className="flex items-center gap-4">
+            <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-linear-to-br from-xp to-purple-700 text-white shadow-lg shadow-xp/30 transition-transform duration-300 group-hover:scale-110">
+              <TrendingUp className="h-6 w-6" />
             </div>
-          </CardContent>
-        </Card>
+            <div>
+              <p className="text-xs font-semibold uppercase tracking-wider text-xp">Promedio semanal</p>
+              <div className="flex items-baseline gap-1.5 mt-0.5">
+                <p className="stat-number text-purple-700">{avgWeek}</p>
+                <span className="text-lg font-bold text-purple-400">%</span>
+              </div>
+              <p className="text-[11px] font-medium text-purple-400">completado</p>
+            </div>
+          </div>
+        </div>
       </div>
 
-      <Card>
-        <div className="border-b px-6 py-4">
-          <p className="font-semibold">Progreso semanal</p>
+      <Card className="overflow-hidden border-0 shadow-lg animate-stagger-in" style={{ animationDelay: "420ms" }}>
+        <div className="border-b px-6 py-4 bg-gradient-to-r from-muted/50 to-transparent">
+          <p className="font-semibold text-sm">Progreso semanal</p>
         </div>
         <CardContent className="pt-4">
           <ResponsiveContainer width="100%" height={160}>
@@ -217,7 +229,7 @@ export function GamificationStats() {
                 {chartData.map((entry, index) => (
                   <Cell
                     key={index}
-                    fill={entry.isToday ? "#10b981" : entry.percentage >= 100 ? "#3b82f6" : entry.percentage > 0 ? "#93c5fd" : "#e2e8f0"}
+                    fill={entry.isToday ? "#16C784" : entry.percentage >= 100 ? "#2563FF" : entry.percentage > 0 ? "#93C5FD" : "#E2E8F0"}
                   />
                 ))}
               </Bar>

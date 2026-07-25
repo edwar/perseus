@@ -15,17 +15,17 @@ const features = [
   {
     title: "Deudas",
     desc: "Controla tus deudas con saldo, tasa de interés y progreso de pago. Escanea facturas bancarias.",
-    gradient: "from-red-500 to-red-600",
+    gradient: "from-coral-400 to-coral-500",
   },
   {
     title: "Ahorros",
     desc: "Define metas de ahorro con monto objetivo y fecha límite. Sigue tu progreso mes a mes.",
-    gradient: "from-violet-500 to-violet-600",
+    gradient: "from-purple-500 to-purple-600",
   },
   {
     title: "Presupuestos",
     desc: "Asigna presupuestos por categoría con items detallados. Compara tu gasto real vs planeado.",
-    gradient: "from-amber-500 to-amber-600",
+    gradient: "from-orange-500 to-orange-600",
   },
   {
     title: "Recurrentes",
@@ -35,12 +35,12 @@ const features = [
   {
     title: "Obligaciones",
     desc: "Lleva el control de tus obligaciones financieras mensuales con pagos parciales y fechas de corte.",
-    gradient: "from-indigo-500 to-indigo-600",
+    gradient: "from-blue-500 to-blue-600",
   },
   {
     title: "Documentos",
     desc: "Almacena recibos y facturas escaneados. Visor PDF integrado y búsqueda por año y mes.",
-    gradient: "from-orange-500 to-orange-600",
+    gradient: "from-flame-400 to-flame-500",
   },
 ]
 
@@ -64,10 +64,10 @@ export function LandingPage() {
         <header className="flex items-center justify-between">
           <div className="flex items-center gap-3">
             <Logo className="h-8 w-8" />
-            <span className="text-lg font-bold text-gray-900">Perseus</span>
+            <span className="text-lg font-bold text-neutral-900">Perseus</span>
           </div>
           <div className="flex items-center gap-3">
-            <a href="/login" className="inline-flex items-center justify-center rounded-lg px-4 py-2 text-sm font-medium text-gray-700 transition-colors hover:bg-gray-100">
+            <a href="/login" className="inline-flex items-center justify-center rounded-lg px-4 py-2 text-sm font-medium text-neutral-700 transition-colors hover:bg-neutral-100">
               Iniciar sesión
             </a>
             <a href="/register" className="inline-flex items-center gap-1.5 rounded-lg bg-linear-to-r from-blue-600 to-blue-500 px-4 py-2 text-sm font-medium text-white shadow-lg shadow-blue-500/20 transition-all hover:shadow-xl hover:shadow-blue-500/30">
@@ -81,13 +81,13 @@ export function LandingPage() {
           <div className="mx-auto mb-8 flex h-24 w-24 items-center justify-center rounded-[1.75rem] bg-linear-to-br from-white/60 to-white/20 p-5 shadow-2xl shadow-blue-900/10 ring-1 ring-white/40 backdrop-blur-sm">
             <Logo className="h-full w-full drop-shadow-lg" />
           </div>
-          <h1 className="text-4xl font-bold tracking-tight text-gray-900 sm:text-5xl lg:text-6xl">
+          <h1 className="text-4xl font-bold tracking-tight text-neutral-900 sm:text-5xl lg:text-6xl">
             Controla tus{" "}
             <span className="bg-linear-to-r from-blue-600 to-cyan-500 bg-clip-text text-transparent">
               finanzas personales
             </span>
           </h1>
-          <p className="mx-auto mt-6 max-w-xl text-base leading-relaxed text-gray-500">
+          <p className="mx-auto mt-6 max-w-xl text-base leading-relaxed text-neutral-500">
             Perseus te ayuda a registrar, organizar y visualizar tus ingresos, gastos, deudas y ahorros
             en un solo lugar. Con escaneo inteligente de recibos y facturas.
           </p>
@@ -102,7 +102,7 @@ export function LandingPage() {
               Comenzar gratis
               <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
             </a>
-            <a href="/login" className="inline-flex items-center rounded-lg border border-gray-300 px-8 py-3 text-base font-medium text-gray-700 transition-colors hover:bg-gray-50">
+            <a href="/login" className="inline-flex items-center rounded-lg border border-neutral-300 px-8 py-3 text-base font-medium text-neutral-700 transition-colors hover:bg-neutral-50">
               Iniciar sesión
             </a>
           </div>
@@ -110,10 +110,10 @@ export function LandingPage() {
 
         <section className="mt-32">
           <div className="mb-12 text-center">
-            <h2 className="text-2xl font-bold text-gray-900 sm:text-3xl">
+            <h2 className="text-2xl font-bold text-neutral-900 sm:text-3xl">
               Todo lo que necesitas para tus finanzas
             </h2>
-            <p className="mt-3 text-sm text-gray-500">
+            <p className="mt-3 text-sm text-neutral-500">
               Ocho módulos diseñados para darte control total de tu dinero.
             </p>
           </div>
@@ -137,7 +137,7 @@ export function LandingPage() {
           </a>
         </section>
 
-        <footer className="mt-20 border-t border-gray-200/60 py-8 text-center text-xs text-gray-400">
+        <footer className="mt-20 border-t border-neutral-200/60 py-8 text-center text-xs text-neutral-400">
           <p>&copy; {new Date().getFullYear()} Perseus. Hecho en Colombia.</p>
         </footer>
       </div>

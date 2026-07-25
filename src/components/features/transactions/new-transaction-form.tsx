@@ -47,6 +47,9 @@ export function NewTransactionForm({ onClose }: NewTransactionFormProps) {
       type,
       category,
       date: new Date().toISOString().split("T")[0],
+      recurring: isRecurring || undefined,
+      frequency: isRecurring ? frequency : undefined,
+      nextDate: isRecurring && dayOfMonth ? `${new Date().toISOString().slice(0, 8)}${dayOfMonth.padStart(2, "0")}` : undefined,
     })
 
     if (category && description) {
@@ -114,14 +117,14 @@ export function NewTransactionForm({ onClose }: NewTransactionFormProps) {
             <Button
               variant="ghost"
               onClick={() => { setType("EXPENSE"); setStep("frequency") }}
-              className="group flex h-auto w-auto flex-col items-center gap-3 rounded-xl border-2 border-transparent bg-red-50 p-8 transition-all hover:border-red-300 hover:bg-red-100"
+              className="group flex h-auto w-auto flex-col items-center gap-3 rounded-xl border-2 border-transparent bg-coral-50 p-8 transition-all hover:border-coral-300 hover:bg-coral-100"
             >
-              <div className="flex h-16 w-16 items-center justify-center rounded-full bg-red-100 text-red-600 transition-transform group-hover:scale-110">
+              <div className="flex h-16 w-16 items-center justify-center rounded-full bg-coral-100 text-danger transition-transform group-hover:scale-110">
                 <ArrowUp className="h-7 w-7" />
               </div>
               <div className="text-center">
-                <p className="text-lg font-bold text-red-700">Gasto</p>
-                <p className="text-xs text-red-500">Salida de dinero</p>
+                <p className="text-lg font-bold text-coral-700">Gasto</p>
+                <p className="text-xs text-coral-500">Salida de dinero</p>
               </div>
             </Button>
             <Button
@@ -129,12 +132,12 @@ export function NewTransactionForm({ onClose }: NewTransactionFormProps) {
               onClick={() => { setType("INCOME"); setStep("frequency") }}
               className="group flex h-auto w-auto flex-col items-center gap-3 rounded-xl border-2 border-transparent bg-emerald-50 p-8 transition-all hover:border-emerald-300 hover:bg-emerald-100"
             >
-              <div className="flex h-16 w-16 items-center justify-center rounded-full bg-emerald-100 text-emerald-600 transition-transform group-hover:scale-110">
+              <div className="flex h-16 w-16 items-center justify-center rounded-full bg-emerald-100 text-success transition-transform group-hover:scale-110">
                 <ArrowDown className="h-7 w-7" />
               </div>
               <div className="text-center">
                 <p className="text-lg font-bold text-emerald-700">Ingreso</p>
-                <p className="text-xs text-emerald-500">Entrada de dinero</p>
+                <p className="text-xs text-success-light">Entrada de dinero</p>
               </div>
             </Button>
           </div>
@@ -161,9 +164,9 @@ export function NewTransactionForm({ onClose }: NewTransactionFormProps) {
             <Button
               variant="ghost"
               onClick={() => setStep("pick")}
-              className="group flex h-auto w-auto flex-col items-center gap-3 rounded-xl border-2 border-transparent bg-card p-8 shadow-sm transition-all hover:border-amber-300 hover:shadow-md"
+              className="group flex h-auto w-auto flex-col items-center gap-3 rounded-xl border-2 border-transparent bg-card p-8 shadow-sm transition-all hover:border-orange-300 hover:shadow-md"
             >
-              <div className="flex h-16 w-16 items-center justify-center rounded-full bg-amber-100 text-amber-600 transition-transform group-hover:scale-110">
+              <div className="flex h-16 w-16 items-center justify-center rounded-full bg-orange-100 text-warning transition-transform group-hover:scale-110">
                 <Repeat className="h-7 w-7" />
               </div>
               <div className="text-center">
@@ -201,7 +204,7 @@ export function NewTransactionForm({ onClose }: NewTransactionFormProps) {
                   <p className="text-sm font-medium">{item.name}</p>
                   <p className="text-xs text-muted-foreground">{item.category}</p>
                 </div>
-                <span className={cn("text-sm font-semibold", type === "INCOME" ? "text-emerald-600" : "text-red-600")}>
+                <span className={cn("text-sm font-semibold", type === "INCOME" ? "text-success" : "text-danger")}>
                   {type === "INCOME" ? "+" : "-"}${item.amount.toLocaleString("es-CO")}
                 </span>
               </Button>
@@ -239,7 +242,7 @@ export function NewTransactionForm({ onClose }: NewTransactionFormProps) {
               onClick={() => setStep("scan")}
               className="group flex h-auto w-auto flex-col items-center gap-3 rounded-xl border-2 border-transparent bg-card p-8 shadow-sm transition-all hover:border-primary/50 hover:shadow-md"
             >
-              <div className="flex h-16 w-16 items-center justify-center rounded-full bg-violet-100 text-violet-600 transition-transform group-hover:scale-110">
+              <div className="flex h-16 w-16 items-center justify-center rounded-full bg-purple-100 text-xp transition-transform group-hover:scale-110">
                 <ScanLine className="h-7 w-7" />
               </div>
               <div className="text-center">
@@ -255,7 +258,7 @@ export function NewTransactionForm({ onClose }: NewTransactionFormProps) {
         <CardContent>
           <div className="space-y-4">
             <div className="mb-4 flex items-center gap-2">
-              <div className={cn("flex h-8 w-8 items-center justify-center rounded-full", type === "EXPENSE" ? "bg-red-100 text-red-600" : "bg-emerald-100 text-emerald-600")}>
+              <div className={cn("flex h-8 w-8 items-center justify-center rounded-full", type === "EXPENSE" ? "bg-coral-100 text-danger" : "bg-emerald-100 text-success")}>
                 {type === "EXPENSE" ? <ArrowUp className="h-4 w-4" /> : <ArrowDown className="h-4 w-4" />}
               </div>
               <p className="text-sm font-medium">{type === "EXPENSE" ? "Gasto" : "Ingreso"}</p>
@@ -341,7 +344,7 @@ export function NewTransactionForm({ onClose }: NewTransactionFormProps) {
         <CardContent>
           <div className="space-y-4">
             <div className="mb-4 flex items-center gap-2">
-              <div className="flex h-8 w-8 items-center justify-center rounded-full bg-violet-100 text-violet-600">
+              <div className="flex h-8 w-8 items-center justify-center rounded-full bg-purple-100 text-xp">
                 <ScanLine className="h-4 w-4" />
               </div>
               <p className="text-sm font-medium">Escanear screenshot</p>
