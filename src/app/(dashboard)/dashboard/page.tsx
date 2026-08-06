@@ -2,10 +2,10 @@
 
 import { useMemo } from "react"
 import { DashboardClient } from "./dashboard-client"
-import { useTransactionStore } from "@/store/transaction-store"
+import { useTransactions } from "@/hooks/useData"
 
 export default function DashboardPage() {
-  const transactions = useTransactionStore((s) => s.transactions)
+  const { data: transactions = [] } = useTransactions()
 
   const totalIncome = useMemo(() => transactions.filter((t) => t.type === "INCOME").reduce((s, t) => s + t.amount, 0), [transactions])
   const totalExpenses = useMemo(() => transactions.filter((t) => t.type === "EXPENSE").reduce((s, t) => s + t.amount, 0), [transactions])

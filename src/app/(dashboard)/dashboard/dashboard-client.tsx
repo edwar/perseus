@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/button"
 import { Empty } from "@/components/ui/empty"
 import { CurrencyInput } from "@/components/ui/currency-input"
 import { Input } from "@/components/ui/input"
-import { useTransactionStore } from "@/store/transaction-store"
+import { useTransactionMutations } from "@/hooks/useData"
 import { ConfirmDialog } from "@/components/ui/confirm-dialog"
 import { GamificationStats } from "@/components/features/dashboard/gamification-stats"
 import { SpendingPie, IncomeBar, DailyExpensesChart, TopExpensesChart } from "./charts"
@@ -48,8 +48,7 @@ export function DashboardClient({
   spendingByCategory,
   monthlyChart,
 }: DashboardClientProps) {
-  const updateTransaction = useTransactionStore((s) => s.updateTransaction)
-  const deleteTransaction = useTransactionStore((s) => s.deleteTransaction)
+  const { update, remove } = useTransactionMutations()
   const [editTx, setEditTx] = useState<string | null>(null)
   const [deleteTx, setDeleteTx] = useState<string | null>(null)
   const [txPage, setTxPage] = useState(1)
@@ -216,7 +215,7 @@ export function DashboardClient({
           {paginatedTxs.map((tx) => (
             <div key={tx.id}>
               {editTx === tx.id ? (
-                <DashboardInlineEdit tx={tx} onSave={(d) => { updateTransaction(tx.id, d); setEditTx(null) }} onCancel={() => setEditTx(null)} />
+                <DashboardInlineEdit tx={tx} onSave={(d) => { update.mutate({ id: tx.id, ...d, type: tx.type, date: tx.date, category: tx.category ?? "" } as any); setEditTx(null) }} onCancel={() => setEditTx(null)} />
               ) : (
                 <div className="flex items-center justify-between px-6 py-3.5 transition-all duration-200 hover:bg-muted/40 hover:pl-7">
                   <div className="flex items-center gap-3">
@@ -277,7 +276,7 @@ export function DashboardClient({
         )}
       </Card>
 
-      <ConfirmDialog open={!!deleteTx} title="Eliminar transacción" message={`¿Estás seguro?`} onConfirm={() => { if (deleteTx) deleteTransaction(deleteTx); setDeleteTx(null) }} onCancel={() => setDeleteTx(null)} />
+      <ConfirmDialog open={!!deleteTx} title="Eliminar transacción" message={`¿Estás seguro?`} onConfirm={() => { if (deleteTx) remove.mutate(deleteTx); setDeleteTx(null) }} onCancel={() => setDeleteTx(null)} />
     </div>
   )
 }
