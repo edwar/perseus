@@ -43,8 +43,8 @@ export function TransactionItem({ tx, onEdit, onDelete }: TransactionItemProps) 
           <span className={cn("text-sm font-bold tabular-nums tracking-tight", isIncome ? "text-success" : "text-danger")}>
             {isIncome ? "+" : "-"}{formatCurrency(tx.amount)}
           </span>
-          <div className="flex gap-0.5 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
-            <Button variant="ghost" size="icon" onClick={() => onEdit(tx.id)} className="h-8 w-8">
+          <div className="flex gap-0.5 transition-opacity duration-200">
+            <Button variant="ghost" size="icon" onClick={() => onEdit(tx.id)} className="h-8 w-8 text-cyan-500 hover:bg-cyan-50 hover:text-blue-500">
               <Pencil className="h-3.5 w-3.5" />
             </Button>
             <Button variant="ghost" size="icon" onClick={() => onDelete(tx.id)} className="h-8 w-8 text-danger hover:text-danger-hover hover:bg-coral-50">
