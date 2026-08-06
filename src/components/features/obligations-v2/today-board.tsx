@@ -3,7 +3,6 @@
 import { useMemo, useState } from "react"
 import { Calendar, ChevronLeft, ChevronRight, Settings, Sparkles, Plus, CheckCircle2, ListTodo, Flame } from "lucide-react"
 import { Button } from "@/components/ui/button"
-import { Card, CardContent } from "@/components/ui/card"
 import { toLocalDateString } from "@/lib/formats"
 import { ProgressRing } from "./progress-ring"
 import { StreakCounter } from "./streak-counter"
@@ -350,8 +349,8 @@ export function TodayBoard({ onOpenSettings }: { onOpenSettings: () => void }) {
           {showActivateMenu && (
             <>
               <div className="fixed inset-0 z-40" onClick={() => setShowActivateMenu(false)} />
-              <Card className="fixed left-4 right-4 top-auto z-50 mt-2 shadow-xl border-border/50 max-h-[60vh] overflow-y-auto sm:absolute sm:left-0 sm:right-0 sm:top-full">
-                <CardContent className="p-2">
+              <div className="fixed left-4 right-4 bottom-4 z-50 bg-card rounded-2xl border border-border shadow-2xl max-h-[60vh] overflow-y-auto sm:absolute sm:left-0 sm:right-0 sm:top-full sm:bottom-auto sm:mt-2 sm:shadow-xl">
+                <div className="p-2">
                   {availableTemplates.map((template) => (
                     <button
                       key={template.id}
@@ -374,8 +373,8 @@ export function TodayBoard({ onOpenSettings }: { onOpenSettings: () => void }) {
                       </div>
                     </button>
                   ))}
-                </CardContent>
-              </Card>
+                </div>
+              </div>
             </>
           )}
         </div>
