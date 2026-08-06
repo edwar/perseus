@@ -67,7 +67,7 @@ export function TransactionItem({ tx, onEdit, onDelete }: TransactionItemProps) 
         )}>
           {isIncome ? "+" : "-"}{formatCurrency(tx.amount)}
         </span>
-        <div className="flex gap-0.5 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity duration-200">
+        <div className="hidden sm:flex gap-0.5 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity duration-200">
           <Button variant="ghost" size="icon" onClick={() => onEdit(tx.id)} className="h-8 w-8">
             <Pencil className="h-3.5 w-3.5" />
           </Button>
