@@ -1,6 +1,7 @@
 "use client"
 
-import { useMemo, useState } from "react"
+import { useMemo, useState, useRef, useEffect } from "react"
+import { createPortal } from "react-dom"
 import { Calendar, ChevronLeft, ChevronRight, Settings, Sparkles, Plus, CheckCircle2, ListTodo, Flame } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { toLocalDateString } from "@/lib/formats"
@@ -22,6 +23,8 @@ export function TodayBoard({ onOpenSettings }: { onOpenSettings: () => void }) {
   const today = useMemo(() => toLocalDateString(new Date()), [])
   const [selectedDate, setSelectedDate] = useState(today)
   const [showActivateMenu, setShowActivateMenu] = useState(false)
+  const [menuPos, setMenuPos] = useState<{ top: number; left: number; width: number }>({ top: 0, left: 0, width: 0 })
+  const buttonRef = useRef<HTMLButtonElement>(null)
 
   const { data: templates = [], isLoading: templatesLoading } = useObligationTemplates()
   const { data: instances = [], isLoading: instancesLoading } = useObligationInstances(selectedDate)
@@ -101,6 +104,21 @@ export function TodayBoard({ onOpenSettings }: { onOpenSettings: () => void }) {
     date.setDate(date.getDate() + delta)
     setSelectedDate(toLocalDateString(date))
   }
+
+  function toggleMenu() {
+    if (!showActivateMenu && buttonRef.current) {
+      const rect = buttonRef.current.getBoundingClientRect()
+      setMenuPos({ top: rect.bottom + 8, left: rect.left, width: rect.width })
+    }
+    setShowActivateMenu(!showActivateMenu)
+  }
+
+  useEffect(() => {
+    if (!showActivateMenu) return
+    function onScroll() { setShowActivateMenu(false) }
+    window.addEventListener("scroll", onScroll, { passive: true })
+    return () => window.removeEventListener("scroll", onScroll)
+  }, [showActivateMenu])
 
   async function activateTemplate(templateId: string) {
     try {
@@ -336,20 +354,28 @@ export function TodayBoard({ onOpenSettings }: { onOpenSettings: () => void }) {
 
       {/* Available Templates - always show when there are templates */}
       {availableTemplates.length > 0 && (
-        <div className="relative animate-stagger-in" style={{ animationDelay: `${200 + instances.length * 60}ms` }}>
+        <div className="animate-stagger-in" style={{ animationDelay: `${200 + instances.length * 60}ms` }}>
           <Button
+            ref={buttonRef}
             variant="outline"
             className="w-full border-dashed h-12 rounded-2xl"
-            onClick={() => setShowActivateMenu(!showActivateMenu)}
+            onClick={toggleMenu}
           >
             <Plus className="h-4 w-4 mr-2" />
             Activar plantilla
           </Button>
 
-          {showActivateMenu && (
+          {showActivateMenu && createPortal(
             <>
-              <div className="fixed inset-0 z-40" onClick={() => setShowActivateMenu(false)} />
-              <div className="fixed left-4 right-4 bottom-4 z-50 bg-card rounded-2xl border border-border shadow-2xl max-h-[60vh] overflow-y-auto sm:absolute sm:left-0 sm:right-0 sm:top-full sm:bottom-auto sm:mt-2 sm:shadow-xl">
+              <div className="fixed inset-0 z-[998]" onClick={() => setShowActivateMenu(false)} />
+              <div
+                className="fixed z-[999] bg-card rounded-2xl border border-border shadow-2xl max-h-[60vh] overflow-y-auto"
+                style={{
+                  top: `${menuPos.top}px`,
+                  left: `${menuPos.left}px`,
+                  width: `${menuPos.width}px`,
+                }}
+              >
                 <div className="p-2">
                   {availableTemplates.map((template) => (
                     <button
@@ -375,7 +401,8 @@ export function TodayBoard({ onOpenSettings }: { onOpenSettings: () => void }) {
                   ))}
                 </div>
               </div>
-            </>
+            </>,
+            document.body
           )}
         </div>
       )}
