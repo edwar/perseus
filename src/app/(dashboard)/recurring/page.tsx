@@ -40,7 +40,7 @@ export default function RecurringPage() {
   const expenseItems = items.filter(i => i.type === "EXPENSE")
 
   return (
-    <div className="space-y-6 min-h-screen">
+    <div className="space-y-6 min-h-screen max-w-full overflow-hidden">
       <div className="items-center justify-between mt-10 flex md:hidden">
         <h1 className="text-2xl font-bold">Recurrentes</h1>
         <Button onClick={() => { setEditingId(null); setShowForm(true) }}>

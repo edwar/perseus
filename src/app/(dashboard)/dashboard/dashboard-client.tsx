@@ -60,7 +60,7 @@ export function DashboardClient({
   useEffect(() => { const t = setTimeout(() => setReady(true), 100); return () => clearTimeout(t) }, [])
   if (!ready) {
     return (
-      <div className="space-y-6 min-h-screen">
+    <div className="space-y-6 min-h-screen max-w-full overflow-hidden">
         <h1 className="text-2xl font-bold mt-10 md:hidden">Dashboard</h1>
 
         {/* Hero Cards Skeleton */}

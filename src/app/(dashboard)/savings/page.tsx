@@ -7,7 +7,7 @@ import { SavingsContent } from "@/components/features/savings/savings-content"
 
 export default function SavingsPage() {
   return (
-    <div className="space-y-6 mt-10 md:mt-0">
+    <div className="space-y-6 mt-10 md:mt-0 max-w-full overflow-hidden">
       <Tabs tabs={[{ id: "goals", label: "Metas de Ahorro", icon: <Target className="h-4 w-4" /> }, { id: "invest", label: "Inversiones", icon: <Landmark className="h-4 w-4" /> }]}>
         <SavingsContent />
       </Tabs>

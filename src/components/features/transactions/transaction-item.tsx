@@ -14,7 +14,7 @@ export function TransactionItem({ tx, onEdit, onDelete }: TransactionItemProps) 
   const isIncome = tx.type === "INCOME"
 
   return (
-    <div className="group relative flex items-center justify-between px-5 py-4 transition-all duration-200 hover:bg-muted/30 border-b border-border/50 last:border-b-0">
+    <div className="group relative flex items-center justify-between px-5 py-4 transition-all duration-200 hover:bg-muted/30 border-b border-border/50 last:border-b-0 min-w-0">
       {/* Colored left accent — inner div */}
       <div className={cn(
         "absolute left-0 top-2 bottom-2 w-0.5 rounded-full",
@@ -60,14 +60,14 @@ export function TransactionItem({ tx, onEdit, onDelete }: TransactionItemProps) 
       </div>
 
       {/* Amount + Actions */}
-      <div className="flex items-center gap-3 shrink-0 pl-3">
+      <div className="flex items-center gap-2 sm:gap-3 shrink-0 pl-3 min-w-0">
         <span className={cn(
           "text-sm font-bold tabular-nums tracking-tight",
           isIncome ? "text-success" : "text-danger"
         )}>
           {isIncome ? "+" : "-"}{formatCurrency(tx.amount)}
         </span>
-        <div className="flex gap-0.5 md:opacity-0 md:group-hover:opacity-100 transition-opacity duration-200">
+        <div className="flex gap-0.5 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity duration-200">
           <Button variant="ghost" size="icon" onClick={() => onEdit(tx.id)} className="h-8 w-8">
             <Pencil className="h-3.5 w-3.5" />
           </Button>

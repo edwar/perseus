@@ -57,7 +57,7 @@ export default function TransactionsPage() {
   }
 
   return (
-    <div className="space-y-6 min-h-screen">
+    <div className="space-y-6 min-h-screen max-w-full overflow-hidden">
       <div className="items-center justify-between mt-10 flex md:hidden">
         <h1 className="text-2xl font-bold">Transacciones</h1>
         <Button onClick={() => setShowNewForm(true)}>

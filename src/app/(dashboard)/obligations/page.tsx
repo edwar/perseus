@@ -9,14 +9,14 @@ export default function ObligationsPage() {
 
   if (showSettings) {
     return (
-      <div className="mt-10 md:mt-0">
+      <div className="mt-10 md:mt-0 max-w-full overflow-hidden">
         <TemplateManager onClose={() => setShowSettings(false)} />
       </div>
     )
   }
 
   return (
-    <div className="mt-10 md:mt-0">
+    <div className="mt-10 md:mt-0 max-w-full overflow-hidden">
       <TodayBoard onOpenSettings={() => setShowSettings(true)} />
     </div>
   )

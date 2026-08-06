@@ -47,7 +47,7 @@ export default function DebtsPage() {
 
   if (isLoading) {
     return (
-      <div className="space-y-6 min-h-screen">
+      <div className="space-y-6 min-h-screen max-w-full overflow-hidden">
         <div className="flex items-center justify-between mt-10 md:hidden"><h1 className="text-2xl font-bold">Deudas</h1><div className="h-9 w-24 animate-shimmer rounded-lg bg-muted" /></div>
 
         {/* Summary Skeleton */}

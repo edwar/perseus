@@ -58,7 +58,7 @@ export default function BudgetsPage() {
   if (isLoading) return <BudgetsLoadingSkeleton />
 
   return (
-    <div className="space-y-6 min-h-screen">
+    <div className="space-y-6 min-h-screen max-w-full overflow-hidden">
       <div className="flex items-center justify-between mt-10 md:hidden">
         <h1 className="text-2xl font-bold">Presupuestos</h1>
         <Button className="gap-2" onClick={() => { setEditing(null); setShowForm(true) }}>

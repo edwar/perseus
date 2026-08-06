@@ -66,7 +66,7 @@ export default function DocumentsPage() {
 
   if (isLoading) {
     return (
-      <div className="space-y-6 min-h-screen">
+      <div className="space-y-6 min-h-screen max-w-full overflow-hidden">
         <div className="flex items-center justify-between mt-10 md:hidden"><h1 className="text-2xl font-bold">Documentos</h1></div>
 
         {/* Summary Skeleton */}
@@ -103,7 +103,7 @@ export default function DocumentsPage() {
 
   if (docs.length === 0) {
     return (
-      <div className="space-y-6 min-h-screen">
+      <div className="space-y-6 min-h-screen max-w-full overflow-hidden">
         <h1 className="text-2xl font-bold mt-10 md:hidden">Documentos</h1>
         <Empty icon={ScanLine} title="No hay documentos" description="Los documentos escaneados aparecerán aquí" />
       </div>
