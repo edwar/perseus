@@ -299,7 +299,7 @@ export function TodayBoard({ onOpenSettings }: { onOpenSettings: () => void }) {
         </div>
       )}
 
-      {/* Empty State */}
+      {/* Empty State - no templates at all */}
       {instances.length === 0 && templates.length === 0 && (
         <div className="rounded-2xl border-2 border-dashed border-border bg-card/50 p-12 text-center animate-stagger-in">
           <div className="relative inline-flex mb-4">
@@ -332,47 +332,48 @@ export function TodayBoard({ onOpenSettings }: { onOpenSettings: () => void }) {
               />
             </div>
           ))}
+        </div>
+      )}
 
-          {availableTemplates.length > 0 && (
-            <div className="relative animate-stagger-in" style={{ animationDelay: `${200 + instances.length * 60}ms` }}>
-              <Button
-                variant="outline"
-                className="w-full border-dashed h-12 rounded-2xl"
-                onClick={() => setShowActivateMenu(!showActivateMenu)}
-              >
-                <Plus className="h-4 w-4 mr-2" />
-                Activar plantilla
-              </Button>
+      {/* Available Templates - always show when there are templates */}
+      {availableTemplates.length > 0 && (
+        <div className="relative animate-stagger-in" style={{ animationDelay: `${200 + instances.length * 60}ms` }}>
+          <Button
+            variant="outline"
+            className="w-full border-dashed h-12 rounded-2xl"
+            onClick={() => setShowActivateMenu(!showActivateMenu)}
+          >
+            <Plus className="h-4 w-4 mr-2" />
+            Activar plantilla
+          </Button>
 
-              {showActivateMenu && (
-                <Card className="absolute top-full left-0 right-0 mt-2 z-10 shadow-xl border-border/50">
-                  <CardContent className="p-2">
-                    {availableTemplates.map((template) => (
-                      <button
-                        key={template.id}
-                        onClick={() => activateTemplate(template.id)}
-                        className="w-full flex items-center gap-3 p-3 rounded-xl text-left hover:bg-muted/50 transition-all duration-200 group"
-                      >
-                        <span className="text-xl group-hover:scale-110 transition-transform">{template.emoji}</span>
-                        <div className="flex-1 min-w-0">
-                          <div className="flex items-center gap-2">
-                            <p className="font-medium text-sm truncate">{template.name}</p>
-                            {template.recommended && (
-                              <span className="text-[10px] font-bold bg-primary/10 text-primary px-2 py-0.5 rounded-full shrink-0">
-                                Recomendado
-                              </span>
-                            )}
-                          </div>
-                          <p className="text-xs text-muted-foreground">
-                            {template.tasks.length} tareas
-                          </p>
-                        </div>
-                      </button>
-                    ))}
-                  </CardContent>
-                </Card>
-              )}
-            </div>
+          {showActivateMenu && (
+            <Card className="absolute top-full left-0 right-0 mt-2 z-10 shadow-xl border-border/50">
+              <CardContent className="p-2">
+                {availableTemplates.map((template) => (
+                  <button
+                    key={template.id}
+                    onClick={() => activateTemplate(template.id)}
+                    className="w-full flex items-center gap-3 p-3 rounded-xl text-left hover:bg-muted/50 transition-all duration-200 group"
+                  >
+                    <span className="text-xl group-hover:scale-110 transition-transform">{template.emoji}</span>
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center gap-2">
+                        <p className="font-medium text-sm truncate">{template.name}</p>
+                        {template.recommended && (
+                          <span className="text-[10px] font-bold bg-primary/10 text-primary px-2 py-0.5 rounded-full shrink-0">
+                            Recomendado
+                          </span>
+                        )}
+                      </div>
+                      <p className="text-xs text-muted-foreground">
+                        {template.tasks.length} tareas
+                      </p>
+                    </div>
+                  </button>
+                ))}
+              </CardContent>
+            </Card>
           )}
         </div>
       )}
