@@ -1,6 +1,7 @@
 import { useState, Suspense, lazy } from "react"
 import { ArrowLeft, ArrowUp, ArrowDown, ScanLine, PenLine, Repeat, Plus, X, Sparkles } from "lucide-react"
 import { cn } from "@/lib/utils"
+import { toLocalDateString } from "@/lib/formats"
 import { FREQ_LABELS } from "@/lib/constants"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
@@ -46,10 +47,10 @@ export function NewTransactionForm({ onClose }: NewTransactionFormProps) {
       amount: txAmount,
       type,
       category,
-      date: new Date().toISOString().split("T")[0],
+      date: toLocalDateString(new Date()),
       recurring: isRecurring || undefined,
       frequency: isRecurring ? frequency : undefined,
-      nextDate: isRecurring && dayOfMonth ? `${new Date().toISOString().slice(0, 8)}${dayOfMonth.padStart(2, "0")}` : undefined,
+      nextDate: isRecurring && dayOfMonth ? `${toLocalDateString(new Date()).slice(0, 8)}${dayOfMonth.padStart(2, "0")}` : undefined,
     })
 
     if (category && description) {

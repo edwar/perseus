@@ -6,6 +6,7 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { CurrencyInput } from "@/components/ui/currency-input"
 import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@/components/ui/select"
+import { toLocalDateString } from "@/lib/formats"
 import type { Investment } from "@/hooks/use-savings"
 
 interface InvestmentFormProps {
@@ -29,7 +30,7 @@ export function InvestmentForm({ initial, onClose, onSave, isPending }: Investme
     const start = new Date(startDate)
     const end = new Date(start)
     end.setDate(end.getDate() + Number(termDays))
-    onSave({ entity, amount: Number(amount), rate: Number(rate), termDays: Number(termDays), startDate, endDate: end.toISOString().split("T")[0] })
+    onSave({ entity, amount: Number(amount), rate: Number(rate), termDays: Number(termDays), startDate, endDate: toLocalDateString(end) })
     onClose()
   }
 

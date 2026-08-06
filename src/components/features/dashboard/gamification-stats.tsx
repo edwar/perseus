@@ -4,11 +4,8 @@ import { useMemo } from "react"
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, Cell } from "recharts"
 import { Flame, CheckCircle2, Target, TrendingUp } from "lucide-react"
 import { Card, CardContent } from "@/components/ui/card"
+import { toLocalDateString } from "@/lib/formats"
 import { useObligationTemplates, useObligationInstances } from "@/hooks/use-obligations-v2"
-
-function formatDate(date: Date): string {
-  return date.toISOString().split("T")[0]
-}
 
 function formatShortDay(dateStr: string): string {
   const date = new Date(dateStr + "T12:00:00")
@@ -16,7 +13,7 @@ function formatShortDay(dateStr: string): string {
 }
 
 function useWeekData() {
-  const today = useMemo(() => formatDate(new Date()), [])
+  const today = useMemo(() => toLocalDateString(new Date()), [])
   const { data: todayInstances = [], isLoading: todayLoading } = useObligationInstances(today)
 
   const weekInstances = useMemo(() => {
@@ -24,7 +21,7 @@ function useWeekData() {
     for (let i = 6; i >= 0; i--) {
       const d = new Date()
       d.setDate(d.getDate() - i)
-      dates.push(formatDate(d))
+      dates.push(toLocalDateString(d))
     }
     return dates
   }, [])
@@ -43,7 +40,7 @@ export function GamificationStats() {
 
     const checkDate = new Date()
     for (let i = 0; i < 365; i++) {
-      const dateStr = formatDate(checkDate)
+      const dateStr = toLocalDateString(checkDate)
       if (dateStr > today) {
         checkDate.setDate(checkDate.getDate() - 1)
         continue
@@ -91,7 +88,7 @@ export function GamificationStats() {
     for (let i = 6; i >= 0; i--) {
       const d = new Date()
       d.setDate(d.getDate() - i)
-      const dateStr = formatDate(d)
+      const dateStr = toLocalDateString(d)
       const isToday = dateStr === today
       const dayName = dayNames[d.getDay()]
 

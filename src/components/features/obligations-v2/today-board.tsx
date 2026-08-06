@@ -4,14 +4,11 @@ import { useMemo, useState } from "react"
 import { Calendar, ChevronLeft, ChevronRight, Settings, Sparkles, Plus, CheckCircle2, ListTodo, Flame } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
+import { toLocalDateString } from "@/lib/formats"
 import { ProgressRing } from "./progress-ring"
 import { StreakCounter } from "./streak-counter"
 import { TaskCard } from "./task-card"
 import { useObligationTemplates, useObligationInstances, useObligationMutations } from "@/hooks/use-obligations-v2"
-
-function formatDate(date: Date): string {
-  return date.toISOString().split("T")[0]
-}
 
 function formatDisplayDate(dateStr: string): string {
   const date = new Date(dateStr + "T12:00:00")
@@ -19,11 +16,11 @@ function formatDisplayDate(dateStr: string): string {
 }
 
 function isToday(dateStr: string): boolean {
-  return dateStr === formatDate(new Date())
+  return dateStr === toLocalDateString(new Date())
 }
 
 export function TodayBoard({ onOpenSettings }: { onOpenSettings: () => void }) {
-  const today = useMemo(() => formatDate(new Date()), [])
+  const today = useMemo(() => toLocalDateString(new Date()), [])
   const [selectedDate, setSelectedDate] = useState(today)
   const [showActivateMenu, setShowActivateMenu] = useState(false)
 
@@ -54,7 +51,7 @@ export function TodayBoard({ onOpenSettings }: { onOpenSettings: () => void }) {
     const checkDate = new Date()
 
     for (let i = 0; i < 365; i++) {
-      const dateStr = formatDate(checkDate)
+      const dateStr = toLocalDateString(checkDate)
       const dayInstances = instances.filter(inst => inst.date === dateStr)
 
       if (dayInstances.length === 0 && i > 0) break
@@ -103,7 +100,7 @@ export function TodayBoard({ onOpenSettings }: { onOpenSettings: () => void }) {
   const navigateDate = (delta: number) => {
     const date = new Date(selectedDate + "T12:00:00")
     date.setDate(date.getDate() + delta)
-    setSelectedDate(formatDate(date))
+    setSelectedDate(toLocalDateString(date))
   }
 
   async function activateTemplate(templateId: string) {
