@@ -96,7 +96,7 @@ export function NewTransactionForm({ onClose }: NewTransactionFormProps) {
             <ArrowLeft className="h-4 w-4" />
           </Button>
         )}
-        <div className="flex items-center gap-2 text-sm text-muted-foreground">
+        <div className="flex items-center gap-2 text-sm text-muted-foreground overflow-hidden">
           <span className={cn("font-medium", step === "type" && "text-foreground")}>Tipo</span>
           <span>/</span>
           <span className={cn("font-medium", (step === "frequency" || step === "pick") && "text-foreground")}>Frecuencia</span>

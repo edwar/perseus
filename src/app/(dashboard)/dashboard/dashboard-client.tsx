@@ -150,7 +150,7 @@ export function DashboardClient({
       <h1 className="text-2xl font-bold mt-10 md:hidden">Dashboard</h1>
 
       {/* Hero Cards — Balance */}
-      <div className="relative">
+      <div className="relative overflow-hidden">
         <div className="absolute -top-20 -right-20 h-64 w-64 rounded-full bg-primary/5 blur-3xl animate-float-orb pointer-events-none" />
         <div className="absolute -bottom-10 -left-10 h-48 w-48 rounded-full bg-success/5 blur-3xl animate-float-orb pointer-events-none" style={{ animationDelay: "2s" }} />
         <div className="grid gap-4 sm:grid-cols-3 relative">

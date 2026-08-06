@@ -91,7 +91,7 @@ export default function DocumentsPage() {
             <div className="h-4 w-12 animate-shimmer rounded bg-muted-foreground/15" />
             <div className="h-4 w-6 animate-shimmer rounded bg-muted-foreground/15" />
           </div>
-          <div className="grid gap-4 grid-cols-[repeat(auto-fill,192px)]">
+          <div className="grid gap-4 grid-cols-[repeat(auto-fill,minmax(160px,1fr))]">
             {Array.from({ length: 6 }).map((_, i) => (
               <div key={i} className="rounded-2xl bg-card border border-border/50 h-48 animate-shimmer" />
             ))}
@@ -177,7 +177,7 @@ export default function DocumentsPage() {
             <h2 className="text-sm font-bold">Años</h2>
             <span className="text-xs text-muted-foreground font-medium">({years.length})</span>
           </div>
-          <div className="grid gap-4 grid-cols-[repeat(auto-fill,192px)]">
+          <div className="grid gap-4 grid-cols-[repeat(auto-fill,minmax(160px,1fr))]">
             {years.map((y, i) => {
               const count = docs.filter((d) => d.uploadedAt.startsWith(y)).length
               return (
@@ -212,7 +212,7 @@ export default function DocumentsPage() {
             <h2 className="text-sm font-bold">{year}</h2>
             <span className="text-xs text-muted-foreground font-medium">({monthsInYear.length} meses)</span>
           </div>
-          <div className="grid gap-4 grid-cols-[repeat(auto-fill,192px)]">
+          <div className="grid gap-4 grid-cols-[repeat(auto-fill,minmax(160px,1fr))]">
             {monthsInYear.map((m, i) => {
               const count = docs.filter((d) => d.uploadedAt.startsWith(`${year}-${m}`)).length
               return (
@@ -258,7 +258,7 @@ export default function DocumentsPage() {
                   <h2 className="text-sm font-bold">{type === "receipt" ? "Recibos" : "Facturas"}</h2>
                   <span className="inline-flex items-center rounded-full bg-muted px-2 py-0.5 text-[10px] font-semibold text-muted-foreground">{items.length}</span>
                 </div>
-                <div className="grid gap-4 grid-cols-[repeat(auto-fill,200px)]">
+                <div className="grid gap-4 grid-cols-[repeat(auto-fill,minmax(160px,1fr))]">
                   {items.map((doc, i) => (
                       <div key={doc.id ?? doc.publicId ?? i} className="animate-stagger-in" style={{ animationDelay: `${i * 40}ms` }}>
                         <DocumentCard doc={doc} />

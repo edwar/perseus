@@ -30,7 +30,7 @@ export function DocumentCard({ doc }: DocumentCardProps) {
   return (
     <>
       <div
-        className="group relative overflow-hidden rounded-2xl bg-card border border-border cursor-pointer transition-all duration-300 hover:-translate-y-0.5 hover:shadow-lg hover:shadow-primary/10 w-[200px] h-[240px]"
+        className="group relative overflow-hidden rounded-2xl bg-card border border-border cursor-pointer transition-all duration-300 hover:-translate-y-0.5 hover:shadow-lg hover:shadow-primary/10 w-full h-[240px]"
         onClick={() => setOpen(true)}
       >
         {/* Content area */}
