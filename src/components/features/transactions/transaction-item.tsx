@@ -1,6 +1,6 @@
-import { useRef } from "react"
+import { useState } from "react"
 import { Button } from "@/components/ui/button"
-import { Pencil, Trash2, Repeat, Calendar, TrendingUp, TrendingDown } from "lucide-react"
+import { Pencil, Trash2, Repeat, Calendar, TrendingUp, TrendingDown, MoreHorizontal } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { formatCurrency } from "@/lib/formats"
 import type { Transaction } from "@/hooks/use-transactions"
@@ -13,10 +13,10 @@ interface TransactionItemProps {
 
 export function TransactionItem({ tx, onEdit, onDelete }: TransactionItemProps) {
   const isIncome = tx.type === "INCOME"
-  const scrollRef = useRef<HTMLDivElement>(null)
+  const [showActions, setShowActions] = useState(false)
 
   return (
-    <div className="border-b border-border/50 last:border-b-0 sm:border-b sm:last:border-b-0">
+    <div className="border-b border-border/50 last:border-b-0">
       {/* Desktop: hover-based actions */}
       <div className="group relative hidden sm:flex items-center justify-between px-5 py-4 transition-all duration-200 hover:bg-muted/30 min-w-0">
         <div className={cn("absolute left-0 top-2 bottom-2 w-0.5 rounded-full", isIncome ? "bg-success" : "bg-danger")} />
@@ -54,13 +54,15 @@ export function TransactionItem({ tx, onEdit, onDelete }: TransactionItemProps) 
         </div>
       </div>
 
-      {/* Mobile: swipe-to-reveal actions */}
-      <div
-        ref={scrollRef}
-        className="flex sm:hidden overflow-x-auto snap-x snap-mandatory scrollbar-none -mx-4 px-4"
-        style={{ scrollbarWidth: "none", WebkitOverflowScrolling: "touch" }}
-      >
-        <div className="snap-start shrink-0 w-full relative flex items-center py-4 pr-3">
+      {/* Mobile: tap to show actions */}
+      <div className="sm:hidden relative">
+        <div
+          className={cn(
+            "relative flex items-center justify-between px-5 py-4 transition-all duration-200 min-w-0",
+            showActions ? "bg-muted/30" : "active:bg-muted/30"
+          )}
+          onClick={() => !showActions && setShowActions(true)}
+        >
           <div className={cn("absolute left-0 top-2 bottom-2 w-0.5 rounded-full", isIncome ? "bg-success" : "bg-danger")} />
           <div className="flex items-center gap-3 min-w-0 pl-2">
             <div className={cn("flex h-10 w-10 shrink-0 items-center justify-center rounded-xl", isIncome ? "bg-linear-to-br from-success/15 to-success/5 text-success" : "bg-linear-to-br from-danger/15 to-danger/5 text-danger")}>
@@ -81,20 +83,28 @@ export function TransactionItem({ tx, onEdit, onDelete }: TransactionItemProps) 
               </div>
             </div>
           </div>
-          <div className="shrink-0 pl-3 ml-auto">
+          <div className="shrink-0 pl-3 ml-auto flex items-center gap-2">
             <span className={cn("text-sm font-bold tabular-nums tracking-tight", isIncome ? "text-success" : "text-danger")}>
               {isIncome ? "+" : "-"}{formatCurrency(tx.amount)}
             </span>
+            <MoreHorizontal className="h-4 w-4 text-muted-foreground shrink-0" />
           </div>
         </div>
-        <div className="snap-start shrink-0 flex items-center gap-2 pl-2">
-          <Button variant="ghost" size="icon" onClick={() => onEdit(tx.id)} className="h-10 w-10 rounded-xl">
-            <Pencil className="h-4 w-4" />
-          </Button>
-          <Button variant="ghost" size="icon" onClick={() => onDelete(tx.id)} className="h-10 w-10 rounded-xl text-danger hover:text-danger-hover hover:bg-coral-50">
-            <Trash2 className="h-4 w-4" />
-          </Button>
-        </div>
+
+        {/* Actions panel */}
+        {showActions && (
+          <div className="flex items-center gap-2 px-5 py-2 bg-muted/20 border-t border-border/30 animate-in slide-in-from-top-1">
+            <Button variant="ghost" size="sm" onClick={() => { onEdit(tx.id); setShowActions(false) }} className="gap-1.5 h-8">
+              <Pencil className="h-3.5 w-3.5" /> Editar
+            </Button>
+            <Button variant="ghost" size="sm" onClick={() => { onDelete(tx.id); setShowActions(false) }} className="gap-1.5 h-8 text-danger hover:text-danger-hover hover:bg-coral-50">
+              <Trash2 className="h-3.5 w-3.5" /> Eliminar
+            </Button>
+            <Button variant="ghost" size="sm" onClick={() => setShowActions(false)} className="ml-auto h-8">
+              Cerrar
+            </Button>
+          </div>
+        )}
       </div>
     </div>
   )

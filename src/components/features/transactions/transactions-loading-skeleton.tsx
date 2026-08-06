@@ -38,7 +38,7 @@ export function TransactionsLoadingSkeleton() {
         {[1, 2, 3, 4, 5].map((i) => (
           <div key={i} className="relative flex items-center justify-between px-5 py-4 border-b border-border/50 last:border-b-0 min-w-0">
             <div className="absolute left-0 top-2 bottom-2 w-0.5 rounded-full bg-muted-foreground/20" />
-            <div className="flex items-center gap-3.5 min-w-0 pl-2">
+            <div className="flex items-center gap-3 min-w-0 pl-2">
               <div className="h-10 w-10 shrink-0 animate-shimmer rounded-xl bg-muted-foreground/15" />
               <div className="space-y-2 min-w-0">
                 <div className="h-4 w-32 animate-shimmer rounded bg-muted-foreground/25" />
@@ -48,8 +48,9 @@ export function TransactionsLoadingSkeleton() {
                 </div>
               </div>
             </div>
-            <div className="flex items-center gap-2 shrink-0 pl-3">
-              <div className="h-4 w-24 animate-shimmer rounded bg-muted-foreground/20" />
+            <div className="shrink-0 pl-3 ml-auto flex items-center gap-2">
+              <div className="h-4 w-20 animate-shimmer rounded bg-muted-foreground/20" />
+              <div className="h-4 w-4 animate-shimmer rounded bg-muted-foreground/15" />
             </div>
           </div>
         ))}
