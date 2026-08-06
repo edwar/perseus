@@ -51,7 +51,7 @@ export function SavingsContent() {
     return (
       <section className="space-y-6">
         {/* Summary Skeleton */}
-        <div className="grid gap-4 grid-cols-2 lg:grid-cols-3">
+        <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
           {[1, 2, 3].map((i) => (
             <div key={i} className="rounded-2xl bg-card border border-border/50 p-4">
               <div className="flex items-center gap-3">
@@ -104,7 +104,7 @@ export function SavingsContent() {
         <section className="space-y-6">
           {/* Summary */}
           {goals.length > 0 && (
-            <div className="grid gap-4 grid-cols-2 lg:grid-cols-3 animate-stagger-in">
+            <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 animate-stagger-in">
               <div className="relative overflow-hidden rounded-2xl bg-card border border-success/20 p-4 transition-all duration-300 hover:shadow-lg hover:shadow-success/10">
                 <div className="absolute -right-4 -top-4 h-20 w-20 rounded-full bg-success/5 animate-pulse-glow pointer-events-none" />
                 <div className="relative flex items-center gap-3">
