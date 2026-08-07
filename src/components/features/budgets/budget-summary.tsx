@@ -20,7 +20,7 @@ export function BudgetSummary({ budgets }: BudgetSummaryProps) {
   const totalSpent = useMemo(() => {
     const spentByCategory: Record<string, number> = {}
     for (const tx of transactions) {
-      if (tx.type !== "EXPENSE") continue
+      if (tx.type !== "EXPENSE" || !tx.category) continue
       spentByCategory[tx.category] = (spentByCategory[tx.category] ?? 0) + tx.amount
     }
     return budgets.reduce((acc, b) => acc + (spentByCategory[b.category] ?? 0), 0)
