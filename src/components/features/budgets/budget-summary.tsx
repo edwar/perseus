@@ -1,6 +1,7 @@
+import { useMemo } from "react"
 import { DollarSign, TrendingDown, Wallet } from "lucide-react"
-import { useBalanceStore } from "@/store/balance-store"
 import { formatCurrency } from "@/lib/formats"
+import { useTransactions } from "@/hooks/useData"
 import type { Budget } from "@/hooks/use-budgets"
 
 interface BudgetSummaryProps {
@@ -8,9 +9,26 @@ interface BudgetSummaryProps {
 }
 
 export function BudgetSummary({ budgets }: BudgetSummaryProps) {
-  const totalBalance = useBalanceStore((s) => s.balance)
+  const { data: transactions = [] } = useTransactions()
+
+  const totalBalance = useMemo(() => {
+    return transactions.reduce((acc, t) => {
+      return acc + (t.type === "INCOME" ? t.amount : -t.amount)
+    }, 0)
+  }, [transactions])
+
+  const totalSpent = useMemo(() => {
+    const spentByCategory: Record<string, number> = {}
+    for (const tx of transactions) {
+      if (tx.type !== "EXPENSE") continue
+      spentByCategory[tx.category] = (spentByCategory[tx.category] ?? 0) + tx.amount
+    }
+    return budgets.reduce((acc, b) => acc + (spentByCategory[b.category] ?? 0), 0)
+  }, [transactions, budgets])
+
   const totalBudget = budgets.reduce((s, b) => s + b.amount, 0)
-  const available = totalBalance - totalBudget
+  const remainingBudget = totalBudget - totalSpent
+  const available = totalBalance - remainingBudget
 
   return (
     <div className="grid gap-4 grid-cols-1 sm:grid-cols-3 animate-stagger-in">

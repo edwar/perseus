@@ -23,14 +23,19 @@ export function useDocuments() {
     queryFn: async () => {
       const res = await fetch("/api/documents")
       const json = await res.json()
-      return (json.resources ?? []).map((r: any) => ({
-        id: r.id,
-        publicId: r.publicId,
-        url: r.url,
-        type: r.type,
-        uploadedAt: r.uploadedAt ?? r.createdAt ?? new Date().toISOString(),
-        data: r.data ?? {},
-      })) as ScannedDoc[]
+      return (json.resources ?? []).map((r: any) => {
+        const folderParts = (r.folder ?? "").split("/")
+        const typeFromFolder = folderParts[folderParts.length - 1]
+        const docType = (typeFromFolder === "invoice" || typeFromFolder === "receipt") ? typeFromFolder : "receipt"
+        return {
+          id: r.publicId,
+          publicId: r.publicId,
+          url: r.url,
+          type: docType,
+          uploadedAt: r.createdAt ?? new Date().toISOString(),
+          data: r.data ?? {},
+        }
+      }) as ScannedDoc[]
     },
     staleTime: 30_000,
   })

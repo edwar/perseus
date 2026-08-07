@@ -78,16 +78,6 @@ export default function BudgetsPage() {
 
       {budgets.length > 0 && <BudgetSummary budgets={budgets} />}
 
-      {/* Header */}
-      {budgets.length > 0 && (
-        <div className="flex items-center justify-between animate-stagger-in" style={{ animationDelay: "100ms" }}>
-          <h2 className="text-xl font-bold">Presupuestos</h2>
-          <Button className="gap-2" onClick={() => { setEditing(null); setShowForm(true) }}>
-            <Plus className="h-4 w-4" /> Crear
-          </Button>
-        </div>
-      )}
-
       {budgets.length === 0 ? (
         <Empty icon={PiggyBank} title="No hay presupuestos" description="Crea tu primer presupuesto para controlar tus gastos" action={<Button size="sm" onClick={() => { setEditing(null); setShowForm(true) }}><Plus className="h-3 w-3" /> Crear</Button>} />
       ) : (

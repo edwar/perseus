@@ -20,7 +20,7 @@ export const BUDGET_COLORS = [
   "#7C3AED",
   "#FF5A5F",
   "#16C784",
-  "#FF5A5F",
+  "#EAB308",
   "#00B884",
   "#FF7A00",
 ]

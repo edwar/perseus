@@ -53,11 +53,11 @@ export default function TransactionsPage() {
   if (isLoading) return <TransactionsLoadingSkeleton />
 
   if (showNewForm) {
-    return <NewTransactionForm onClose={() => setShowNewForm(false)} />
+    return <div className="w-full max-w-full overflow-hidden"><NewTransactionForm onClose={() => setShowNewForm(false)} /></div>
   }
 
   return (
-    <div className="space-y-6 min-h-screen max-w-full overflow-hidden">
+    <div className="space-y-6 min-h-screen w-full">
       <div className="items-center justify-between mt-10 flex md:hidden">
         <h1 className="text-2xl font-bold">Transacciones</h1>
         <Button onClick={() => setShowNewForm(true)}>

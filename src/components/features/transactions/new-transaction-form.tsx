@@ -90,21 +90,21 @@ export function NewTransactionForm({ onClose }: NewTransactionFormProps) {
   }
 
   return (
-    <Card className="overflow-hidden mt-10 md:mt-0">
+    <Card className="overflow-hidden mt-10 md:mt-0 w-full max-w-full">
       <div className="flex items-center gap-3 border-b px-6 py-4">
         {step !== "type" && (
           <Button variant="ghost" size="icon" onClick={() => setStep("type")}>
             <ArrowLeft className="h-4 w-4" />
           </Button>
         )}
-        <div className="flex items-center gap-2 text-sm text-muted-foreground overflow-hidden">
-          <span className={cn("font-medium", step === "type" && "text-foreground")}>Tipo</span>
-          <span>/</span>
-          <span className={cn("font-medium", (step === "frequency" || step === "pick") && "text-foreground")}>Frecuencia</span>
-          <span>/</span>
-          <span className={cn("font-medium", (step === "method" || step === "manual" || step === "scan") && "text-foreground")}>Método</span>
-          <span>/</span>
-          <span className={cn("font-medium", (step === "manual" || step === "scan") && "text-foreground")}>Detalles</span>
+        <div className="flex items-center gap-1 sm:gap-1.5 text-[11px] sm:text-xs text-muted-foreground min-w-0 flex-1 overflow-hidden">
+          <span className={cn("font-medium truncate", step === "type" && "text-foreground")}>Tipo</span>
+          <span className="text-muted-foreground/50 shrink-0">/</span>
+          <span className={cn("font-medium truncate", (step === "frequency" || step === "pick") && "text-foreground")}>Frecuencia</span>
+          <span className="text-muted-foreground/50 shrink-0">/</span>
+          <span className={cn("font-medium truncate", (step === "method" || step === "manual" || step === "scan") && "text-foreground")}>Método</span>
+          <span className="text-muted-foreground/50 shrink-0">/</span>
+          <span className={cn("font-medium truncate", (step === "manual" || step === "scan") && "text-foreground")}>Detalles</span>
         </div>
         <Button variant="ghost" size="icon" onClick={reset} className="ml-auto">
           <X className="h-4 w-4" />
@@ -118,27 +118,27 @@ export function NewTransactionForm({ onClose }: NewTransactionFormProps) {
             <Button
               variant="ghost"
               onClick={() => { setType("EXPENSE"); setStep("frequency") }}
-              className="group flex h-auto w-auto flex-col items-center gap-3 rounded-xl border-2 border-transparent bg-coral-50 p-8 transition-all hover:border-coral-300 hover:bg-coral-100"
+              className="group flex h-auto w-auto flex-col items-center gap-3 rounded-xl border-2 border-transparent bg-coral-50 p-5 sm:p-8 transition-all hover:border-coral-300 hover:bg-coral-100"
             >
-              <div className="flex h-16 w-16 items-center justify-center rounded-full bg-coral-100 text-danger transition-transform group-hover:scale-110">
-                <ArrowUp className="h-7 w-7" />
+              <div className="flex h-12 w-12 sm:h-16 sm:w-16 items-center justify-center rounded-full bg-coral-100 text-danger transition-transform group-hover:scale-110">
+                <ArrowUp className="h-5 w-5 sm:h-7 sm:w-7" />
               </div>
               <div className="text-center">
-                <p className="text-lg font-bold text-coral-700">Gasto</p>
-                <p className="text-xs text-coral-500">Salida de dinero</p>
+                <p className="text-base sm:text-lg font-bold text-coral-700">Gasto</p>
+                <p className="text-[10px] sm:text-xs text-coral-500">Salida de dinero</p>
               </div>
             </Button>
             <Button
               variant="ghost"
               onClick={() => { setType("INCOME"); setStep("frequency") }}
-              className="group flex h-auto w-auto flex-col items-center gap-3 rounded-xl border-2 border-transparent bg-emerald-50 p-8 transition-all hover:border-emerald-300 hover:bg-emerald-100"
+              className="group flex h-auto w-auto flex-col items-center gap-3 rounded-xl border-2 border-transparent bg-emerald-50 p-5 sm:p-8 transition-all hover:border-emerald-300 hover:bg-emerald-100"
             >
-              <div className="flex h-16 w-16 items-center justify-center rounded-full bg-emerald-100 text-success transition-transform group-hover:scale-110">
-                <ArrowDown className="h-7 w-7" />
+              <div className="flex h-12 w-12 sm:h-16 sm:w-16 items-center justify-center rounded-full bg-emerald-100 text-success transition-transform group-hover:scale-110">
+                <ArrowDown className="h-5 w-5 sm:h-7 sm:w-7" />
               </div>
               <div className="text-center">
-                <p className="text-lg font-bold text-emerald-700">Ingreso</p>
-                <p className="text-xs text-success-light">Entrada de dinero</p>
+                <p className="text-base sm:text-lg font-bold text-emerald-700">Ingreso</p>
+                <p className="text-[10px] sm:text-xs text-success-light">Entrada de dinero</p>
               </div>
             </Button>
           </div>
@@ -152,27 +152,27 @@ export function NewTransactionForm({ onClose }: NewTransactionFormProps) {
             <Button
               variant="ghost"
               onClick={() => { setIsRecurring(false); setStep("method") }}
-              className="group flex h-auto w-auto flex-col items-center gap-3 rounded-xl border-2 border-transparent bg-card p-8 shadow-sm transition-all hover:border-primary/50 hover:shadow-md"
+              className="group flex h-auto w-auto flex-col items-center gap-3 rounded-xl border-2 border-transparent bg-card p-5 sm:p-8 shadow-sm transition-all hover:border-primary/50 hover:shadow-md"
             >
-              <div className="flex h-16 w-16 items-center justify-center rounded-full bg-muted text-muted-foreground transition-transform group-hover:scale-110">
-                <PenLine className="h-7 w-7" />
+              <div className="flex h-12 w-12 sm:h-16 sm:w-16 items-center justify-center rounded-full bg-muted text-muted-foreground transition-transform group-hover:scale-110">
+                <PenLine className="h-5 w-5 sm:h-7 sm:w-7" />
               </div>
               <div className="text-center">
-                <p className="text-lg font-bold">Ocasional</p>
-                <p className="text-xs text-muted-foreground">Solo una vez</p>
+                <p className="text-base sm:text-lg font-bold">Ocasional</p>
+                <p className="text-[10px] sm:text-xs text-muted-foreground">Solo una vez</p>
               </div>
             </Button>
             <Button
               variant="ghost"
               onClick={() => setStep("pick")}
-              className="group flex h-auto w-auto flex-col items-center gap-3 rounded-xl border-2 border-transparent bg-card p-8 shadow-sm transition-all hover:border-orange-300 hover:shadow-md"
+              className="group flex h-auto w-auto flex-col items-center gap-3 rounded-xl border-2 border-transparent bg-card p-5 sm:p-8 shadow-sm transition-all hover:border-orange-300 hover:shadow-md"
             >
-              <div className="flex h-16 w-16 items-center justify-center rounded-full bg-orange-100 text-warning transition-transform group-hover:scale-110">
-                <Repeat className="h-7 w-7" />
+              <div className="flex h-12 w-12 sm:h-16 sm:w-16 items-center justify-center rounded-full bg-orange-100 text-warning transition-transform group-hover:scale-110">
+                <Repeat className="h-5 w-5 sm:h-7 sm:w-7" />
               </div>
               <div className="text-center">
-                <p className="text-lg font-bold">Recurrente</p>
-                <p className="text-xs text-muted-foreground">Se repite cada mes</p>
+                <p className="text-base sm:text-lg font-bold">Recurrente</p>
+                <p className="text-[10px] sm:text-xs text-muted-foreground">Se repite cada mes</p>
               </div>
             </Button>
           </div>
@@ -228,27 +228,27 @@ export function NewTransactionForm({ onClose }: NewTransactionFormProps) {
             <Button
               variant="ghost"
               onClick={() => setStep("manual")}
-              className="group flex h-auto w-auto flex-col items-center gap-3 rounded-xl border-2 border-transparent bg-card p-8 shadow-sm transition-all hover:border-primary/50 hover:shadow-md"
+              className="group flex h-auto w-auto flex-col items-center gap-3 rounded-xl border-2 border-transparent bg-card p-5 sm:p-8 shadow-sm transition-all hover:border-primary/50 hover:shadow-md"
             >
-              <div className="flex h-16 w-16 items-center justify-center rounded-full bg-muted text-muted-foreground transition-transform group-hover:scale-110">
-                <PenLine className="h-7 w-7" />
+              <div className="flex h-12 w-12 sm:h-16 sm:w-16 items-center justify-center rounded-full bg-muted text-muted-foreground transition-transform group-hover:scale-110">
+                <PenLine className="h-5 w-5 sm:h-7 sm:w-7" />
               </div>
               <div className="text-center">
-                <p className="text-lg font-bold">Manual</p>
-                <p className="text-xs text-muted-foreground">Escribir los datos a mano</p>
+                <p className="text-base sm:text-lg font-bold">Manual</p>
+                <p className="text-[10px] sm:text-xs text-muted-foreground">Escribir los datos a mano</p>
               </div>
             </Button>
             <Button
               variant="ghost"
               onClick={() => setStep("scan")}
-              className="group flex h-auto w-auto flex-col items-center gap-3 rounded-xl border-2 border-transparent bg-card p-8 shadow-sm transition-all hover:border-primary/50 hover:shadow-md"
+              className="group flex h-auto w-auto flex-col items-center gap-3 rounded-xl border-2 border-transparent bg-card p-5 sm:p-8 shadow-sm transition-all hover:border-primary/50 hover:shadow-md"
             >
-              <div className="flex h-16 w-16 items-center justify-center rounded-full bg-purple-100 text-xp transition-transform group-hover:scale-110">
-                <ScanLine className="h-7 w-7" />
+              <div className="flex h-12 w-12 sm:h-16 sm:w-16 items-center justify-center rounded-full bg-purple-100 text-xp transition-transform group-hover:scale-110">
+                <ScanLine className="h-5 w-5 sm:h-7 sm:w-7" />
               </div>
               <div className="text-center">
-                <p className="text-lg font-bold">Escanear</p>
-                <p className="text-xs text-muted-foreground">Subir screenshot del pago</p>
+                <p className="text-base sm:text-lg font-bold">Escanear</p>
+                <p className="text-[10px] sm:text-xs text-muted-foreground">Subir screenshot del pago</p>
               </div>
             </Button>
           </div>
