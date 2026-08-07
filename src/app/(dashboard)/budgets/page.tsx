@@ -27,7 +27,7 @@ export default function BudgetsPage() {
   const spentByCategory = useMemo(() => {
     const map: Record<string, number> = {}
     for (const tx of transactions) {
-      if (tx.type !== "EXPENSE") continue
+      if (tx.type !== "EXPENSE" || !tx.category) continue
       map[tx.category] = (map[tx.category] ?? 0) + tx.amount
     }
     return map
