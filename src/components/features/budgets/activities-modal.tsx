@@ -93,7 +93,7 @@ export function ActivitiesModal({ budget, onClose }: ActivitiesModalProps) {
                       isOverBudget
                         ? "bg-danger"
                         : isNearLimit
-                          ? "bg-warning"
+                          ? "bg-accent"
                           : "bg-success"
                     )}
                     style={{ width: `${Math.min(percentage, 100)}%` }}
@@ -126,7 +126,7 @@ export function ActivitiesModal({ budget, onClose }: ActivitiesModalProps) {
                     )}
                     <span className={cn(
                       "text-[10px] font-bold",
-                      isOverBudget ? "text-danger" : isNearLimit ? "text-warning" : "text-success"
+                      isOverBudget ? "text-danger" : isNearLimit ? "text-accent" : "text-success"
                     )}>
                       {formatPercentage(percentage)}
                     </span>
