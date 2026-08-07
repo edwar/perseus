@@ -296,7 +296,7 @@ export function NewTransactionForm({ onClose }: NewTransactionFormProps) {
               <CurrencyInput id="amount" value={amount} onChange={setAmount} placeholder="0" />
             </div>
 
-            {type === "EXPENSE" && !isRecurring && (
+            {type === "EXPENSE" && (
               <div className="space-y-2">
                 <Label>Presupuesto que afecta</Label>
                 <Select value={category} onValueChange={(v) => { if (v) { setCategory(v); setActivity("") } }}>
@@ -401,7 +401,7 @@ export function NewTransactionForm({ onClose }: NewTransactionFormProps) {
                   <CurrencyInput id="amount-scan" value={amount} onChange={setAmount} />
                 </div>
 
-                {type === "EXPENSE" && !isRecurring && (
+                {type === "EXPENSE" && (
                   <div className="space-y-2">
                     <Label>Presupuesto que afecta</Label>
                     <Select value={category} onValueChange={(v) => { if (v) { setCategory(v); setActivity("") } }}>
