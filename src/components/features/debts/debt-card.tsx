@@ -109,7 +109,7 @@ export function DebtCard({ debt, onEdit, onDelete }: DebtCardProps) {
             <Pencil className="h-3.5 w-3.5" />
             Editar
           </Button>
-          <Button variant="ghost" size="icon" onClick={() => onDelete(debt.id)} className="h-9 w-9 text-danger hover:text-danger-hover hover:bg-coral-50 md:opacity-0 md:group-hover:opacity-100 transition-opacity">
+          <Button variant="ghost" size="icon" onClick={() => onDelete(debt.id)} className="h-9 w-9 text-danger hover:text-danger-hover hover:bg-coral-50">
             <Trash2 className="h-3.5 w-3.5" />
           </Button>
         </div>
