@@ -23,7 +23,7 @@ export function Header() {
   const action = useHeaderStore((s) => s.action)
 
   return (
-    <header className="sticky top-0 z-30 flex h-14 items-center gap-4 border-b bg-background px-4 max-md:hidden">
+    <header className="sticky top-0 z-30 flex h-14 items-center gap-4 border-b bg-background px-4">
       <Button variant="ghost" size="icon" onClick={toggleSidebar}>
         <Menu className="h-5 w-5" />
       </Button>

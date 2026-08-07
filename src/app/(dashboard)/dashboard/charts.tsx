@@ -45,7 +45,12 @@ export function IncomeBar({ data }: { data: Array<{ month: string; income: numbe
         <ResponsiveContainer width="100%" height={220}>
           <BarChart data={data}>
             <XAxis dataKey="month" tick={{ fontSize: 11 }} tickFormatter={(v: string) => v.slice(5)} />
-            <YAxis tick={{ fontSize: 11 }} tickFormatter={(v: unknown) => `$${((v as number) / 1000).toFixed(0)}k`} />
+            <YAxis tick={{ fontSize: 11 }} tickFormatter={(v: unknown) => {
+              const num = v as number
+              if (num >= 1_000_000) return `$${(num / 1_000_000).toFixed(1)}M`
+              if (num >= 1_000) return `$${(num / 1_000).toFixed(0)}k`
+              return `$${num}`
+            }} />
             <Tooltip formatter={(v: unknown) => `$${(v as number).toLocaleString("es-CO")}`} />
             <Bar dataKey="income" name="Ingresos" fill="#2563FF" radius={[4, 4, 0, 0]} />
             <Bar dataKey="expenses" name="Gastos" fill="#FF5A5F" radius={[4, 4, 0, 0]} />
@@ -111,7 +116,12 @@ export function DailyExpensesChart({ transactions }: { transactions: Array<{ dat
             <LineChart data={chartData}>
               <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
               <XAxis dataKey="day" tick={{ fontSize: 10 }} tickFormatter={(v) => `${v}`} />
-              <YAxis tick={{ fontSize: 10 }} tickFormatter={(v: unknown) => `$${((v as number) / 1000).toFixed(0)}k`} />
+              <YAxis tick={{ fontSize: 10 }} tickFormatter={(v: unknown) => {
+                const num = v as number
+                if (num >= 1_000_000) return `$${(num / 1_000_000).toFixed(1)}M`
+                if (num >= 1_000) return `$${(num / 1_000).toFixed(0)}k`
+                return `$${num}`
+              }} />
               <Tooltip
                 formatter={(value) => [`$${Number(value).toLocaleString("es-CO")}`, "Gasto"]}
                 labelFormatter={(label) => `Día ${label}`}

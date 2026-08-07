@@ -57,11 +57,11 @@ export function Sidebar() {
         onClick={() => setSidebarOpen(false)}
       />
 
-      {/* Sidebar: mobile=overlay, desktop=sticky */}
+      {/* Sidebar: mobile=overlay, desktop=fixed */}
       <aside
         className={cn(
           "fixed left-0 top-0 z-40 flex h-screen flex-col border-r border-border/50 bg-sidebar-background transition-all duration-300",
-          "md:sticky md:z-auto md:translate-x-0",
+          "md:fixed md:z-40 md:translate-x-0",
           sidebarOpen
             ? "w-64 translate-x-0"
             : "-translate-x-full md:w-16"
@@ -69,7 +69,7 @@ export function Sidebar() {
       >
         <div className="flex h-14 items-center gap-2 border-b border-border/50 px-4 shrink-0">
           <img src="/logo.svg" alt="Perseus" className="h-7 w-7 shrink-0" />
-          {sidebarOpen && <span className="text-lg font-bold tracking-tight text-sidebar-foreground">Perseus</span>}
+          <span className={cn("text-lg font-bold tracking-tight text-sidebar-foreground transition-all duration-200", sidebarOpen ? "opacity-100 delay-500" : "opacity-0 hidden delay-200")}>Perseus</span>
         </div>
         <nav className="flex-1 space-y-1 p-2">
           {navItems.map((item) => {
@@ -88,7 +88,7 @@ export function Sidebar() {
                 )}
               >
                 <Icon className={cn("h-5 w-5 shrink-0", isActive && "text-primary")} />
-                {sidebarOpen && <span>{item.label}</span>}
+                <span className={cn("transition-opacity duration-200", sidebarOpen ? "opacity-100 delay-200" : "opacity-0")}>{item.label}</span>
               </Link>
             )
           })}

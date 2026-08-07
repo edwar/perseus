@@ -1,15 +1,18 @@
 "use client"
 
 import { cn } from "@/lib/utils"
+import { useUIStore } from "@/store/ui-store"
 import { Header } from "./header"
 
 export function DashboardShell({ children }: { children: React.ReactNode }) {
+  const sidebarOpen = useUIStore((s) => s.sidebarOpen)
 
   return (
     <div
       className={cn(
-        "flex flex-1 flex-col transition-all duration-300",
-        "ml-0",
+        "flex flex-1 flex-col h-screen transition-all duration-300",
+        "md:ml-16",
+        sidebarOpen && "md:ml-64",
       )}
     >
       <Header />
