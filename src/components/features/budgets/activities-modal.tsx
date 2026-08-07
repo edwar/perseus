@@ -1,9 +1,10 @@
-import { useMemo } from "react"
+import { useMemo, useState } from "react"
 import { Button } from "@/components/ui/button"
-import { X, AlertTriangle, CheckCircle2, TrendingDown } from "lucide-react"
+import { X, AlertTriangle, CheckCircle2, TrendingDown, Settings } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { formatCurrency, formatPercentage } from "@/lib/formats"
-import { useTransactions } from "@/hooks/useData"
+import { useTransactions, useBudgets, useBudgetMutations } from "@/hooks/useData"
+import { ConfirmDialog } from "@/components/ui/confirm-dialog"
 import type { Budget } from "@/hooks/use-budgets"
 
 interface ActivitiesModalProps {
@@ -13,29 +14,48 @@ interface ActivitiesModalProps {
 
 export function ActivitiesModal({ budget, onClose }: ActivitiesModalProps) {
   const { data: transactions = [] } = useTransactions()
-  const rawItems = Array.isArray(budget.items) ? budget.items : []
+  const { data: budgets = [] } = useBudgets()
+  const { update } = useBudgetMutations()
+  const [adjustItem, setAdjustItem] = useState<{ name: string; spent: number } | null>(null)
+
+  const currentBudget = budgets.find((b) => b.id === budget.id) ?? budget
+  const rawItems = Array.isArray(currentBudget.items) ? currentBudget.items : []
   const items = rawItems.filter((i: { name?: string }) => i.name)
 
   const spentByActivity = useMemo(() => {
     const map: Record<string, number> = {}
     for (const tx of transactions) {
-      if (tx.type !== "EXPENSE" || tx.category !== budget.category || !tx.activity) continue
+      if (tx.type !== "EXPENSE" || tx.category !== currentBudget.category || !tx.activity) continue
       map[tx.activity] = (map[tx.activity] ?? 0) + tx.amount
     }
     return map
-  }, [transactions, budget.category])
+  }, [transactions, currentBudget.category])
 
   const totalSpent = useMemo(() => {
     return transactions
-      .filter((tx) => tx.type === "EXPENSE" && tx.category === budget.category)
+      .filter((tx) => tx.type === "EXPENSE" && tx.category === currentBudget.category)
       .reduce((acc, tx) => acc + tx.amount, 0)
-  }, [transactions, budget.category])
+  }, [transactions, currentBudget.category])
+
+  function handleAdjust() {
+    if (!adjustItem) return
+    const updatedItems = items.map((item) =>
+      item.name === adjustItem.name ? { ...item, amount: adjustItem.spent } : item
+    )
+    const newTotal = updatedItems.reduce((s, i) => s + i.amount, 0)
+    update.mutate({
+      ...currentBudget,
+      amount: newTotal,
+      items: updatedItems,
+    })
+    setAdjustItem(null)
+  }
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 p-4 backdrop-blur-sm" onClick={onClose}>
       <div className="w-full max-w-md rounded-xl bg-background p-6 shadow-2xl" onClick={(e) => e.stopPropagation()}>
         <div className="mb-4 flex items-center justify-between">
-          <h3 className="font-bold text-lg">{budget.category}</h3>
+          <h3 className="font-bold text-lg">{currentBudget.category}</h3>
           <Button variant="ghost" size="icon" onClick={onClose}>
             <X className="h-4 w-4" />
           </Button>
@@ -46,7 +66,6 @@ export function ActivitiesModal({ budget, onClose }: ActivitiesModalProps) {
             const percentage = item.amount > 0 ? (spent / item.amount) * 100 : 0
             const isOverBudget = percentage > 100
             const isNearLimit = percentage >= 80 && percentage <= 100
-            const isUnderBudget = percentage < 80
 
             return (
               <div key={i} className="rounded-lg border p-3">
@@ -83,23 +102,35 @@ export function ActivitiesModal({ budget, onClose }: ActivitiesModalProps) {
                 <div className="flex items-center justify-between mt-1.5">
                   <span className={cn(
                     "text-[10px] font-medium",
-                    isOverBudget ? "text-danger" : isNearLimit ? "text-warning" : "text-success"
+                    isOverBudget ? "text-danger" : isNearLimit ? "text-accent" : "text-success"
                   )}>
                     {isOverBudget
                       ? `Excedido por ${formatCurrency(spent - item.amount)}`
                       : isNearLimit
-                        ? "Casi en el límite"
+                        ? "100% utilizado"
                         : spent > 0
                           ? `${formatCurrency(item.amount - spent)} restante`
                           : "Sin gastos"
                     }
                   </span>
-                  <span className={cn(
-                    "text-[10px] font-bold",
-                    isOverBudget ? "text-danger" : isNearLimit ? "text-warning" : "text-success"
-                  )}>
-                    {formatPercentage(percentage)}
-                  </span>
+                  <div className="flex items-center gap-2">
+                    {isOverBudget && (
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        className="h-6 gap-1 text-[10px] text-success hover:text-success-hover hover:bg-coral-50"
+                        onClick={() => setAdjustItem({ name: item.name, spent })}
+                      >
+                        <Settings className="h-3 w-3" /> Ajustar
+                      </Button>
+                    )}
+                    <span className={cn(
+                      "text-[10px] font-bold",
+                      isOverBudget ? "text-danger" : isNearLimit ? "text-warning" : "text-success"
+                    )}>
+                      {formatPercentage(percentage)}
+                    </span>
+                  </div>
                 </div>
               </div>
             )
@@ -110,13 +141,23 @@ export function ActivitiesModal({ budget, onClose }: ActivitiesModalProps) {
             <span className="text-xs text-muted-foreground">Total</span>
             <span className={cn(
               "text-xs font-semibold",
-              totalSpent > budget.amount ? "text-danger" : "text-foreground"
+              totalSpent > currentBudget.amount ? "text-danger" : "text-foreground"
             )}>
-              {formatCurrency(totalSpent)} / {formatCurrency(budget.amount)}
+              {formatCurrency(totalSpent)} / {formatCurrency(currentBudget.amount)}
             </span>
           </div>
         </div>
       </div>
+
+      <ConfirmDialog
+        open={!!adjustItem}
+        title="Ajustar presupuesto"
+        message={`¿Ajustar el presupuesto de "${adjustItem?.name}" a ${formatCurrency(adjustItem?.spent ?? 0)}?`}
+        confirmLabel="Ajustar"
+        confirmClassName="bg-success hover:bg-success-hover text-white"
+        onConfirm={handleAdjust}
+        onCancel={() => setAdjustItem(null)}
+      />
     </div>
   )
 }
