@@ -12,7 +12,8 @@ export interface Transaction {
   description: string
   amount: number
   type: "EXPENSE" | "INCOME"
-  category: string
+  category: string | null
+  activity: string | null
   date: string
   recurring?: boolean
   frequency?: string

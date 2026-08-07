@@ -27,7 +27,7 @@ export function TransactionFilters({ search, tab, onSearchChange, onTabChange }:
           placeholder="Buscar transacciones..."
           value={search}
           onChange={(e) => onSearchChange(e.target.value)}
-          className="pl-10 bg-muted/50 border-transparent focus:bg-card focus:border-border focus:ring-1 focus:ring-primary/20 h-10 rounded-xl"
+          className="pl-10 bg-muted/50  focus:bg-card focus:border-border focus:ring-1 focus:ring-primary/20 h-10 rounded-xl"
         />
       </div>
       <div className="flex gap-1 p-1 bg-muted/50 rounded-xl">

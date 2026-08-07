@@ -1,7 +1,7 @@
 import { useState, Suspense, lazy } from "react"
 import { ArrowLeft, ArrowUp, ArrowDown, ScanLine, PenLine, Repeat, Plus, X, Sparkles } from "lucide-react"
 import { cn } from "@/lib/utils"
-import { toLocalDateString } from "@/lib/formats"
+import { toLocalDateString, formatCurrency } from "@/lib/formats"
 import { FREQ_LABELS } from "@/lib/constants"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
@@ -32,11 +32,15 @@ export function NewTransactionForm({ onClose }: NewTransactionFormProps) {
   const [description, setDescription] = useState("")
   const [amount, setAmount] = useState("")
   const [category, setCategory] = useState("")
+  const [activity, setActivity] = useState("")
   const [isScanned, setIsScanned] = useState(false)
   const [isRecurring, setIsRecurring] = useState(false)
   const [frequency, setFrequency] = useState("MONTHLY")
   const [dayOfMonth, setDayOfMonth] = useState("")
   const [debtId, setDebtId] = useState("")
+
+  const selectedBudget = (budgets ?? []).find((b) => b.category === category)
+  const budgetItems = selectedBudget?.items?.filter((i) => i.name) ?? []
 
   const { suggestions } = useCategorySuggestion(description)
 
@@ -46,7 +50,8 @@ export function NewTransactionForm({ onClose }: NewTransactionFormProps) {
       description: description || "Transacción",
       amount: txAmount,
       type,
-      category,
+      category: category || null,
+      activity: activity || null,
       date: toLocalDateString(new Date()),
       recurring: isRecurring || undefined,
       frequency: isRecurring ? frequency : undefined,
@@ -82,6 +87,7 @@ export function NewTransactionForm({ onClose }: NewTransactionFormProps) {
     setDescription("")
     setAmount("")
     setCategory("")
+    setActivity("")
     setIsScanned(false)
     setIsRecurring(false)
     setFrequency("MONTHLY")
@@ -293,7 +299,7 @@ export function NewTransactionForm({ onClose }: NewTransactionFormProps) {
             {type === "EXPENSE" && !isRecurring && (
               <div className="space-y-2">
                 <Label>Presupuesto que afecta</Label>
-                <Select value={category} onValueChange={(v) => v && setCategory(v)}>
+                <Select value={category} onValueChange={(v) => { if (v) { setCategory(v); setActivity("") } }}>
                   <SelectTrigger className="w-full">
                     <SelectValue placeholder="Seleccionar presupuesto" />
                   </SelectTrigger>
@@ -324,6 +330,25 @@ export function NewTransactionForm({ onClose }: NewTransactionFormProps) {
                         </span>
                       </button>
                     ))}
+                  </div>
+                )}
+
+                {category && budgetItems.length > 0 && (
+                  <div className="space-y-2">
+                    <Label>Actividad (opcional)</Label>
+                    <Select value={activity} onValueChange={(v) => setActivity(v ?? "")}>
+                      <SelectTrigger className="w-full">
+                        <SelectValue placeholder="Seleccionar actividad" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="">Ninguna</SelectItem>
+                        {budgetItems.map((item, i) => (
+                          <SelectItem key={i} value={item.name}>
+                            {item.name} — {formatCurrency(item.amount)}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
                   </div>
                 )}
               </div>
@@ -379,7 +404,7 @@ export function NewTransactionForm({ onClose }: NewTransactionFormProps) {
                 {type === "EXPENSE" && !isRecurring && (
                   <div className="space-y-2">
                     <Label>Presupuesto que afecta</Label>
-                    <Select value={category} onValueChange={(v) => v && setCategory(v)}>
+                    <Select value={category} onValueChange={(v) => { if (v) { setCategory(v); setActivity("") } }}>
                       <SelectTrigger className="w-full">
                         <SelectValue placeholder="Seleccionar presupuesto" />
                       </SelectTrigger>
@@ -391,6 +416,25 @@ export function NewTransactionForm({ onClose }: NewTransactionFormProps) {
                         ))}
                       </SelectContent>
                     </Select>
+
+                    {category && budgetItems.length > 0 && (
+                      <div className="space-y-2">
+                        <Label>Actividad (opcional)</Label>
+                        <Select value={activity} onValueChange={(v) => setActivity(v ?? "")}>
+                          <SelectTrigger className="w-full">
+                            <SelectValue placeholder="Seleccionar actividad" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="">Ninguna</SelectItem>
+                            {budgetItems.map((item, i) => (
+                              <SelectItem key={i} value={item.name}>
+                                {item.name} — {formatCurrency(item.amount)}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      </div>
+                    )}
                   </div>
                 )}
 

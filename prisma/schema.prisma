@@ -91,6 +91,7 @@ model AppTransaction {
   amount      Decimal  @db.Decimal(15, 2)
   type        String   // "EXPENSE" | "INCOME"
   category    String?
+  activity    String?
   date        String   // ISO string
   recurring   Boolean  @default(false)
   frequency   String?

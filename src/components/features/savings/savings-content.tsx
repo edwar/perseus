@@ -248,10 +248,10 @@ export function SavingsContent() {
                         <Button variant="outline" size="sm" onClick={() => setContributing(contributing === goal.id ? null : goal.id)} className="flex-1 gap-1 h-9">
                           <HandCoins className="h-3.5 w-3.5" /> Abonar
                         </Button>
-                        <Button variant="ghost" size="icon" onClick={() => setEditGoal(goal.id)} className="h-9 w-9 md:opacity-0 md:group-hover:opacity-100 transition-opacity">
+                        <Button variant="ghost" size="icon" onClick={() => setEditGoal(goal.id)} className="h-9 w-9">
                           <Pencil className="h-3.5 w-3.5" />
                         </Button>
-                        <Button variant="ghost" size="icon" onClick={() => setDeleteGoalConfirm(goal.id)} className="h-9 w-9 text-danger hover:text-danger-hover hover:bg-coral-50 md:opacity-0 md:group-hover:opacity-100 transition-opacity">
+                        <Button variant="ghost" size="icon" onClick={() => setDeleteGoalConfirm(goal.id)} className="h-9 w-9 text-danger hover:text-danger-hover hover:bg-coral-50">
                           <Trash2 className="h-3.5 w-3.5" />
                         </Button>
                       </div>
