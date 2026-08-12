@@ -21,16 +21,20 @@ export default function TransactionsPage() {
   const { update, remove } = useTransactionMutations()
   const [search, setSearch] = useState("")
   const [tab, setTab] = useState<Tab>("all")
+  const [page, setPage] = useState(1)
   const [showNewForm, setShowNewForm] = useState(false)
   const [editTx, setEditTx] = useState<string | null>(null)
   const [deleteTx, setDeleteTx] = useState<string | null>(null)
-  const [page, setPage] = useState(1)
   const setHeaderAction = useHeaderStore((s) => s.setAction)
 
   useEffect(() => {
     setHeaderAction(<Button size="sm" onClick={() => setShowNewForm(true)}><Plus className="h-4 w-4" /> Crear</Button>)
     return () => setHeaderAction(null)
   }, [])
+
+  useEffect(() => {
+    setPage(1)
+  }, [search, tab])
 
   const stats = useMemo(() => {
     const income = transactions.filter(t => t.type === "INCOME").reduce((sum, t) => sum + t.amount, 0)
@@ -47,6 +51,7 @@ export default function TransactionsPage() {
   const { filtered, paginated, safePage, totalPages } = usePagination({
     items: transactions,
     page,
+    pageSize: 10,
     filterFn,
   })
 

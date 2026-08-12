@@ -24,6 +24,7 @@ interface DashboardClientProps {
     type: string
     date: string
     category: string | null
+    activity?: string | null
     categoryColor: string | null
   }>
   recentTransactions: Array<{
@@ -33,10 +34,18 @@ interface DashboardClientProps {
     type: string
     date: string
     category: string | null
+    activity?: string | null
     categoryColor: string | null
   }>
   spendingByCategory: Array<{ name: string; value: number }>
   monthlyChart: Array<{ month: string; income: number; expenses: number }>
+  budgets: Array<{
+    id: string
+    category: string
+    amount: number
+    color: string
+    items?: Array<{ name: string; amount: number }>
+  }>
 }
 
 export function DashboardClient({
@@ -47,6 +56,7 @@ export function DashboardClient({
   recentTransactions,
   spendingByCategory,
   monthlyChart,
+  budgets,
 }: DashboardClientProps) {
   const { update, remove } = useTransactionMutations()
   const [editTx, setEditTx] = useState<string | null>(null)
@@ -150,7 +160,7 @@ export function DashboardClient({
       <h1 className="text-2xl font-bold mt-10 md:hidden">Dashboard</h1>
 
       {/* Hero Cards — Balance */}
-      <div className="relative overflow-hidden">
+      <div className="relative">
         <div className="absolute -top-20 -right-20 h-64 w-64 rounded-full bg-primary/5 blur-3xl animate-float-orb pointer-events-none" />
         <div className="absolute -bottom-10 -left-10 h-48 w-48 rounded-full bg-success/5 blur-3xl animate-float-orb pointer-events-none" style={{ animationDelay: "2s" }} />
         <div className="grid gap-4 sm:grid-cols-3 relative">
@@ -203,7 +213,7 @@ export function DashboardClient({
       </div>
 
       <div className="grid gap-5 sm:grid-cols-2">
-        <div className="animate-stagger-in" style={{ animationDelay: "600ms" }}><DailyExpensesChart transactions={allTransactions} /></div>
+        <div className="animate-stagger-in" style={{ animationDelay: "600ms" }}><DailyExpensesChart transactions={allTransactions} budgets={budgets} /></div>
         <div className="animate-stagger-in" style={{ animationDelay: "660ms" }}><TopExpensesChart transactions={allTransactions} /></div>
       </div>
 

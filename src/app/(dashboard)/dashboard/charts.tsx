@@ -1,10 +1,11 @@
 "use client"
 
-import { useMemo } from "react"
+import { useMemo, useState } from "react"
 import { PieChart, Pie, Cell, ResponsiveContainer, BarChart, Bar, LineChart, Line, XAxis, YAxis, Tooltip, CartesianGrid, Legend } from "recharts"
 import { Card, CardContent } from "@/components/ui/card"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 
-const COLORS = ["#2563FF", "#3B82F6", "#60A5FA", "#93C5FD", "#BFDBFE", "#DBEAFE", "#1D4FD8", "#7C3AED"]
+const COLORS = ["#2563FF", "#FF5A5F", "#10B981", "#F59E0B", "#8B5CF6", "#EC4899", "#06B6D4", "#84CC16", "#F97316", "#6366F1"]
 
 export function SpendingPie({ data }: { data: Array<{ name: string; value: number }> }) {
   return (
@@ -61,36 +62,111 @@ export function IncomeBar({ data }: { data: Array<{ month: string; income: numbe
   )
 }
 
-export function DailyExpensesChart({ transactions }: { transactions: Array<{ date: string; amount: number; type: string }> }) {
-  const chartData = useMemo(() => {
-    const dailyMap: Record<string, number> = {}
+export function DailyExpensesChart({
+  transactions,
+  budgets = []
+}: {
+  transactions: Array<{ date: string; amount: number; type: string; category: string | null; activity?: string | null }>
+  budgets?: Array<{
+    id: string
+    category: string
+    amount: number
+    color: string
+    items?: Array<{ name: string; amount: number }>
+  }>
+}) {
+  const [view, setView] = useState<"presupuesto" | "actividad">("presupuesto")
+
+  const { byCategory, byActivity } = useMemo(() => {
     const now = new Date()
     const currentMonth = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}`
 
+    const allDays: Record<string, boolean> = {}
     for (let i = 1; i <= 31; i++) {
       const day = String(i).padStart(2, "0")
       const dateStr = `${currentMonth}-${day}`
       if (dateStr > `${currentMonth}-31`) break
-      dailyMap[day] = 0
+      allDays[day] = true
     }
+
+    const categoryDailyMap: Record<string, Record<string, number>> = {}
+    const activityDailyMap: Record<string, Record<string, number>> = {}
 
     for (const tx of transactions) {
       if (tx.type !== "EXPENSE") continue
       if (!tx.date.startsWith(currentMonth)) continue
       const day = tx.date.slice(8, 10)
-      if (dailyMap[day] !== undefined) {
-        dailyMap[day] += tx.amount
+      if (!allDays[day]) continue
+
+      const category = tx.category || "Sin categoría"
+      if (!categoryDailyMap[category]) {
+        categoryDailyMap[category] = {}
       }
+      categoryDailyMap[category][day] = (categoryDailyMap[category][day] || 0) + tx.amount
+
+      const activityName = tx.activity || category
+
+      if (!activityDailyMap[activityName]) {
+        activityDailyMap[activityName] = {}
+      }
+      activityDailyMap[activityName][day] = (activityDailyMap[activityName][day] || 0) + tx.amount
     }
 
-    return Object.entries(dailyMap)
-      .map(([day, amount]) => ({ day: Number(day), amount }))
-      .filter(d => d.amount > 0)
-  }, [transactions])
+    const days = Object.keys(allDays)
+
+    const activeCategories = Object.entries(categoryDailyMap)
+      .filter(([, days]) => Object.values(days).some(v => v > 0))
+      .map(([name]) => name)
+      .sort((a, b) => {
+        const sumA = Object.values(categoryDailyMap[a]).reduce((s, v) => s + v, 0)
+        const sumB = Object.values(categoryDailyMap[b]).reduce((s, v) => s + v, 0)
+        return sumB - sumA
+      })
+
+    const catData = days.map(day => {
+      const entry: Record<string, string | number> = { day: Number(day) }
+      for (const cat of activeCategories) {
+        entry[cat] = categoryDailyMap[cat]?.[day] || 0
+      }
+      return entry
+    }).filter(entry => activeCategories.some(cat => (entry[cat] as number) > 0))
+
+    const activeActivities = Object.entries(activityDailyMap)
+      .filter(([, days]) => Object.values(days).some(v => v > 0))
+      .map(([name]) => name)
+      .sort((a, b) => {
+        const sumA = Object.values(activityDailyMap[a]).reduce((s, v) => s + v, 0)
+        const sumB = Object.values(activityDailyMap[b]).reduce((s, v) => s + v, 0)
+        return sumB - sumA
+      })
+
+    const actData = days.map(day => {
+      const entry: Record<string, string | number> = { day: Number(day) }
+      for (const act of activeActivities) {
+        entry[act] = activityDailyMap[act]?.[day] || 0
+      }
+      return entry
+    }).filter(d => activeActivities.some(a => (d[a] as number) > 0))
+
+    return {
+      byCategory: { data: catData, categories: activeCategories },
+      byActivity: { data: actData, activities: activeActivities }
+    }
+  }, [transactions, budgets])
+
+  const isCategory = view === "presupuesto"
+  const chartData = isCategory ? byCategory.data : byActivity.data
+  const categories = isCategory ? byCategory.categories : []
+  const activities = !isCategory ? byActivity.activities : []
 
   const totalMonth = useMemo(() => {
-    return chartData.reduce((s, d) => s + d.amount, 0)
-  }, [chartData])
+    return chartData.reduce((s, d) => {
+      if (isCategory) {
+        return s + categories.reduce((sum, cat) => sum + ((d[cat] as number) || 0), 0)
+      }
+      return s + activities.reduce((sum, a) => sum + ((d[a] as number) || 0), 0)
+    }, 0)
+  }, [chartData, categories, activities, isCategory])
 
   const avgDaily = useMemo(() => {
     if (chartData.length === 0) return 0
@@ -100,7 +176,18 @@ export function DailyExpensesChart({ transactions }: { transactions: Array<{ dat
   return (
     <Card>
       <div className="border-b px-6 py-4 flex items-center justify-between">
-        <p className="font-semibold">Gastos diarios</p>
+        <div className="flex items-center gap-3">
+          <p className="font-semibold">Gastos diarios</p>
+          <Select value={view} onValueChange={(v) => setView(v as "presupuesto" | "actividad")}>
+            <SelectTrigger size="sm" className="h-7 text-xs w-auto min-w-[130px]">
+              <SelectValue placeholder="Seleccionar vista" />
+            </SelectTrigger>
+            <SelectContent align="start">
+              <SelectItem value="presupuesto">Por presupuesto</SelectItem>
+              <SelectItem value="actividad">Por actividad</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
         <div className="text-right">
           <p className="text-xs text-muted-foreground">Promedio diario</p>
           <p className="text-sm font-bold text-danger">${avgDaily.toLocaleString("es-CO")}</p>
@@ -112,30 +199,71 @@ export function DailyExpensesChart({ transactions }: { transactions: Array<{ dat
             Sin gastos este mes
           </div>
         ) : (
-          <ResponsiveContainer width="100%" height={220}>
-            <LineChart data={chartData}>
-              <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
-              <XAxis dataKey="day" tick={{ fontSize: 10 }} tickFormatter={(v) => `${v}`} />
-              <YAxis tick={{ fontSize: 10 }} tickFormatter={(v: unknown) => {
-                const num = v as number
-                if (num >= 1_000_000) return `$${(num / 1_000_000).toFixed(1)}M`
-                if (num >= 1_000) return `$${(num / 1_000).toFixed(0)}k`
-                return `$${num}`
-              }} />
-              <Tooltip
-                formatter={(value) => [`$${Number(value).toLocaleString("es-CO")}`, "Gasto"]}
-                labelFormatter={(label) => `Día ${label}`}
-              />
-              <Line
-                type="monotone"
-                dataKey="amount"
-                stroke="#FF5A5F"
-                strokeWidth={2}
-                dot={{ fill: "#FF5A5F", r: 3 }}
-                activeDot={{ r: 5 }}
-              />
-            </LineChart>
-          </ResponsiveContainer>
+          <>
+            <ResponsiveContainer width="100%" height={220}>
+              <LineChart data={chartData}>
+                <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
+                <XAxis dataKey="day" tick={{ fontSize: 10 }} tickFormatter={(v) => `${v}`} />
+                <YAxis tick={{ fontSize: 10 }} tickFormatter={(v: unknown) => {
+                  const num = v as number
+                  if (num >= 1_000_000) return `$${(num / 1_000_000).toFixed(1)}M`
+                  if (num >= 1_000) return `$${(num / 1_000).toFixed(0)}k`
+                  return `$${num}`
+                }} />
+                <Tooltip
+                  formatter={(value, name) => [`$${Number(value).toLocaleString("es-CO")}`, name]}
+                  labelFormatter={(label) => `Día ${label}`}
+                />
+                {isCategory ? (
+                  categories.map((cat, i) => (
+                    <Line
+                      key={cat}
+                      type="monotone"
+                      dataKey={cat}
+                      name={cat}
+                      stroke={COLORS[i % COLORS.length]}
+                      strokeWidth={2}
+                      dot={{ fill: COLORS[i % COLORS.length], r: 2 }}
+                      activeDot={{ r: 4 }}
+                    />
+                  ))
+                ) : (
+                  activities.map((act, i) => (
+                    <Line
+                      key={act}
+                      type="monotone"
+                      dataKey={act}
+                      name={act}
+                      stroke={COLORS[i % COLORS.length]}
+                      strokeWidth={2}
+                      dot={{ fill: COLORS[i % COLORS.length], r: 2 }}
+                      activeDot={{ r: 4 }}
+                    />
+                  ))
+                )}
+              </LineChart>
+            </ResponsiveContainer>
+            {isCategory && categories.length > 1 && (
+              <div className="mt-3 flex flex-wrap gap-3 justify-center">
+                {categories.slice(0, 6).map((cat, i) => (
+                  <div key={cat} className="flex items-center gap-1.5 text-xs">
+                    <div className="h-2 w-2 rounded-full" style={{ backgroundColor: COLORS[i % COLORS.length] }} />
+                    <span className="text-muted-foreground truncate max-w-[100px]">{cat}</span>
+                  </div>
+                ))}
+              </div>
+            )}
+            {!isCategory && (
+              <div className="mt-3 flex flex-wrap gap-3 justify-center">
+                {activities.slice(0, 8).map((act, i) => (
+                  <div key={act} className="flex items-center gap-1.5 text-xs">
+                    <div className="h-2 w-2 rounded-full" style={{ backgroundColor: COLORS[i % COLORS.length] }} />
+                    <span className="text-muted-foreground truncate max-w-[100px]">{act}</span>
+                  </div>
+                ))}
+              </div>
+            )}
+          </>
         )}
       </CardContent>
     </Card>

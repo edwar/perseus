@@ -1,11 +1,17 @@
 "use client"
 
-import { useMemo } from "react"
+import { useMemo, useEffect } from "react"
 import { DashboardClient } from "./dashboard-client"
 import { useTransactions } from "@/hooks/useData"
+import { useBudgetStore } from "@/store/budget-store"
 
 export default function DashboardPage() {
   const { data: transactions = [] } = useTransactions()
+  const { budgets, hydrate } = useBudgetStore()
+
+  useEffect(() => {
+    hydrate()
+  }, [])
 
   const totalIncome = useMemo(() => transactions.filter((t) => t.type === "INCOME").reduce((s, t) => s + t.amount, 0), [transactions])
   const totalExpenses = useMemo(() => transactions.filter((t) => t.type === "EXPENSE").reduce((s, t) => s + t.amount, 0), [transactions])
@@ -61,6 +67,7 @@ export default function DashboardPage() {
         type: t.type,
         date: t.date,
         category: t.category || null,
+        activity: t.activity || null,
         categoryColor: null,
       })),
     [transactions]
@@ -77,6 +84,7 @@ export default function DashboardPage() {
       recentTransactions={recentTransactions}
       spendingByCategory={spendingByCategory}
       monthlyChart={monthlyChart}
+      budgets={budgets}
     />
   )
 }
