@@ -16,21 +16,7 @@ import {
 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
-
-function Logo({ className }: { className?: string }) {
-  return (
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" className={className}>
-      <path d="M434.96 246.919c-.906-9.367-6.325-18.06-13.863-23.876h.003l-25.428-26.458 4.602 19.086a2584 2584 0 0 0-285.748.117c-16.062.943-30.909 15.052-32.466 31.131-5.993 64.29-6.188 128.576-.619 192.868l-18.068-2.061s24.841 26.582 29.414 30.337h.002c5.92 5.694 13.678 9.487 21.737 9.955a2583 2583 0 0 0 287.97 0c16.058-.941 30.912-15.049 32.464-31.129a1074 1074 0 0 0 0-199.97" fill="#004587" />
-      <path d="M254.686 257.047a6.003 6.003 0 0 1-3.121-7.894L330.34 67.414a6 6 0 0 1 7.896-3.118l88.777 38.482a6.003 6.003 0 0 1 3.121 7.894L351.356 292.41a5.997 5.997 0 0 1-7.893 3.118z" fill="#00afff" />
-      <path d="M267.917 250.708c-2.436-1.06-3.455-4.125-2.273-6.853L330.635 93.92l26.142-9.964 43.605 18.906 9.918 26.385-64.701 149.268c-1.182 2.724-4.115 4.078-6.554 3.023z" fill="#00eee4" />
-      <path d="M252.159 241.228a5.554 5.554 0 0 1-3.143 7.199l-109.434 42.906a5.55 5.55 0 0 1-7.194-3.143L65.309 117.098a5.555 5.555 0 0 1 3.143-7.199l109.434-42.904a5.557 5.557 0 0 1 7.197 3.145" fill="#FFD548" />
-      <path d="M403.856 415.03c-1.555 16.08-16.406 30.188-32.464 31.129a2582 2582 0 0 1-287.967 0c-16.062-.94-30.912-15.049-32.466-31.129a1074.3 1074.3 0 0 1 0-199.97c1.554-16.08 16.401-30.193 32.466-31.131a2583 2583 0 0 1 287.967 0c16.06.938 30.907 15.052 32.464 31.131a1074 1074 0 0 1 0 199.97" fill="#FF854A" />
-      <path d="M219.756 273.059c-3.274 29.172-29.582 50.164-58.752 46.892-29.175-3.277-50.166-29.582-46.892-58.754 3.274-29.173 29.582-50.169 58.754-46.892 29.173 3.276 50.167 29.584 46.89 58.754" fill="#FFFFFF" />
-      <path d="M210.184 271.982c-2.424 21.574-21.871 37.093-43.444 34.671-21.573-2.417-37.098-21.873-34.671-43.442 2.419-21.571 21.871-37.093 43.444-34.671 21.571 2.422 37.093 21.875 34.671 43.442" fill="#004587" />
-      <ellipse cx="389.998" cy="334.268" rx="17.831" ry="17.829" fill="#004587" />
-    </svg>
-  )
-}
+import { Logo } from "@/app/logo"
 
 const steps = [
   {
@@ -193,18 +179,38 @@ export default function GuidePage() {
           })}
         </section>
 
-        <section className="mt-16 rounded-3xl bg-linear-to-br from-blue-600 to-blue-500 px-8 py-14 text-center shadow-2xl shadow-blue-500/30">
-          <h2 className="text-2xl font-bold text-white sm:text-3xl">
-            ¿Listo para empezar?
-          </h2>
-          <p className="mx-auto mt-3 max-w-md text-sm text-blue-100">
-            Crea tu cuenta gratis y empieza a tomar el control de tu dinero hoy mismo.
-          </p>
-          <Link href="/register">
-            <Button size="lg" className="mt-8 gap-2 bg-white px-8 text-blue-700 shadow-lg transition-all hover:bg-blue-50 active:scale-[0.98]">
-              Crear cuenta gratis <ArrowRight className="h-4 w-4" />
-            </Button>
-          </Link>
+        <section className="relative mt-16 overflow-hidden rounded-3xl bg-linear-to-br from-blue-600 via-blue-500 to-cyan-500 px-8 py-16 text-center shadow-2xl shadow-blue-500/30">
+          {/* Decorative background pattern */}
+          <div className="absolute inset-0 opacity-10">
+            <div className="absolute top-0 left-0 w-40 h-40 bg-white rounded-full blur-3xl -translate-x-1/2 -translate-y-1/2" />
+            <div className="absolute bottom-0 right-0 w-60 h-60 bg-white rounded-full blur-3xl translate-x-1/3 translate-y-1/3" />
+            <div className="absolute top-1/2 left-1/2 w-32 h-32 bg-cyan-300 rounded-full blur-2xl -translate-x-1/2 -translate-y-1/2" />
+          </div>
+          
+          <div className="relative z-10">
+            <div className="inline-flex items-center gap-2 rounded-full bg-white/15 px-4 py-1.5 text-xs font-medium text-white/90 backdrop-blur-sm mb-6">
+              <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
+              100% gratuito
+            </div>
+            <h2 className="text-2xl font-bold text-white sm:text-3xl">
+              ¿Listo para empezar?
+            </h2>
+            <p className="mx-auto mt-3 max-w-md text-sm sm:text-base text-blue-100">
+              Crea tu cuenta gratis y empieza a tomar el control de tu dinero hoy mismo.
+            </p>
+            <div className="mt-8 flex flex-col sm:flex-row items-center justify-center gap-4">
+              <a href="/register" className="w-full sm:w-auto inline-flex items-center justify-center gap-2 rounded-xl bg-white px-8 py-3.5 text-base font-semibold text-blue-600 shadow-xl transition-all hover:bg-blue-50 hover:shadow-2xl active:scale-[0.98]">
+                Crear cuenta gratis
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+              </a>
+              <a href="/" className="w-full sm:w-auto inline-flex items-center justify-center gap-2 rounded-xl border border-white/30 px-8 py-3.5 text-base font-medium text-white transition-all hover:bg-white/10">
+                Ver landing
+              </a>
+            </div>
+            <p className="mt-5 text-xs text-blue-200/70">
+              No requiere tarjeta de crédito
+            </p>
+          </div>
         </section>
 
         <footer className="mt-16 border-t border-neutral-200/60 py-8 text-center text-xs text-neutral-400">

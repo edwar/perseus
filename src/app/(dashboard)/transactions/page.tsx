@@ -28,7 +28,13 @@ export default function TransactionsPage() {
   const setHeaderAction = useHeaderStore((s) => s.setAction)
 
   useEffect(() => {
-    setHeaderAction(<Button size="sm" onClick={() => setShowNewForm(true)}><Plus className="h-4 w-4" /> Crear</Button>)
+    setHeaderAction(
+      <div className="hidden md:block">
+        <Button size="sm" onClick={() => setShowNewForm(true)}>
+          <Plus className="h-4 w-4" /> Crear
+        </Button>
+      </div>
+    )
     return () => setHeaderAction(null)
   }, [])
 
@@ -62,9 +68,8 @@ export default function TransactionsPage() {
   }
 
   return (
-    <div className="space-y-6 min-h-screen w-full">
-      <div className="items-center justify-between mt-10 flex md:hidden">
-        <h1 className="text-2xl font-bold">Transacciones</h1>
+    <div className="space-y-4 sm:space-y-6 min-h-screen max-w-full overflow-hidden pb-20">
+      <div className="flex md:hidden mt-6 sm:mt-10">
         <Button onClick={() => setShowNewForm(true)}>
           <Plus className="h-4 w-4" />
           Crear
@@ -73,58 +78,58 @@ export default function TransactionsPage() {
 
       {/* Summary Cards */}
       {transactions.length > 0 && (
-        <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 animate-stagger-in">
-          <div className="relative overflow-hidden rounded-2xl bg-card border border-success/20 p-4 transition-all duration-300 hover:shadow-lg hover:shadow-success/10">
-            <div className="absolute -right-4 -top-4 h-20 w-20 rounded-full bg-success/5 animate-pulse-glow pointer-events-none" />
-            <div className="relative flex items-center gap-3">
-              <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-linear-to-br from-success to-emerald-600 text-white shadow-md shadow-success/25">
-                <TrendingUp className="h-5 w-5" />
+        <div className="grid gap-3 sm:gap-4 grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 animate-stagger-in">
+          <div className="relative overflow-hidden rounded-xl sm:rounded-2xl bg-card border border-success/20 p-3 sm:p-4 transition-all duration-300 hover:shadow-lg hover:shadow-success/10">
+            <div className="absolute -right-4 -top-4 h-16 sm:h-20 w-16 sm:w-20 rounded-full bg-success/5 animate-pulse-glow pointer-events-none" />
+            <div className="relative flex items-center gap-2 sm:gap-3">
+              <div className="flex h-8 w-8 sm:h-10 sm:w-10 shrink-0 items-center justify-center rounded-lg sm:rounded-xl bg-linear-to-br from-success to-emerald-600 text-white shadow-md shadow-success/25">
+                <TrendingUp className="h-4 w-4 sm:h-5 sm:w-5" />
               </div>
               <div className="min-w-0">
-                <p className="text-[11px] font-semibold uppercase tracking-wider text-success">Ingresos</p>
-                <p className="text-base sm:text-lg font-extrabold text-emerald-700 tracking-tight">{formatCurrency(stats.income)}</p>
+                <p className="text-[10px] sm:text-[11px] font-semibold uppercase tracking-wider text-success">Ingresos</p>
+                <p className="text-sm sm:text-lg font-extrabold text-emerald-700 tracking-tight">{formatCurrency(stats.income)}</p>
               </div>
             </div>
           </div>
 
-          <div className="relative overflow-hidden rounded-2xl bg-card border border-danger/20 p-4 transition-all duration-300 hover:shadow-lg hover:shadow-danger/10">
-            <div className="absolute -right-4 -top-4 h-20 w-20 rounded-full bg-danger/5 animate-pulse-glow pointer-events-none" style={{ animationDelay: "1s" }} />
-            <div className="relative flex items-center gap-3">
-              <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-linear-to-br from-danger to-coral-600 text-white shadow-md shadow-danger/25">
-                <TrendingDown className="h-5 w-5" />
+          <div className="relative overflow-hidden rounded-xl sm:rounded-2xl bg-card border border-danger/20 p-3 sm:p-4 transition-all duration-300 hover:shadow-lg hover:shadow-danger/10">
+            <div className="absolute -right-4 -top-4 h-16 sm:h-20 w-16 sm:w-20 rounded-full bg-danger/5 animate-pulse-glow pointer-events-none" style={{ animationDelay: "1s" }} />
+            <div className="relative flex items-center gap-2 sm:gap-3">
+              <div className="flex h-8 w-8 sm:h-10 sm:w-10 shrink-0 items-center justify-center rounded-lg sm:rounded-xl bg-linear-to-br from-danger to-coral-600 text-white shadow-md shadow-danger/25">
+                <TrendingDown className="h-4 w-4 sm:h-5 sm:w-5" />
               </div>
               <div className="min-w-0">
-                <p className="text-[11px] font-semibold uppercase tracking-wider text-danger">Gastos</p>
-                <p className="text-base sm:text-lg font-extrabold text-coral-700 tracking-tight">{formatCurrency(stats.expense)}</p>
+                <p className="text-[10px] sm:text-[11px] font-semibold uppercase tracking-wider text-danger">Gastos</p>
+                <p className="text-sm sm:text-lg font-extrabold text-coral-700 tracking-tight">{formatCurrency(stats.expense)}</p>
               </div>
             </div>
           </div>
 
-          <div className="relative overflow-hidden rounded-2xl bg-card border border-border p-4 transition-all duration-300 hover:shadow-lg">
-            <div className="absolute -right-4 -top-4 h-20 w-20 rounded-full bg-primary/5 animate-pulse-glow pointer-events-none" style={{ animationDelay: "2s" }} />
-            <div className="relative flex items-center gap-3">
-              <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-linear-to-br from-primary to-blue-700 text-white shadow-md shadow-primary/25">
-                <ArrowDown className="h-5 w-5" />
+          <div className="relative overflow-hidden rounded-xl sm:rounded-2xl bg-card border border-border p-3 sm:p-4 transition-all duration-300 hover:shadow-lg">
+            <div className="absolute -right-4 -top-4 h-16 sm:h-20 w-16 sm:w-20 rounded-full bg-primary/5 animate-pulse-glow pointer-events-none" style={{ animationDelay: "2s" }} />
+            <div className="relative flex items-center gap-2 sm:gap-3">
+              <div className="flex h-8 w-8 sm:h-10 sm:w-10 shrink-0 items-center justify-center rounded-lg sm:rounded-xl bg-linear-to-br from-primary to-blue-700 text-white shadow-md shadow-primary/25">
+                <ArrowDown className="h-4 w-4 sm:h-5 sm:w-5" />
               </div>
               <div className="min-w-0">
-                <p className="text-[11px] font-semibold uppercase tracking-wider text-primary">Neto</p>
-                <p className={`text-base sm:text-lg font-extrabold tracking-tight ${stats.net >= 0 ? "text-emerald-700" : "text-coral-700"}`}>
+                <p className="text-[10px] sm:text-[11px] font-semibold uppercase tracking-wider text-primary">Neto</p>
+                <p className={`text-sm sm:text-lg font-extrabold tracking-tight ${stats.net >= 0 ? "text-emerald-700" : "text-coral-700"}`}>
                   {stats.net >= 0 ? "+" : ""}{formatCurrency(stats.net)}
                 </p>
               </div>
             </div>
           </div>
 
-          <div className="relative overflow-hidden rounded-2xl bg-card border border-border p-4 transition-all duration-300 hover:shadow-lg">
-            <div className="absolute -right-4 -top-4 h-20 w-20 rounded-full bg-xp/5 animate-pulse-glow pointer-events-none" style={{ animationDelay: "3s" }} />
-            <div className="relative flex items-center gap-3">
-              <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-linear-to-br from-xp to-purple-700 text-white shadow-md shadow-xp/25">
-                <Hash className="h-5 w-5" />
+          <div className="relative overflow-hidden rounded-xl sm:rounded-2xl bg-card border border-border p-3 sm:p-4 transition-all duration-300 hover:shadow-lg">
+            <div className="absolute -right-4 -top-4 h-16 sm:h-20 w-16 sm:w-20 rounded-full bg-xp/5 animate-pulse-glow pointer-events-none" style={{ animationDelay: "3s" }} />
+            <div className="relative flex items-center gap-2 sm:gap-3">
+              <div className="flex h-8 w-8 sm:h-10 sm:w-10 shrink-0 items-center justify-center rounded-lg sm:rounded-xl bg-linear-to-br from-xp to-purple-700 text-white shadow-md shadow-xp/25">
+                <Hash className="h-4 w-4 sm:h-5 sm:w-5" />
               </div>
               <div className="min-w-0">
-                <p className="text-[11px] font-semibold uppercase tracking-wider text-xp">Total</p>
-                <p className="text-base sm:text-lg font-extrabold text-purple-700 tracking-tight">{stats.count}</p>
-                <p className="text-[10px] text-purple-400 font-medium">transacciones</p>
+                <p className="text-[10px] sm:text-[11px] font-semibold uppercase tracking-wider text-xp">Total</p>
+                <p className="text-sm sm:text-lg font-extrabold text-purple-700 tracking-tight">{stats.count}</p>
+                <p className="text-[9px] sm:text-[10px] text-purple-400 font-medium">transacciones</p>
               </div>
             </div>
           </div>

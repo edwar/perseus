@@ -1,8 +1,8 @@
 import type { Metadata, Viewport } from "next"
-import { Inter, JetBrains_Mono } from "next/font/google"
+import { DM_Sans, JetBrains_Mono } from "next/font/google"
 import "./globals.css"
 
-const fontSans = Inter({ variable: "--font-sans", subsets: ["latin"] })
+const fontSans = DM_Sans({ variable: "--font-sans", subsets: ["latin"] })
 const fontMono = JetBrains_Mono({ variable: "--font-mono", subsets: ["latin"] })
 
 export const viewport: Viewport = {

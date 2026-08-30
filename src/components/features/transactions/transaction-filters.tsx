@@ -27,6 +27,7 @@ export function TransactionFilters({ search, tab, onSearchChange, onTabChange }:
           placeholder="Buscar transacciones..."
           value={search}
           onChange={(e) => onSearchChange(e.target.value)}
+          autoComplete="off"
           className="pl-10 bg-muted/50  focus:bg-card focus:border-border focus:ring-1 focus:ring-primary/20 h-10 rounded-xl"
         />
       </div>

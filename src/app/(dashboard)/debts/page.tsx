@@ -21,7 +21,13 @@ export default function DebtsPage() {
   const setHeaderAction = useHeaderStore((s) => s.setAction)
 
   useEffect(() => {
-    setHeaderAction(<Button size="sm" onClick={() => setShowAddDebt(true)}><Plus className="h-4 w-4" /> Crear</Button>)
+    setHeaderAction(
+      <div className="hidden md:block">
+        <Button size="sm" onClick={() => setShowAddDebt(true)}>
+          <Plus className="h-4 w-4" /> Crear
+        </Button>
+      </div>
+    )
     return () => setHeaderAction(null)
   }, [])
 
@@ -47,8 +53,8 @@ export default function DebtsPage() {
 
   if (isLoading) {
     return (
-      <div className="space-y-6 min-h-screen max-w-full overflow-hidden">
-        <div className="flex items-center justify-between mt-10 md:hidden"><h1 className="text-2xl font-bold">Deudas</h1><div className="h-9 w-24 animate-shimmer rounded-lg bg-muted" /></div>
+      <div className="space-y-4 sm:space-y-6 min-h-screen max-w-full overflow-hidden">
+        <div className="flex md:hidden mt-6"><div className="h-9 w-24 animate-shimmer rounded-lg bg-muted" /></div>
 
         {/* Summary Skeleton */}
         <div className="grid gap-4 grid-cols-1 sm:grid-cols-3">
@@ -100,9 +106,8 @@ export default function DebtsPage() {
   }
 
   return (
-    <div className="space-y-6 min-h-screen">
-      <div className="flex items-center justify-between mt-10 md:hidden">
-        <h1 className="text-2xl font-bold">Deudas</h1>
+    <div className="space-y-4 sm:space-y-6 min-h-screen max-w-full overflow-hidden">
+      <div className="flex md:hidden mt-6">
         <Button className="gap-2" onClick={() => setShowAddDebt(true)}>
           <Plus className="h-4 w-4" />
           Crear

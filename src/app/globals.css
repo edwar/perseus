@@ -1010,6 +1010,43 @@
   font-variant-numeric: tabular-nums;
 }
 
+/* Landing page animations */
+@keyframes fade-in-up {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.animate-fade-in-up {
+  animation: fade-in-up 0.6s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+  opacity: 0;
+}
+
+.animate-fade-in {
+  animation: fade-in 0.8s ease forwards;
+  opacity: 0;
+}
+
+/* Stagger delays for landing cards */
+.landing-card:nth-child(1) { animation-delay: 0.1s; }
+.landing-card:nth-child(2) { animation-delay: 0.15s; }
+.landing-card:nth-child(3) { animation-delay: 0.2s; }
+.landing-card:nth-child(4) { animation-delay: 0.25s; }
+.landing-card:nth-child(5) { animation-delay: 0.3s; }
+.landing-card:nth-child(6) { animation-delay: 0.35s; }
+.landing-card:nth-child(7) { animation-delay: 0.4s; }
+.landing-card:nth-child(8) { animation-delay: 0.45s; }
+
 /* Reduced motion support */
 @media (prefers-reduced-motion: reduce) {
   .animate-float-orb,

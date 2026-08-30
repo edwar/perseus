@@ -129,7 +129,7 @@ export function DailyExpensesChart({
         entry[cat] = categoryDailyMap[cat]?.[day] || 0
       }
       return entry
-    }).filter(entry => activeCategories.some(cat => (entry[cat] as number) > 0))
+    }).filter(entry => activeCategories.some(cat => (entry[cat] as number) > 0)).reverse()
 
     const activeActivities = Object.entries(activityDailyMap)
       .filter(([, days]) => Object.values(days).some(v => v > 0))
@@ -146,7 +146,7 @@ export function DailyExpensesChart({
         entry[act] = activityDailyMap[act]?.[day] || 0
       }
       return entry
-    }).filter(d => activeActivities.some(a => (d[a] as number) > 0))
+    }).filter(d => activeActivities.some(a => (d[a] as number) > 0)).reverse()
 
     return {
       byCategory: { data: catData, categories: activeCategories },
@@ -203,7 +203,10 @@ export function DailyExpensesChart({
             <ResponsiveContainer width="100%" height={220}>
               <LineChart data={chartData}>
                 <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
-                <XAxis dataKey="day" tick={{ fontSize: 10 }} tickFormatter={(v) => `${v}`} />
+                <XAxis dataKey="day" tick={{ fontSize: 10 }} tickFormatter={(v) => {
+                  const monthNames = ["Ene", "Feb", "Mar", "Abr", "May", "Jun", "Jul", "Ago", "Sep", "Oct", "Nov", "Dic"]
+                  return `${v} ${monthNames[new Date().getMonth()]}`
+                }} />
                 <YAxis tick={{ fontSize: 10 }} tickFormatter={(v: unknown) => {
                   const num = v as number
                   if (num >= 1_000_000) return `$${(num / 1_000_000).toFixed(1)}M`
@@ -212,7 +215,10 @@ export function DailyExpensesChart({
                 }} />
                 <Tooltip
                   formatter={(value, name) => [`$${Number(value).toLocaleString("es-CO")}`, name]}
-                  labelFormatter={(label) => `Día ${label}`}
+                  labelFormatter={(label) => {
+                    const monthNames = ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"]
+                    return `${label} de ${monthNames[new Date().getMonth()]}`
+                  }}
                 />
                 {isCategory ? (
                   categories.map((cat, i) => (
