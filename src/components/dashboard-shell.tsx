@@ -10,7 +10,7 @@ export function DashboardShell({ children }: { children: React.ReactNode }) {
   return (
     <div
       className={cn(
-        "flex flex-1 flex-col h-screen transition-all duration-300",
+        "flex flex-1 flex-col h-screen overflow-hidden transition-all duration-300",
         "md:ml-16",
         sidebarOpen && "md:ml-64",
       )}

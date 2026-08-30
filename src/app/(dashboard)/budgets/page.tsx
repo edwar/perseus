@@ -48,9 +48,11 @@ export default function BudgetsPage() {
 
   useEffect(() => {
     setHeaderAction(
-      <Button size="sm" onClick={() => { setEditing(null); setShowForm(true) }}>
-        <Plus className="h-4 w-4" /> Crear
-      </Button>
+      <div className="hidden md:block">
+        <Button size="sm" onClick={() => { setEditing(null); setShowForm(true) }}>
+          <Plus className="h-4 w-4" /> Crear
+        </Button>
+      </div>
     )
     return () => setHeaderAction(null)
   }, [setHeaderAction])
@@ -58,9 +60,8 @@ export default function BudgetsPage() {
   if (isLoading) return <BudgetsLoadingSkeleton />
 
   return (
-    <div className="space-y-6 min-h-screen max-w-full overflow-hidden">
-      <div className="flex items-center justify-between mt-10 md:hidden">
-        <h1 className="text-2xl font-bold">Presupuestos</h1>
+    <div className="space-y-4 sm:space-y-6 min-h-screen max-w-full overflow-hidden">
+      <div className="flex md:hidden mt-6">
         <Button className="gap-2" onClick={() => { setEditing(null); setShowForm(true) }}>
           <Plus className="h-4 w-4" />
           Crear

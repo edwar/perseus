@@ -23,9 +23,11 @@ export default function RecurringPage() {
 
   useEffect(() => {
     setHeaderAction(
-      <Button size="sm" className="gap-1" onClick={() => { setEditingId(null); setShowForm(true) }}>
-        <Plus className="h-4 w-4" /> Crear
-      </Button>
+      <div className="hidden md:block">
+        <Button size="sm" className="gap-1" onClick={() => { setEditingId(null); setShowForm(true) }}>
+          <Plus className="h-4 w-4" /> Crear
+        </Button>
+      </div>
     )
     return () => setHeaderAction(null)
   }, [setHeaderAction])
@@ -40,9 +42,8 @@ export default function RecurringPage() {
   const expenseItems = items.filter(i => i.type === "EXPENSE")
 
   return (
-    <div className="space-y-6 min-h-screen max-w-full overflow-hidden">
-      <div className="items-center justify-between mt-10 flex md:hidden">
-        <h1 className="text-2xl font-bold">Recurrentes</h1>
+    <div className="space-y-4 sm:space-y-6 min-h-screen max-w-full overflow-hidden">
+      <div className="flex md:hidden mt-6">
         <Button onClick={() => { setEditingId(null); setShowForm(true) }}>
           <Plus className="h-4 w-4" />
           Crear
