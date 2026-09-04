@@ -78,25 +78,19 @@ export function DailyExpensesChart({
   const [view, setView] = useState<"presupuesto" | "actividad">("presupuesto")
 
   const { byCategory, byActivity } = useMemo(() => {
-    const now = new Date()
-    const currentMonth = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}`
+    const expenses = transactions.filter((tx) => tx.type === "EXPENSE")
 
-    const allDays: Record<string, boolean> = {}
-    for (let i = 1; i <= 31; i++) {
-      const day = String(i).padStart(2, "0")
-      const dateStr = `${currentMonth}-${day}`
-      if (dateStr > `${currentMonth}-31`) break
-      allDays[day] = true
+    const daySet = new Set<string>()
+    for (const tx of expenses) {
+      daySet.add(tx.date)
     }
+    const sortedDays = Array.from(daySet).sort()
 
     const categoryDailyMap: Record<string, Record<string, number>> = {}
     const activityDailyMap: Record<string, Record<string, number>> = {}
 
-    for (const tx of transactions) {
-      if (tx.type !== "EXPENSE") continue
-      if (!tx.date.startsWith(currentMonth)) continue
-      const day = tx.date.slice(8, 10)
-      if (!allDays[day]) continue
+    for (const tx of expenses) {
+      const day = tx.date
 
       const category = tx.category || "Sin categoría"
       if (!categoryDailyMap[category]) {
@@ -112,8 +106,6 @@ export function DailyExpensesChart({
       activityDailyMap[activityName][day] = (activityDailyMap[activityName][day] || 0) + tx.amount
     }
 
-    const days = Object.keys(allDays)
-
     const activeCategories = Object.entries(categoryDailyMap)
       .filter(([, days]) => Object.values(days).some(v => v > 0))
       .map(([name]) => name)
@@ -123,13 +115,13 @@ export function DailyExpensesChart({
         return sumB - sumA
       })
 
-    const catData = days.map(day => {
-      const entry: Record<string, string | number> = { day: Number(day) }
+    const catData = sortedDays.map(day => {
+      const entry: Record<string, string | number> = { day }
       for (const cat of activeCategories) {
         entry[cat] = categoryDailyMap[cat]?.[day] || 0
       }
       return entry
-    }).filter(entry => activeCategories.some(cat => (entry[cat] as number) > 0)).reverse()
+    }).filter(entry => activeCategories.some(cat => (entry[cat] as number) > 0))
 
     const activeActivities = Object.entries(activityDailyMap)
       .filter(([, days]) => Object.values(days).some(v => v > 0))
@@ -140,13 +132,13 @@ export function DailyExpensesChart({
         return sumB - sumA
       })
 
-    const actData = days.map(day => {
-      const entry: Record<string, string | number> = { day: Number(day) }
+    const actData = sortedDays.map(day => {
+      const entry: Record<string, string | number> = { day }
       for (const act of activeActivities) {
         entry[act] = activityDailyMap[act]?.[day] || 0
       }
       return entry
-    }).filter(d => activeActivities.some(a => (d[a] as number) > 0)).reverse()
+    }).filter(d => activeActivities.some(a => (d[a] as number) > 0))
 
     return {
       byCategory: { data: catData, categories: activeCategories },
@@ -205,7 +197,8 @@ export function DailyExpensesChart({
                 <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
                 <XAxis dataKey="day" tick={{ fontSize: 10 }} tickFormatter={(v) => {
                   const monthNames = ["Ene", "Feb", "Mar", "Abr", "May", "Jun", "Jul", "Ago", "Sep", "Oct", "Nov", "Dic"]
-                  return `${v} ${monthNames[new Date().getMonth()]}`
+                  const d = new Date(v + "T12:00:00")
+                  return `${d.getDate()} ${monthNames[d.getMonth()]}`
                 }} />
                 <YAxis tick={{ fontSize: 10 }} tickFormatter={(v: unknown) => {
                   const num = v as number
@@ -217,7 +210,8 @@ export function DailyExpensesChart({
                   formatter={(value, name) => [`$${Number(value).toLocaleString("es-CO")}`, name]}
                   labelFormatter={(label) => {
                     const monthNames = ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"]
-                    return `${label} de ${monthNames[new Date().getMonth()]}`
+                    const d = new Date(label + "T12:00:00")
+                    return `${d.getDate()} de ${monthNames[d.getMonth()]} ${d.getFullYear()}`
                   }}
                 />
                 {isCategory ? (

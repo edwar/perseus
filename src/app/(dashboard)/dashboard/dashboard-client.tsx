@@ -10,13 +10,18 @@ import { CurrencyInput } from "@/components/ui/currency-input"
 import { Input } from "@/components/ui/input"
 import { useTransactionMutations } from "@/hooks/useData"
 import { ConfirmDialog } from "@/components/ui/confirm-dialog"
-import { GamificationStats } from "@/components/features/dashboard/gamification-stats"
+import { HeroCard } from "@/components/ui/hero-card"
+import { ComparisonCards } from "@/components/ui/comparison-cards"
+import { DateFilter } from "@/components/features/dashboard/date-filter"
+import { useDateFilterStore } from "@/store/date-filter-store"
+
 import { SpendingPie, IncomeBar, DailyExpensesChart, TopExpensesChart } from "./charts"
 
 interface DashboardClientProps {
   totalBalance: number
   monthlyIncome: number
   monthlyExpenses: number
+  comparisonData?: Array<{ income: number; expenses: number; balance: number }> | null
   allTransactions: Array<{
     id: string
     amount: number
@@ -52,6 +57,7 @@ export function DashboardClient({
   totalBalance,
   monthlyIncome,
   monthlyExpenses,
+  comparisonData,
   allTransactions,
   recentTransactions,
   spendingByCategory,
@@ -59,6 +65,7 @@ export function DashboardClient({
   budgets,
 }: DashboardClientProps) {
   const { update, remove } = useTransactionMutations()
+  const { mode } = useDateFilterStore()
   const [editTx, setEditTx] = useState<string | null>(null)
   const [deleteTx, setDeleteTx] = useState<string | null>(null)
   const [txPage, setTxPage] = useState(1)
@@ -157,55 +164,50 @@ export function DashboardClient({
   }
   return (
     <div className="space-y-6 min-h-screen">
-      <h1 className="text-2xl font-bold mt-10 md:hidden">Dashboard</h1>
+      <div className="flex items-center justify-between mt-10 md:mt-0">
+        <h1 className="text-2xl font-bold md:hidden">Dashboard</h1>
+        <h1 className="text-2xl font-bold hidden md:block">Dashboard</h1>
+        <DateFilter />
+      </div>
 
       {/* Hero Cards — Balance */}
       <div className="relative">
         <div className="absolute -top-20 -right-20 h-64 w-64 rounded-full bg-primary/5 blur-3xl animate-float-orb pointer-events-none" />
         <div className="absolute -bottom-10 -left-10 h-48 w-48 rounded-full bg-success/5 blur-3xl animate-float-orb pointer-events-none" style={{ animationDelay: "2s" }} />
-        <div className="grid gap-4 sm:grid-cols-3 relative">
-          <div className="group hero-card relative overflow-hidden rounded-2xl bg-linear-to-br from-blue-500 via-blue-600 to-blue-800 p-6 text-white shadow-xl shadow-primary/25 transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl hover:shadow-primary/35 animate-stagger-in" style={{ animationDelay: "0ms" }}>
-            <div className="absolute inset-0 bg-linear-to-br from-white/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-            <div className="absolute -right-6 -top-6 h-32 w-32 rounded-full bg-white/10 animate-pulse-glow" />
-            <div className="absolute -bottom-8 -right-8 h-24 w-24 rounded-full bg-white/5" />
-            <div className="relative">
-              <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-white/15 backdrop-blur-sm mb-4 ring-1 ring-white/20">
-                <Wallet className="h-5 w-5" />
-              </div>
-              <p className="text-sm font-medium text-blue-100/80">Balance total</p>
-              <p className="stat-number mt-1 drop-shadow-lg">{formatCurrency(totalBalance)}</p>
-            </div>
+        {mode === "comparison" && comparisonData ? (
+          <ComparisonCards data={comparisonData} totalBalance={totalBalance} />
+        ) : (
+          <div className="grid gap-4 sm:grid-cols-3 relative">
+            <HeroCard
+              icon={<Wallet className="h-5 w-5" />}
+              label="Balance total"
+              value={formatCurrency(totalBalance)}
+              gradient="from-blue-500 via-blue-600 to-blue-800"
+              shadow="shadow-primary/25"
+              hoverShadow="hover:shadow-primary/35"
+              delay="0ms"
+            />
+            <HeroCard
+              icon={<ArrowUpRight className="h-5 w-5" />}
+              label="Ingresos del periodo"
+              value={formatCurrency(monthlyIncome)}
+              gradient="from-emerald-400 via-emerald-500 to-emerald-700"
+              shadow="shadow-success/25"
+              hoverShadow="hover:shadow-success/35"
+              delay="60ms"
+            />
+            <HeroCard
+              icon={<ArrowDownRight className="h-5 w-5" />}
+              label="Gastos del periodo"
+              value={formatCurrency(monthlyExpenses)}
+              gradient="from-coral-300 via-coral-400 to-coral-600"
+              shadow="shadow-danger/25"
+              hoverShadow="hover:shadow-danger/35"
+              delay="120ms"
+            />
           </div>
-
-          <div className="group hero-card relative overflow-hidden rounded-2xl bg-linear-to-br from-emerald-400 via-emerald-500 to-emerald-700 p-6 text-white shadow-xl shadow-success/25 transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl hover:shadow-success/35 animate-stagger-in" style={{ animationDelay: "60ms" }}>
-            <div className="absolute inset-0 bg-linear-to-br from-white/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-            <div className="absolute -right-6 -top-6 h-32 w-32 rounded-full bg-white/10 animate-pulse-glow" style={{ animationDelay: "1s" }} />
-            <div className="absolute -bottom-8 -right-8 h-24 w-24 rounded-full bg-white/5" />
-            <div className="relative">
-              <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-white/15 backdrop-blur-sm mb-4 ring-1 ring-white/20">
-                <ArrowUpRight className="h-5 w-5" />
-              </div>
-              <p className="text-sm font-medium text-emerald-100/80">Ingresos del mes</p>
-              <p className="stat-number mt-1 drop-shadow-lg">{formatCurrency(monthlyIncome)}</p>
-            </div>
-          </div>
-
-          <div className="group hero-card relative overflow-hidden rounded-2xl bg-linear-to-br from-coral-300 via-coral-400 to-coral-600 p-6 text-white shadow-xl shadow-danger/25 transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl hover:shadow-danger/35 animate-stagger-in" style={{ animationDelay: "120ms" }}>
-            <div className="absolute inset-0 bg-linear-to-br from-white/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-            <div className="absolute -right-6 -top-6 h-32 w-32 rounded-full bg-white/10 animate-pulse-glow" style={{ animationDelay: "2s" }} />
-            <div className="absolute -bottom-8 -right-8 h-24 w-24 rounded-full bg-white/5" />
-            <div className="relative">
-              <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-white/15 backdrop-blur-sm mb-4 ring-1 ring-white/20">
-                <ArrowDownRight className="h-5 w-5" />
-              </div>
-              <p className="text-sm font-medium text-coral-100/80">Gastos del mes</p>
-              <p className="stat-number mt-1 drop-shadow-lg">{formatCurrency(monthlyExpenses)}</p>
-            </div>
-          </div>
-        </div>
+        )}
       </div>
-
-      <GamificationStats />
 
       <div className="grid gap-5 sm:grid-cols-2">
         <div className="animate-stagger-in" style={{ animationDelay: "480ms" }}><SpendingPie data={spendingByCategory} /></div>
