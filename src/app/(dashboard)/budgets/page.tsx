@@ -71,7 +71,7 @@ export default function BudgetsPage() {
 
   return (
     <div className="space-y-4 sm:space-y-6 min-h-screen max-w-full overflow-hidden">
-      <div className="flex md:hidden mt-6 items-center gap-2">
+      <div className="flex md:hidden mt-6 items-center justify-between gap-2">
         <DateFilter monthOnly />
         <Button className="gap-2" onClick={() => { setEditing(null); setShowForm(true) }}>
           <Plus className="h-4 w-4" />

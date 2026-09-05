@@ -90,6 +90,11 @@ export function DashboardClient({
     return (
       <div className="space-y-6 min-h-screen max-w-full overflow-hidden">
 
+        {/* Date Filter Skeleton (mobile) */}
+        <div className="md:hidden mt-6">
+          <div className="h-9 w-40 animate-shimmer rounded-xl border bg-background" />
+        </div>
+
         {/* Hero Cards Skeleton */}
         <div className="grid gap-4 sm:grid-cols-3">
           {[1, 2, 3].map((i) => (

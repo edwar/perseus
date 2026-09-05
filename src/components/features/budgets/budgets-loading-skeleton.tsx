@@ -1,9 +1,11 @@
 export function BudgetsLoadingSkeleton() {
   return (
     <div className="space-y-4 sm:space-y-6 min-h-screen">
-      <div className="flex items-center justify-between mt-10 md:hidden">
-        <h1 className="text-2xl font-bold">Presupuestos</h1>
-        <div className="h-9 w-24 animate-shimmer rounded-lg bg-muted" />
+
+      {/* Date Filter + Crear Skeleton (mobile) */}
+      <div className="flex md:hidden mt-6 items-center justify-between gap-2">
+        <div className="h-9 w-40 animate-shimmer rounded-xl border bg-background" />
+        <div className="h-9 w-24 animate-shimmer rounded-xl bg-primary/20" />
       </div>
 
       {/* Summary Skeleton */}
