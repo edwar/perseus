@@ -192,7 +192,7 @@ export function DailyExpensesChart({
           </div>
         ) : (
           <>
-            <ResponsiveContainer width="100%" height={220}>
+            <ResponsiveContainer width="100%" height={280}>
               <LineChart data={chartData}>
                 <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
                 <XAxis dataKey="day" tick={{ fontSize: 10 }} tickFormatter={(v) => {
@@ -207,7 +207,10 @@ export function DailyExpensesChart({
                   return `$${num}`
                 }} />
                 <Tooltip
-                  formatter={(value, name) => [`$${Number(value).toLocaleString("es-CO")}`, name]}
+                  formatter={(value, name) => {
+                    if (Number(value) === 0) return null
+                    return [`$${Number(value).toLocaleString("es-CO")}`, name]
+                  }}
                   labelFormatter={(label) => {
                     const monthNames = ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"]
                     const d = new Date(label + "T12:00:00")
@@ -245,7 +248,7 @@ export function DailyExpensesChart({
             </ResponsiveContainer>
             {isCategory && categories.length > 1 && (
               <div className="mt-3 flex flex-wrap gap-3 justify-center">
-                {categories.slice(0, 6).map((cat, i) => (
+                {categories.map((cat, i) => (
                   <div key={cat} className="flex items-center gap-1.5 text-xs">
                     <div className="h-2 w-2 rounded-full" style={{ backgroundColor: COLORS[i % COLORS.length] }} />
                     <span className="text-muted-foreground truncate max-w-[100px]">{cat}</span>
@@ -255,7 +258,7 @@ export function DailyExpensesChart({
             )}
             {!isCategory && (
               <div className="mt-3 flex flex-wrap gap-3 justify-center">
-                {activities.slice(0, 8).map((act, i) => (
+                {activities.map((act, i) => (
                   <div key={act} className="flex items-center gap-1.5 text-xs">
                     <div className="h-2 w-2 rounded-full" style={{ backgroundColor: COLORS[i % COLORS.length] }} />
                     <span className="text-muted-foreground truncate max-w-[100px]">{act}</span>
