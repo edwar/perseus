@@ -41,6 +41,12 @@ export function DateFilter({ monthOnly = false }: { monthOnly?: boolean }) {
   } = useDateFilterStore()
 
   useEffect(() => {
+    if (monthOnly && mode !== "month") {
+      setMode("month")
+    }
+  }, [monthOnly, mode, setMode])
+
+  useEffect(() => {
     function handleClickOutside(e: MouseEvent) {
       if (ref.current && !ref.current.contains(e.target as Node)) {
         const target = e.target as Node
