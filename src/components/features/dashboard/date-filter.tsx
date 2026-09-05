@@ -18,9 +18,11 @@ const TABS: Array<{ id: DateFilterMode; label: string; icon: React.ReactNode }> 
   { id: "comparison", label: "Comparar", icon: <ArrowLeftRight className="h-3.5 w-3.5" /> },
 ]
 
-export function DateFilter() {
+export function DateFilter({ monthOnly = false }: { monthOnly?: boolean }) {
   const [open, setOpen] = useState(false)
   const ref = useRef<HTMLDivElement>(null)
+
+  const tabs = monthOnly ? TABS.filter((t) => t.id === "month") : TABS
 
   const {
     mode,
@@ -70,7 +72,7 @@ export function DateFilter() {
         <div className="absolute right-0 top-full z-50 mt-2 rounded-2xl border bg-popover shadow-xl animate-in fade-in-0 zoom-in-95">
           {/* Tabs */}
           <div className="flex border-b p-1.5 gap-1">
-            {TABS.map((tab) => (
+            {tabs.map((tab) => (
               <button
                 key={tab.id}
                 onClick={() => setMode(tab.id)}

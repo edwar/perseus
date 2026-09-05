@@ -1,16 +1,15 @@
 import { useMemo } from "react"
 import { DollarSign, TrendingDown, Wallet } from "lucide-react"
 import { formatCurrency } from "@/lib/formats"
-import { useTransactions } from "@/hooks/useData"
 import type { Budget } from "@/hooks/use-budgets"
+import type { Transaction } from "@/hooks/use-transactions"
 
 interface BudgetSummaryProps {
   budgets: Budget[]
+  transactions: Transaction[]
 }
 
-export function BudgetSummary({ budgets }: BudgetSummaryProps) {
-  const { data: transactions = [] } = useTransactions()
-
+export function BudgetSummary({ budgets, transactions }: BudgetSummaryProps) {
   const totalBalance = useMemo(() => {
     return transactions.reduce((acc, t) => {
       return acc + (t.type === "INCOME" ? t.amount : -t.amount)
