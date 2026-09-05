@@ -75,7 +75,7 @@ export function DateFilter({ monthOnly = false }: { monthOnly?: boolean }) {
       </button>
 
       {open && (
-        <div className="absolute right-0 top-full z-50 mt-2 rounded-2xl border bg-popover shadow-xl animate-in fade-in-0 zoom-in-95">
+        <div className="absolute right-0 top-full z-50 mt-2 rounded-2xl border bg-popover shadow-xl animate-in fade-in-0 zoom-in-95 overflow-hidden">
           {/* Tabs */}
           <div className="flex border-b p-1.5 gap-1">
             {tabs.map((tab) => (
