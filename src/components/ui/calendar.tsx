@@ -23,10 +23,10 @@ function Calendar({
         caption_label: "text-sm font-medium",
         nav: "flex items-center gap-1",
         button_previous: cn(
-          "absolute left-1 top-0 flex size-7 items-center justify-center rounded-lg border border-transparent bg-transparent p-0 text-sm font-medium text-muted-foreground transition-colors hover:bg-muted hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50 disabled:pointer-events-none disabled:opacity-50 [&_svg]:size-4 [&_svg]:shrink-0"
+          "absolute left-1 top-1/2 -translate-y-1/2 flex size-7 items-center justify-center rounded-lg border border-transparent bg-transparent p-0 text-sm font-medium text-muted-foreground transition-colors hover:bg-muted hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50 disabled:pointer-events-none disabled:opacity-50 [&_svg]:size-4 [&_svg]:shrink-0"
         ),
         button_next: cn(
-          "absolute right-1 top-0 flex size-7 items-center justify-center rounded-lg border border-transparent bg-transparent p-0 text-sm font-medium text-muted-foreground transition-colors hover:bg-muted hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50 disabled:pointer-events-none disabled:opacity-50 [&_svg]:size-4 [&_svg]:shrink-0"
+          "absolute right-1 top-1/2 -translate-y-1/2 flex size-7 items-center justify-center rounded-lg border border-transparent bg-transparent p-0 text-sm font-medium text-muted-foreground transition-colors hover:bg-muted hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50 disabled:pointer-events-none disabled:opacity-50 [&_svg]:size-4 [&_svg]:shrink-0"
         ),
         month_grid: "w-full border-collapse space-x-1",
         weekdays: "flex",
