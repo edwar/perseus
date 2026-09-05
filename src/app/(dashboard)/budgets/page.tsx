@@ -7,11 +7,13 @@ import { Button } from "@/components/ui/button"
 import { Empty } from "@/components/ui/empty"
 import { ConfirmDialog } from "@/components/ui/confirm-dialog"
 import { useBudgets, useBudgetMutations, useTransactions, type Budget } from "@/hooks/useData"
+import { useDateFilterStore } from "@/store/date-filter-store"
 import { BudgetsLoadingSkeleton } from "@/components/features/budgets/budgets-loading-skeleton"
 import { BudgetCard } from "@/components/features/budgets/budget-card"
 import { BudgetSummary } from "@/components/features/budgets/budget-summary"
 import { BudgetForm } from "@/components/features/budgets/budget-form"
 import { ActivitiesModal } from "@/components/features/budgets/activities-modal"
+import { DateFilter } from "@/components/features/dashboard/date-filter"
 
 export default function BudgetsPage() {
   const { data: transactionsData } = useTransactions()
@@ -24,14 +26,21 @@ export default function BudgetsPage() {
   const [deleteConfirm, setDeleteConfirm] = useState<string | null>(null)
   const [viewActivities, setViewActivities] = useState<Budget | null>(null)
 
+  const { getActiveRange } = useDateFilterStore()
+  const activeRange = getActiveRange()
+
+  const filteredTransactions = useMemo(() => {
+    return transactions.filter((t) => t.date >= activeRange.start && t.date <= activeRange.end)
+  }, [transactions, activeRange])
+
   const spentByCategory = useMemo(() => {
     const map: Record<string, number> = {}
-    for (const tx of transactions) {
+    for (const tx of filteredTransactions) {
       if (tx.type !== "EXPENSE" || !tx.category) continue
       map[tx.category] = (map[tx.category] ?? 0) + tx.amount
     }
     return map
-  }, [transactions])
+  }, [filteredTransactions])
 
   async function handleSave(data: Omit<Budget, "id"> & { id?: string }) {
     if (editing) {
@@ -48,7 +57,8 @@ export default function BudgetsPage() {
 
   useEffect(() => {
     setHeaderAction(
-      <div className="hidden md:block">
+      <div className="hidden md:flex items-center gap-2">
+        <DateFilter monthOnly />
         <Button size="sm" onClick={() => { setEditing(null); setShowForm(true) }}>
           <Plus className="h-4 w-4" /> Crear
         </Button>
@@ -61,7 +71,8 @@ export default function BudgetsPage() {
 
   return (
     <div className="space-y-4 sm:space-y-6 min-h-screen max-w-full overflow-hidden">
-      <div className="flex md:hidden mt-6">
+      <div className="flex md:hidden mt-6 items-center gap-2">
+        <DateFilter monthOnly />
         <Button className="gap-2" onClick={() => { setEditing(null); setShowForm(true) }}>
           <Plus className="h-4 w-4" />
           Crear
@@ -77,7 +88,7 @@ export default function BudgetsPage() {
         />
       )}
 
-      {budgets.length > 0 && <BudgetSummary budgets={budgets} />}
+      {budgets.length > 0 && <BudgetSummary budgets={budgets} transactions={filteredTransactions} />}
 
       {budgets.length === 0 ? (
         <Empty icon={PiggyBank} title="No hay presupuestos" description="Crea tu primer presupuesto para controlar tus gastos" action={<Button size="sm" onClick={() => { setEditing(null); setShowForm(true) }}><Plus className="h-3 w-3" /> Crear</Button>} />

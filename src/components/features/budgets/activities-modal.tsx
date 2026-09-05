@@ -4,6 +4,7 @@ import { X, AlertTriangle, CheckCircle2, TrendingDown, Settings } from "lucide-r
 import { cn } from "@/lib/utils"
 import { formatCurrency, formatPercentage } from "@/lib/formats"
 import { useTransactions, useBudgets, useBudgetMutations } from "@/hooks/useData"
+import { useDateFilterStore } from "@/store/date-filter-store"
 import { ConfirmDialog } from "@/components/ui/confirm-dialog"
 import type { Budget } from "@/hooks/use-budgets"
 
@@ -13,10 +14,17 @@ interface ActivitiesModalProps {
 }
 
 export function ActivitiesModal({ budget, onClose }: ActivitiesModalProps) {
-  const { data: transactions = [] } = useTransactions()
+  const { data: allTransactions = [] } = useTransactions()
   const { data: budgets = [] } = useBudgets()
   const { update } = useBudgetMutations()
   const [adjustItem, setAdjustItem] = useState<{ name: string; spent: number } | null>(null)
+
+  const { getActiveRange } = useDateFilterStore()
+  const activeRange = getActiveRange()
+
+  const transactions = useMemo(() => {
+    return allTransactions.filter((t) => t.date >= activeRange.start && t.date <= activeRange.end)
+  }, [allTransactions, activeRange])
 
   const currentBudget = budgets.find((b) => b.id === budget.id) ?? budget
   const rawItems = Array.isArray(currentBudget.items) ? currentBudget.items : []

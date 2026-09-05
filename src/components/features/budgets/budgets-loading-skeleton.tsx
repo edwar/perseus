@@ -1,6 +1,6 @@
 export function BudgetsLoadingSkeleton() {
   return (
-    <div className="space-y-6 min-h-screen">
+    <div className="space-y-4 sm:space-y-6 min-h-screen">
       <div className="flex items-center justify-between mt-10 md:hidden">
         <h1 className="text-2xl font-bold">Presupuestos</h1>
         <div className="h-9 w-24 animate-shimmer rounded-lg bg-muted" />
@@ -19,12 +19,6 @@ export function BudgetsLoadingSkeleton() {
             </div>
           </div>
         ))}
-      </div>
-
-      {/* Header Skeleton */}
-      <div className="flex items-center justify-between">
-        <div className="h-7 w-32 animate-shimmer rounded bg-muted-foreground/15" />
-        <div className="h-9 w-24 animate-shimmer rounded-lg bg-muted-foreground/15" />
       </div>
 
       {/* Cards Skeleton */}

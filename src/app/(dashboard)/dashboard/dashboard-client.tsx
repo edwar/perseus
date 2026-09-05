@@ -14,6 +14,7 @@ import { HeroCard } from "@/components/ui/hero-card"
 import { ComparisonCards } from "@/components/ui/comparison-cards"
 import { DateFilter } from "@/components/features/dashboard/date-filter"
 import { useDateFilterStore } from "@/store/date-filter-store"
+import { useHeaderStore } from "@/store/header-store"
 
 import { SpendingPie, IncomeBar, DailyExpensesChart, TopExpensesChart } from "./charts"
 
@@ -75,9 +76,15 @@ export function DashboardClient({
   const paginatedTxs = recentTransactions.slice((safePage - 1) * PAGE_SIZE, safePage * PAGE_SIZE)
   const [ready, setReady] = useState(false)
   useEffect(() => { const t = setTimeout(() => setReady(true), 100); return () => clearTimeout(t) }, [])
+
+  const setHeaderAction = useHeaderStore((s) => s.setAction)
+  useEffect(() => {
+    setHeaderAction(<DateFilter />)
+    return () => setHeaderAction(null)
+  }, [setHeaderAction])
   if (!ready) {
     return (
-    <div className="space-y-6 min-h-screen max-w-full overflow-hidden">
+      <div className="space-y-6 min-h-screen max-w-full overflow-hidden">
         <h1 className="text-2xl font-bold mt-10 md:hidden">Dashboard</h1>
 
         {/* Hero Cards Skeleton */}
@@ -164,12 +171,6 @@ export function DashboardClient({
   }
   return (
     <div className="space-y-6 min-h-screen">
-      <div className="flex items-center justify-between mt-10 md:mt-0">
-        <h1 className="text-2xl font-bold md:hidden">Dashboard</h1>
-        <h1 className="text-2xl font-bold hidden md:block">Dashboard</h1>
-        <DateFilter />
-      </div>
-
       {/* Hero Cards — Balance */}
       <div className="relative">
         <div className="absolute -top-20 -right-20 h-64 w-64 rounded-full bg-primary/5 blur-3xl animate-float-orb pointer-events-none" />
