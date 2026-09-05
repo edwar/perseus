@@ -79,13 +79,16 @@ export function DashboardClient({
 
   const setHeaderAction = useHeaderStore((s) => s.setAction)
   useEffect(() => {
-    setHeaderAction(<DateFilter />)
+    setHeaderAction(
+      <div className="hidden md:block">
+        <DateFilter />
+      </div>
+    )
     return () => setHeaderAction(null)
   }, [setHeaderAction])
   if (!ready) {
     return (
       <div className="space-y-6 min-h-screen max-w-full overflow-hidden">
-        <h1 className="text-2xl font-bold mt-10 md:hidden">Dashboard</h1>
 
         {/* Hero Cards Skeleton */}
         <div className="grid gap-4 sm:grid-cols-3">
@@ -171,6 +174,10 @@ export function DashboardClient({
   }
   return (
     <div className="space-y-6 min-h-screen">
+      <div className="md:hidden mt-6">
+        <DateFilter />
+      </div>
+
       {/* Hero Cards — Balance */}
       <div className="relative">
         <div className="absolute -top-20 -right-20 h-64 w-64 rounded-full bg-primary/5 blur-3xl animate-float-orb pointer-events-none" />
