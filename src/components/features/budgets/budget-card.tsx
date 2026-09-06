@@ -15,7 +15,8 @@ interface BudgetCardProps {
 
 export function BudgetCard({ budget, spent, onEdit, onDelete, onViewActivities }: BudgetCardProps) {
   const percentage = (spent / budget.amount) * 100
-  const isOverBudget = percentage >= 100
+  const isExactBudget = percentage === 100
+  const isOverBudget = percentage > 100
   const isNearLimit = percentage >= 80 && percentage < 100
   const remaining = Math.max(0, budget.amount - spent)
   const rawItems = Array.isArray(budget.items) ? budget.items : []
@@ -24,16 +25,18 @@ export function BudgetCard({ budget, spent, onEdit, onDelete, onViewActivities }
   return (
     <div className={cn(
       "group relative overflow-hidden rounded-2xl bg-card border transition-all duration-300 hover:-translate-y-0.5 hover:shadow-lg flex flex-col",
-      isOverBudget ? "border-danger/30" : isNearLimit ? "border-warning/30" : "border-border"
+      isOverBudget ? "border-danger/30" : isExactBudget ? "border-success/30" : isNearLimit ? "border-warning/30" : "border-border"
     )}>
       {/* Top accent */}
       <div className={cn(
         "h-1 w-full",
         isOverBudget
           ? "bg-linear-to-r from-danger to-coral-400"
-          : isNearLimit
-            ? "bg-linear-to-r from-warning to-flame-400"
-            : "bg-linear-to-r from-primary to-blue-400"
+          : isExactBudget
+            ? "bg-linear-to-r from-success to-emerald-400"
+            : isNearLimit
+              ? "bg-linear-to-r from-warning to-flame-400"
+              : "bg-linear-to-r from-primary to-blue-400"
       )} />
 
       {/* Hover gradient */}
@@ -54,8 +57,18 @@ export function BudgetCard({ budget, spent, onEdit, onDelete, onViewActivities }
               <AlertTriangle className="h-3 w-3" /> Excedido
             </span>
           )}
-          {!isOverBudget && !isNearLimit && percentage > 0 && (
+          {isExactBudget && (
             <span className="inline-flex items-center gap-1 rounded-full bg-success/10 px-2 py-0.5 text-[10px] font-bold text-success shrink-0">
+              <CheckCircle2 className="h-3 w-3" /> Exacto
+            </span>
+          )}
+          {isNearLimit && (
+            <span className="inline-flex items-center gap-1 rounded-full bg-warning/10 px-2 py-0.5 text-[10px] font-bold text-warning shrink-0">
+              <AlertTriangle className="h-3 w-3" /> AL LÍMITE
+            </span>
+          )}
+          {!isOverBudget && !isExactBudget && !isNearLimit && percentage > 0 && (
+            <span className="inline-flex items-center gap-1 rounded-full bg-primary/10 px-2 py-0.5 text-[10px] font-bold text-primary shrink-0">
               <CheckCircle2 className="h-3 w-3" /> OK
             </span>
           )}
@@ -65,7 +78,7 @@ export function BudgetCard({ budget, spent, onEdit, onDelete, onViewActivities }
         <div className="flex items-baseline justify-between mb-3">
           <span className={cn(
             "text-xl font-extrabold tracking-tight tabular-nums",
-            isOverBudget ? "text-danger" : "text-foreground"
+            isOverBudget ? "text-danger" : isExactBudget ? "text-success" : "text-foreground"
           )}>
             {formatCurrency(spent)}
           </span>
@@ -76,11 +89,11 @@ export function BudgetCard({ budget, spent, onEdit, onDelete, onViewActivities }
         <div className="mb-1">
           <div className="flex items-center justify-between mb-1.5">
             <span className="text-[11px] font-semibold text-muted-foreground">
-              {isOverBudget ? "Excedido" : `${formatCurrency(remaining)} restante`}
+              {isOverBudget ? "Excedido" : isExactBudget ? "Exacto" : `${formatCurrency(remaining)} restante`}
             </span>
             <span className={cn(
               "text-[11px] font-bold",
-              isOverBudget ? "text-danger" : isNearLimit ? "text-warning" : "text-primary"
+              isOverBudget ? "text-danger" : isExactBudget ? "text-success" : isNearLimit ? "text-warning" : "text-primary"
             )}>{formatPercentage(percentage)}</span>
           </div>
           <div className="h-2 rounded-full bg-muted overflow-hidden">
@@ -89,9 +102,11 @@ export function BudgetCard({ budget, spent, onEdit, onDelete, onViewActivities }
                 "h-full rounded-full transition-all duration-700 ease-out",
                 isOverBudget
                   ? "bg-linear-to-r from-danger to-coral-400"
-                  : isNearLimit
-                    ? "bg-linear-to-r from-warning to-flame-400"
-                    : "bg-linear-to-r from-primary to-blue-400"
+                  : isExactBudget
+                    ? "bg-linear-to-r from-success to-emerald-400"
+                    : isNearLimit
+                      ? "bg-linear-to-r from-warning to-flame-400"
+                      : "bg-linear-to-r from-primary to-blue-400"
               )}
               style={{ width: `${Math.min(percentage, 100)}%` }}
             />
