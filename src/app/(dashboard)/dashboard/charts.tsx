@@ -9,19 +9,21 @@ const COLORS = ["#2563FF", "#FF5A5F", "#10B981", "#F59E0B", "#8B5CF6", "#EC4899"
 
 export function SpendingPie({ data }: { data: Array<{ name: string; value: number }> }) {
   return (
-    <Card>
+    <Card className="h-full">
       <div className="border-b px-6 py-4"><p className="font-semibold">Gastos por categoría</p></div>
-      <CardContent>
-        <ResponsiveContainer width="100%" height={220}>
-          <PieChart>
-            <Pie data={data} dataKey="value" nameKey="name" cx="50%" cy="50%" outerRadius={80} innerRadius={50}>
-              {data.map((_, i) => (
-                <Cell key={i} fill={COLORS[i % COLORS.length]} />
-              ))}
-            </Pie>
-            <Tooltip formatter={(v: unknown) => `$${(v as number).toLocaleString("es-CO")}`} />
-          </PieChart>
-        </ResponsiveContainer>
+      <CardContent className="flex flex-col h-full">
+        <div className="flex-1 min-h-0">
+          <ResponsiveContainer width="100%" height="100%">
+            <PieChart>
+              <Pie data={data} dataKey="value" nameKey="name" cx="50%" cy="50%" outerRadius={80} innerRadius={50}>
+                {data.map((_, i) => (
+                  <Cell key={i} fill={COLORS[i % COLORS.length]} />
+                ))}
+              </Pie>
+              <Tooltip formatter={(v: unknown) => `$${(v as number).toLocaleString("es-CO")}`} />
+            </PieChart>
+          </ResponsiveContainer>
+        </div>
         <div className="mt-2 space-y-1">
           {data.slice(0, 5).map((cat, i) => (
             <div key={cat.name} className="flex items-center justify-between text-xs">
@@ -40,23 +42,25 @@ export function SpendingPie({ data }: { data: Array<{ name: string; value: numbe
 
 export function IncomeBar({ data }: { data: Array<{ month: string; income: number; expenses: number }> }) {
   return (
-    <Card>
+    <Card className="h-full">
       <div className="border-b px-6 py-4"><p className="font-semibold">Ingresos vs Gastos</p></div>
-      <CardContent>
-        <ResponsiveContainer width="100%" height={220}>
-          <BarChart data={data}>
-            <XAxis dataKey="month" tick={{ fontSize: 11 }} tickFormatter={(v: string) => v.slice(5)} />
-            <YAxis tick={{ fontSize: 11 }} tickFormatter={(v: unknown) => {
-              const num = v as number
-              if (num >= 1_000_000) return `$${(num / 1_000_000).toFixed(1)}M`
-              if (num >= 1_000) return `$${(num / 1_000).toFixed(0)}k`
-              return `$${num}`
-            }} />
-            <Tooltip formatter={(v: unknown) => `$${(v as number).toLocaleString("es-CO")}`} />
-            <Bar dataKey="income" name="Ingresos" fill="#2563FF" radius={[4, 4, 0, 0]} />
-            <Bar dataKey="expenses" name="Gastos" fill="#FF5A5F" radius={[4, 4, 0, 0]} />
-          </BarChart>
-        </ResponsiveContainer>
+      <CardContent className="h-full">
+        <div className="h-[220px]">
+          <ResponsiveContainer width="100%" height="100%">
+            <BarChart data={data}>
+              <XAxis dataKey="month" tick={{ fontSize: 11 }} tickFormatter={(v: string) => v.slice(5)} />
+              <YAxis tick={{ fontSize: 11 }} tickFormatter={(v: unknown) => {
+                const num = v as number
+                if (num >= 1_000_000) return `$${(num / 1_000_000).toFixed(1)}M`
+                if (num >= 1_000) return `$${(num / 1_000).toFixed(0)}k`
+                return `$${num}`
+              }} />
+              <Tooltip formatter={(v: unknown) => `$${(v as number).toLocaleString("es-CO")}`} />
+              <Bar dataKey="income" name="Ingresos" fill="#2563FF" radius={[4, 4, 0, 0]} />
+              <Bar dataKey="expenses" name="Gastos" fill="#FF5A5F" radius={[4, 4, 0, 0]} />
+            </BarChart>
+          </ResponsiveContainer>
+        </div>
       </CardContent>
     </Card>
   )
@@ -166,7 +170,7 @@ export function DailyExpensesChart({
   }, [chartData, totalMonth])
 
   return (
-    <Card>
+    <Card className="h-full">
       <div className="border-b px-6 py-4 flex items-center justify-between">
         <div className="flex items-center gap-3">
           <p className="font-semibold">Gastos diarios</p>
@@ -185,14 +189,15 @@ export function DailyExpensesChart({
           <p className="text-sm font-bold text-danger">${avgDaily.toLocaleString("es-CO")}</p>
         </div>
       </div>
-      <CardContent>
+      <CardContent className="h-full">
         {chartData.length === 0 ? (
           <div className="flex items-center justify-center h-[220px] text-muted-foreground text-sm">
             Sin gastos este mes
           </div>
         ) : (
           <>
-            <ResponsiveContainer width="100%" height={280}>
+            <div className="h-[220px]">
+              <ResponsiveContainer width="100%" height="100%">
               <LineChart data={chartData}>
                 <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
                 <XAxis dataKey="day" tick={{ fontSize: 10 }} tickFormatter={(v) => {
@@ -246,6 +251,7 @@ export function DailyExpensesChart({
                 )}
               </LineChart>
             </ResponsiveContainer>
+            </div>
             {isCategory && categories.length > 1 && (
               <div className="mt-3 flex flex-wrap gap-3 justify-center">
                 {categories.map((cat, i) => (
@@ -282,15 +288,15 @@ export function TopExpensesChart({ transactions }: { transactions: Array<{ descr
   }, [transactions])
 
   return (
-    <Card>
+    <Card className="h-full">
       <div className="border-b px-6 py-4"><p className="font-semibold">Mayores gastos</p></div>
-      <CardContent>
+      <CardContent className="h-full">
         {topExpenses.length === 0 ? (
           <div className="flex items-center justify-center h-[220px] text-muted-foreground text-sm">
             Sin gastos registrados
           </div>
         ) : (
-          <div className="space-y-3">
+          <div className="space-y-3 h-full flex flex-col justify-between">
             {topExpenses.map((tx, i) => {
               const maxAmount = topExpenses[0]?.amount || 1
               const percentage = (tx.amount / maxAmount) * 100

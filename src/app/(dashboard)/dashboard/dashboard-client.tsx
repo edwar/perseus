@@ -222,14 +222,14 @@ export function DashboardClient({
         )}
       </div>
 
-      <div className="grid gap-5 sm:grid-cols-2">
-        <div className="animate-stagger-in" style={{ animationDelay: "480ms" }}><SpendingPie data={spendingByCategory} /></div>
-        <div className="animate-stagger-in" style={{ animationDelay: "540ms" }}><IncomeBar data={monthlyChart} /></div>
+      <div className="grid gap-5 sm:grid-cols-2 items-stretch">
+        <div className="animate-stagger-in h-full" style={{ animationDelay: "480ms" }}><SpendingPie data={spendingByCategory} /></div>
+        <div className="animate-stagger-in h-full" style={{ animationDelay: "540ms" }}><DailyExpensesChart transactions={allTransactions} budgets={budgets} /></div>
       </div>
 
-      <div className="grid gap-5 sm:grid-cols-2">
-        <div className="animate-stagger-in" style={{ animationDelay: "600ms" }}><DailyExpensesChart transactions={allTransactions} budgets={budgets} /></div>
-        <div className="animate-stagger-in" style={{ animationDelay: "660ms" }}><TopExpensesChart transactions={allTransactions} /></div>
+      <div className="grid gap-5 sm:grid-cols-2 items-stretch">
+        <div className="animate-stagger-in h-full" style={{ animationDelay: "600ms" }}><IncomeBar data={monthlyChart} /></div>
+        <div className="animate-stagger-in h-full" style={{ animationDelay: "660ms" }}><TopExpensesChart transactions={allTransactions} /></div>
       </div>
 
       <Card className="overflow-hidden rounded-2xl border-0 shadow-lg animate-stagger-in" style={{ animationDelay: "720ms" }}>
