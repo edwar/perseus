@@ -17,15 +17,17 @@ import {
   X,
   CheckSquare,
   ScanLine,
+  CalendarDays,
 } from "lucide-react"
 
 const navItems = [
   { href: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
   { href: "/transactions", label: "Transacciones", icon: ArrowLeftRight },
+  { href: "/budgets", label: "Presupuestos", icon: BarChart3 },
+  { href: "/monthly-review", label: "Resumen", icon: CalendarDays },
   { href: "/recurring", label: "Recurrentes", icon: Repeat },
   { href: "/debts", label: "Deudas", icon: CreditCard },
   { href: "/savings", label: "Ahorros", icon: PiggyBank },
-  { href: "/budgets", label: "Presupuestos", icon: BarChart3 },
   { href: "/obligations", label: "Obligaciones", icon: CheckSquare },
   { href: "/documents", label: "Documentos", icon: ScanLine },
 ]
