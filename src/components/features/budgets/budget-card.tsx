@@ -54,12 +54,12 @@ export function BudgetCard({ budget, spent, onEdit, onDelete, onViewActivities }
           </div>
           {isOverBudget && (
             <span className="inline-flex items-center gap-1 rounded-full bg-danger/10 px-2 py-0.5 text-[10px] font-bold text-danger shrink-0">
-              <AlertTriangle className="h-3 w-3" /> Excedido
+              <AlertTriangle className="h-3 w-3" /> EXCEDIDO
             </span>
           )}
           {isExactBudget && (
             <span className="inline-flex items-center gap-1 rounded-full bg-success/10 px-2 py-0.5 text-[10px] font-bold text-success shrink-0">
-              <CheckCircle2 className="h-3 w-3" /> Exacto
+              <CheckCircle2 className="h-3 w-3" /> EXACTO
             </span>
           )}
           {isNearLimit && (
@@ -89,7 +89,7 @@ export function BudgetCard({ budget, spent, onEdit, onDelete, onViewActivities }
         <div className="mb-1">
           <div className="flex items-center justify-between mb-1.5">
             <span className="text-[11px] font-semibold text-muted-foreground">
-              {isOverBudget ? "Excedido" : isExactBudget ? "Exacto" : `${formatCurrency(remaining)} restante`}
+              {isOverBudget ? "EXCEDIDO" : isExactBudget ? "EXACTO" : `${formatCurrency(remaining)} restante`}
             </span>
             <span className={cn(
               "text-[11px] font-bold",
